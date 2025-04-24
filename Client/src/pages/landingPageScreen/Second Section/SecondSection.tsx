@@ -3,6 +3,7 @@ import MainButton from "../../../components/UI/MainButton";
 import SeconderyButton from "../../../components/UI/SeconderyButton";
 import MainAnimation from "./MainAnimation";
 import MainSentence from "./MainSentence";
+import { min } from "date-fns";
 
 const SecondSection: React.FC = () => {
   const navigate = useNavigate();
@@ -48,18 +49,21 @@ const styles = {
     flexWrap: "wrap" as const,
     alignItems: "center",
     width: "100%",
-    padding: "30px",
+    padding: "100px",
+    paddingTop: "0px",
+    paddingBottom: "0px",
     gap: "30px",
     justifyContent: "center",
     boxSizing: "border-box" as const,
+    minHeight: "80vh",
   },
 
   rightSection: {
     display: "flex",
     flexDirection: "column" as const,
     width: "100%",
-    maxWidth: "600px",
-    flex: "1",
+    maxWidth: "800px",
+    flex: "1.5",
   },
 
   buttonsContainer: {
@@ -75,7 +79,7 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     flex: "1",
-    minWidth: "280px",
+    minWidth: "100px",
     boxSizing: "border-box" as const,
   },
 };

@@ -46,11 +46,11 @@ export default function FooterComp() {
             year={2024}
             className="flex flex-row-reverse items-center gap-2"
           />
-          <div className="mt-4 flex flex-row-reverse space-x-reverse space-x-6 sm:mt-0 sm:justify-center">
+          {/* <div className="mt-4 flex flex-row-reverse space-x-reverse space-x-6 sm:mt-0 sm:justify-center">
             <Footer.Icon href="#" icon={BsFacebook} />
             <Footer.Icon href="#" icon={BsInstagram} />
             <Footer.Icon href="#" icon={BsTwitter} />
-          </div>
+          </div> */}
         </div>
       </div>
     </Footer>
@@ -59,7 +59,8 @@ export default function FooterComp() {
 
 const styles = {
   rtl: {
-    margin: "0px",
+    maxWidth: "90%",
+    marginBottom: "30px",
     direction: "rtl",
     textAlign: "right",
   },

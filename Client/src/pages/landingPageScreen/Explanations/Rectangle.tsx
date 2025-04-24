@@ -22,10 +22,10 @@ const Rectangle: React.FC<RectangleProps> = ({
         backgroundColor,
         width,
         height,
-        top,
-        left,
+        // top,
+        // left,
         zIndex,
-        position: "absolute" as const,
+        // position: "absolute" as const,
         flexShrink: "0",
       }}
     ></div>

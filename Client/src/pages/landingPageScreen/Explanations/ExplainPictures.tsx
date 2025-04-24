@@ -1,5 +1,6 @@
 import React from "react";
 import Rectangle from "./Rectangle";
+import { motion } from "framer-motion";
 
 interface ExplainPicturesProps {
   direction: "row" | "row-reverse"; //row= picture at the left side, row-reverse= picture at the right side
@@ -36,7 +37,7 @@ const ExplainPictures: React.FC<ExplainPicturesProps> = ({
     TextTop = "60px";
   } else {
     BlueTop = "0px";
-    BlueLeft = "333.41px";
+    BlueLeft = "373.41px";
     GreyTop = "40px";
     GreyLeft = "0px";
     LightBlueTop = "250px";
@@ -49,32 +50,74 @@ const ExplainPictures: React.FC<ExplainPicturesProps> = ({
 
   return (
     <div className="container" style={styles.container}>
-      <Rectangle
-        backgroundColor={"#001d3f"}
-        width={"100px"}
-        height={"350px"}
-        top={BlueTop}
-        left={BlueLeft}
-        zIndex={"1"}
-      />
+      <motion.div
+        initial={{ y: -30, opacity: 0 }}
+        whileInView={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        viewport={{ once: false }}
+        style={{
+          position: "absolute",
+          top: BlueTop,
+          left: BlueLeft,
+          zIndex: 1,
+          transform: "translateY(0)",
+        }}
+      >
+        <Rectangle
+          backgroundColor={"#001d3f"}
+          width={"100px"}
+          height={"350px"}
+          top={BlueTop}
+          left={BlueLeft}
+          zIndex={"1"}
+        />
+      </motion.div>
 
-      <Rectangle
-        backgroundColor={"#d3d3d3"}
-        width={"433.41px"}
-        height={"280px"}
-        top={GreyTop}
-        left={GreyLeft}
-        zIndex={"2"}
-      />
+      <motion.div
+        initial={{ x: -30, opacity: 0 }}
+        whileInView={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        viewport={{ once: false }}
+        style={{
+          position: "absolute",
+          top: GreyTop,
+          left: GreyLeft,
+          zIndex: 2,
+          transform: "translateX(0)",
+        }}
+      >
+        <Rectangle
+          backgroundColor={"#d3d3d3"}
+          width={"433.41px"}
+          height={"280px"}
+          top={GreyTop}
+          left={GreyLeft}
+          zIndex={"2"}
+        />
+      </motion.div>
 
-      <Rectangle
-        backgroundColor={"#3a86ff"}
-        width={"180px"}
-        height={"100px"}
-        top={LightBlueTop}
-        left={LightBlueLeft}
-        zIndex={"3"}
-      />
+      <motion.div
+        initial={{ x: 30, opacity: 0 }}
+        whileInView={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        viewport={{ once: false }}
+        style={{
+          position: "absolute",
+          top: LightBlueTop,
+          left: LightBlueLeft,
+          zIndex: 3,
+          transform: "translateX(0)",
+        }}
+      >
+        <Rectangle
+          backgroundColor={"#3a86ff"}
+          width={"180px"}
+          height={"100px"}
+          top={LightBlueTop}
+          left={LightBlueLeft}
+          zIndex={"3"}
+        />
+      </motion.div>
 
       <img
         src={imageSource}
@@ -94,6 +137,7 @@ const ExplainPictures: React.FC<ExplainPicturesProps> = ({
 
 const styles = {
   container: {
+    // backgroundColor: "rgba(255, 0, 0, 0.1)",
     position: "relative" as const,
     width: "468.4px",
     height: "350px",
