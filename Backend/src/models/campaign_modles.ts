@@ -25,6 +25,7 @@ export interface Campaign {
   landingPage: string;
   adGroupId?: string;
   campaignURL?: string;
+  googleCampaignId?: string;
 }
 
 const campaignSchema = new mongoose.Schema<Campaign>({
@@ -46,6 +47,8 @@ const campaignSchema = new mongoose.Schema<Campaign>({
   landingPage: { type: String, required: true },
   adGroupId: { type: String },
   campaignURL: { type: String },
+  googleCampaignId: { type: String },
+
 });
 
 const campaignModel = mongoose.model<Campaign>("Campaigns", campaignSchema);
