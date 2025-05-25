@@ -263,11 +263,11 @@ export const launchGoogleAdsCampaign = async (req: Request, res: Response): Prom
     }, { new: true });
 
     // Generate keywords using Gemini
-    const keywords = await getGeminiKeywordsFromCampaign(campaign);
-    // const keywords = [
-      // { keywordText: "ייעוץ משפטי לעסקים", matchType: "PHRASE" },
-      // { keywordText: "עורך דין לעסקים", matchType: "EXACT" }
-    // ];
+    // const keywords = await getGeminiKeywordsFromCampaign(campaign);
+    const keywords = [
+      { keywordText: "ייעוץ משפטי לעסקים", matchType: "PHRASE" },
+      { keywordText: "עורך דין לעסקים", matchType: "EXACT" }
+    ];
     if (adGroupId) {
       await googleAdsService.addKeywordsToAdGroup(
         adGroupId, 
@@ -277,9 +277,24 @@ export const launchGoogleAdsCampaign = async (req: Request, res: Response): Prom
         })),
         customerId
       );
+      console.log("Keywords added to ad group");
+    } else {
+      console.log("Failed to create or retrieve ad group ID");
+      throw new Error("Failed to create or retrieve ad group ID");
+    }
+console.log('yyyyyyyyyyyyy');
+    // Create an ad under the campaign
+    if (adGroupId) {
+      await googleAdsService.createAd({
+        adGroupId: adGroupId,
+        finalUrl: "https://www.google.com",
+        headline: "Your Ad Headline",
+        description: "Your Ad Description",
+      }, customerId);
     } else {
       throw new Error("Failed to create or retrieve ad group ID");
     }
+    console.log('vvvvvvvvvvvvvvvvvvv');
 
     res.status(201).json({
       message: "Campaign launched successfully",
@@ -288,9 +303,9 @@ export const launchGoogleAdsCampaign = async (req: Request, res: Response): Prom
     });
   } catch (error: any) {
     if (error?.response?.data?.error) {
-      console.error("3:Error launching campaign:", JSON.stringify(error.response.data.error, null, 2));
+      console.error("35:Error launching campaign:", JSON.stringify(error.response.data.error, null, 2));
     } else {
-      console.error("3:Error launching campaign:", error);
+      console.error("43:Error launching campaign:", error);
     }
     res.status(500).json({ error: "Failed to launch campaign" });
   }

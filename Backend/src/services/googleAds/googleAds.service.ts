@@ -38,6 +38,43 @@ export class GoogleAdsService {
     };
   }
 
+  // create ad under campaign
+  async createAd(adData: {
+    adGroupId: string;
+    finalUrl: string;
+    headline: string;
+    description: string;
+  }, customerId?: string) {
+    const targetCustomerId = customerId || this.customerId;
+
+    const body = {
+      operations: [
+        {
+          create: {
+            adGroup: adData.adGroupId,
+            finalUrl: adData.finalUrl,
+            headline: adData.headline,
+            description: adData.description,
+          },
+        },
+      ],  
+    };
+
+    const response = await request({
+      url: `${this.baseUrl}/customers/${targetCustomerId}/ads:mutate`,
+      method: "POST",
+      headers: await this.getHeaders(), 
+      data: body,
+    });
+
+    const result = (response.data as any).results?.[0];
+    if (!result) {
+      throw new Error("Failed to create Ad: No response data");
+    } 
+
+    return result;
+  }
+
   // ------------------------------------------------------
   // Create Ad Group (for a campaign)
   // ------------------------------------------------------
@@ -242,7 +279,9 @@ export class GoogleAdsService {
   async createCampaign(
     campaign: Omit<Campaign, "id">,
     customerId?: string,
-    budgetAmountMicros?: number
+    budgetAmountMicros?: number,
+    finalUrl?: string // ⬅️ דף הנחיתה
+
   ): Promise<Campaign> {
     const targetCustomerId = customerId || this.customerId;
 
