@@ -336,9 +336,10 @@ export const getAllCampaignsByUserId = async (req: Request, res: Response): Prom
   const isStats = req.query.is_stats === 'true'; // Check if the query parameter is set to 'true'
 
   try { 
-    const campaigns = await campaignModel.find({ creatorId: userId });
+    const campaigns = await campaignModel.find({ creatorId: userId }); 
 
-    if (isStats) {
+    if (isStats) { 
+      console.log('isStats is true');
       // Fetch and update stats for each campaign
       await Promise.all(campaigns.map(async (campaign) => {
         if (campaign.googleCampaignId) {
@@ -374,6 +375,7 @@ export const getAllCampaignsByUserId = async (req: Request, res: Response): Prom
               campaign.conversions = stats.conversions;
               campaign.costMicros = stats.costMicros;
               await campaign.save();
+              console.log('campaign saved');
             }
           } catch (error) {
             console.error("Error fetching stats for campaign ID:", campaign.googleCampaignId, error);
