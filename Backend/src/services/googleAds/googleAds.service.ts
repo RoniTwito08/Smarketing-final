@@ -7,6 +7,11 @@ import {
   CampaignStatus,
   AdvertisingChannelType,
 } from "./types";
+import dotenv from 'dotenv';
+import campaignModel from "../../models/campaign_modles"; 
+import userModel from "../../models/user_models";
+// Load environment variables
+dotenv.config({ path: './Backend/.env_dev' });
 
 interface GoogleAdsCreateCustomerResponse {
   customerClient: {
@@ -27,14 +32,15 @@ export class GoogleAdsService {
     this.authService = new AuthService(config);
     this.customerId = config.customerId;
     this.developerToken = config.developerToken;
+
   }
 
   private async getHeaders() {
-    const accessToken = await this.authService.getAccessToken(); // check if its ok
+    const accessToken = process.env.GOOGLE_ADD_ACCESS_TOKEN; // Use the access token from the environment
     return {
-      Authorization: `Bearer ${accessToken}`, // <-- fixed with backticks
+      Authorization: `Bearer ${accessToken}`,
       "developer-token": this.developerToken,
-      "login-customer-id": '5175124700', // <-- fixed with backticks
+      "login-customer-id": '5175124700',
     };
   }
 
@@ -239,6 +245,9 @@ export class GoogleAdsService {
     startDate: string,
     endDate: string
   ): Promise<CampaignStatistics[]> {
+    const headers = await this.getHeaders();
+    console.log("Request headers:", headers);
+    
     const query = `
       SELECT 
         campaign.id, 
@@ -252,11 +261,17 @@ export class GoogleAdsService {
       WHERE campaign.id = '${campaignId}'
         AND segments.date BETWEEN '${startDate}' AND '${endDate}'
     `; // backtick-enclosed
-
+    // get campaign's connected customer google id
+    // get createor id from campaign first 
+    // get creatorId from campaign, then get user by creatorId, then get user's googleCustomerId
+    const campaign = await campaignModel.findOne({ googleCampaignId: campaignId });
+    const creatorId = campaign?.creatorId;
+    const user = await userModel.findOne({ _id: creatorId });
+    const customerId = user?.googleCustomerId;
     const response = await request({
-      url: `${this.baseUrl}/customers/${this.customerId}/googleAds:search`,
+      url: `${this.baseUrl}/customers/${customerId}/googleAds:search`,
       method: "POST",
-      headers: await this.getHeaders(),
+      headers: headers,
       data: { query },
     });
 
