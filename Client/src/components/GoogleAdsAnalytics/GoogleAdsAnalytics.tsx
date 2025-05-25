@@ -63,6 +63,7 @@ export const GoogleAdsAnalytics: React.FC = () => {
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [stats, setStats] = useState<CampaignStats | null>(null);
   const { user } = useAuth();
+
   useEffect(() => {
     fetchCampaigns();
   }, [customerId]);
@@ -79,47 +80,47 @@ export const GoogleAdsAnalytics: React.FC = () => {
     }
   };
 
-  const fetchCampaignStats = async () => {
-    if (!selectedCampaign || !startDate || !endDate) return;
-
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/google-ads/campaigns/${selectedCampaign}/statistics`,
-        {
-          params: {
-            customerId,
-            startDate: startDate.toISOString().split("T")[0],
-            endDate: endDate.toISOString().split("T")[0],
-            
-          },
-        }
-      );
-      setStats(response.data);
-    } catch (error) {
-      console.error("Failed to fetch campaign statistics:", error);
+  useEffect(() => {
+    if (!selectedCampaign) {
+      setStats(null);
+      return;
     }
-  };
+    const campaign = campaigns.find(c => c._id === selectedCampaign);
+    if (campaign) {
+      setStats({
+        clicks: campaign.clicks || 0,
+        impressions: campaign.impressions || 0,
+        costMicros: campaign.costMicros || 0,
+        conversions: campaign.conversions || 0,
+        ctr: campaign.impressions
+          ? (campaign.clicks || 0) / campaign.impressions
+          : 0,
+      });
+    } else {
+      setStats(null);
+    }
+  }, [selectedCampaign, campaigns]);
 
   const radarData = stats
     ? [
-        { metric: "Clicks", value: stats.clicks || 0 },
-        { metric: "Impressions", value: stats.impressions || 0 },
-        { metric: "CTR", value: stats.ctr || 0 },
+        { metric: "לחיצות", value: stats.clicks || 0 },
+        { metric: "הצגות", value: stats.impressions || 0 },
+        { metric: "CTR", value: stats.ctr || 0 }, // Click-Through Rate
         {
-          metric: "CPC",
+          metric: "הוצאה",
           value:
             stats.costMicros && stats.clicks
               ? stats.costMicros / stats.clicks / 1_000_000
               : 0,
         },
-        { metric: "Conversions", value: stats.conversions || 0 },
+        { metric: "המרת משתמשים", value: stats.conversions || 0 },
       ]
     : [];
 
   const pieData = stats
     ? [
         {
-          name: "Total Spend",
+          name: "הוצאה",
           value: parseFloat((stats.costMicros / 1_000_000).toFixed(2)),
         },
       ]
@@ -147,17 +148,17 @@ export const GoogleAdsAnalytics: React.FC = () => {
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Paper sx={{ p: 3 }}>
         <Typography variant="h4" gutterBottom>
-          Google Ads Analytics
+          נתוני קמפיינים
         </Typography>
 
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <TextField
               fullWidth
-              label="Customer ID"
+              label="מספר לקוח"
               value={customerId}
               onChange={(e) => setCustomerId(e.target.value)}
-              helperText="Format: XXX-XXX-XXXX"
+              helperText="פורמט: XXX-XXX-XXXX"
             />
           </Grid>
 
@@ -165,22 +166,22 @@ export const GoogleAdsAnalytics: React.FC = () => {
             <TextField
               select
               fullWidth
-              label="Select Campaign"
+              label="בחר קמפיין"
               value={selectedCampaign}
               onChange={(e) => setSelectedCampaign(e.target.value)}
               SelectProps={{ native: true }}
             >
-              <option value="">Select a campaign</option>
+              <option value="">בחר קמפיין</option>
               {Array.isArray(campaigns) &&
                 campaigns.map((campaign) => (
-                  <option key={campaign._id} value={campaign._id}>
-                    {campaign.campaignName} - {campaign.campaginPurpose}
+                  <option key={campaign._id} value={campaign._id}>  
+                    {campaign.campaignName} - {campaign.campaginPurpose} - {campaign.googleCampaignId}
                   </option>
                 ))}
             </TextField>
           </Grid>
 
-          <Grid item xs={12} sm={6}>
+          {/* <Grid item xs={12} sm={6}>
             <DatePicker
               label="Start Date"
               value={startDate}
@@ -198,18 +199,7 @@ export const GoogleAdsAnalytics: React.FC = () => {
               slots={{ textField: TextField }}
               slotProps={{ textField: { fullWidth: true } }}
             />
-          </Grid>
-
-          <Grid item xs={12}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={fetchCampaignStats}
-              disabled={!selectedCampaign || !startDate || !endDate}
-            >
-              Fetch Statistics
-            </Button>
-          </Grid>
+          </Grid> */}
 
           {stats && (
             <>
@@ -217,27 +207,27 @@ export const GoogleAdsAnalytics: React.FC = () => {
                 <Card>
                   <CardContent>
                     <Typography variant="h6" gutterBottom>
-                      Campaign Statistics
+                      סטטיסטיקות קמפיין
                     </Typography>
                     <Grid container spacing={2}>
                       <Grid item xs={6} md={3}>
-                        <Typography variant="subtitle2">Clicks</Typography>
+                        <Typography variant="subtitle2">לחיצות</Typography>
                         <Typography variant="h6">{stats.clicks}</Typography>
                       </Grid>
                       <Grid item xs={6} md={3}>
-                        <Typography variant="subtitle2">Impressions</Typography>
+                        <Typography variant="subtitle2">הצגות</Typography>
                         <Typography variant="h6">
                           {stats.impressions}
                         </Typography>
                       </Grid>
                       <Grid item xs={6} md={3}>
-                        <Typography variant="subtitle2">Cost</Typography>
+                        <Typography variant="subtitle2">הוצאה</Typography>
                         <Typography variant="h6">
                           ${(stats.costMicros / 1_000_000).toFixed(2)}
                         </Typography>
                       </Grid>
                       <Grid item xs={6} md={3}>
-                        <Typography variant="subtitle2">Conversions</Typography>
+                        <Typography variant="subtitle2">המרת משתמשים</Typography>
                         <Typography variant="h6">
                           {stats.conversions}
                         </Typography>
@@ -249,7 +239,7 @@ export const GoogleAdsAnalytics: React.FC = () => {
 
               <Grid item xs={12}>
                 <Typography variant="h5" gutterBottom>
-                  Visual Analytics
+                  תצוגה גרפית
                 </Typography>
               </Grid>
 
