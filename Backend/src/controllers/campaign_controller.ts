@@ -23,7 +23,7 @@ export const createCampaign = async (req: Request, res: Response) => {
 export const getAllCampaigns = async (req: Request, res: Response) => {
   try {
     //get only campaigns by user id
-    const campaigns = await campaignModel.find({ creatorId: req.body.userId });
+    const campaigns = await campaignModel.find({ creatorId: req.body.userId }).select('+googleCampaignId');
     res.status(200).json(campaigns);
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
@@ -243,6 +243,7 @@ export const launchGoogleAdsCampaign = async (req: Request, res: Response): Prom
     }, customerId, budgetMicros);
 
     
+    
     const adgroupfromdb = await campaignModel.findById(campaignMongoId);
     let adGroupId = adgroupfromdb?.adGroupId;
     
@@ -299,7 +300,7 @@ export const launchGoogleAdsCampaign = async (req: Request, res: Response): Prom
 export const getAllCampaignsByUserId = async (req: Request, res: Response): Promise<void> => {
   const { userId } = req.params;
   try {
-    const campaigns = await campaignModel.find({ creatorId: userId });
+    const campaigns = await campaignModel.find({ creatorId: userId }).select('+googleCampaignId');
     res.status(200).json(campaigns);
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
