@@ -308,4 +308,31 @@ export const getAllCampaignsByUserId = async (req: Request, res: Response): Prom
   
 };
 
+export const getCampaignStatsFromDb = async (req: Request, res: Response): Promise<void> => {
+  try {
+    console.log('first step');
+    const { id } = req.params;
+    const campaign = await campaignModel.findById(id);
+
+    console.log('second step');
+    if (!campaign) {
+      res.status(404).json({ error: "Campaign not found" });
+      return;
+    }
+
+    console.log('third step');
+    res.status(200).json({
+      clicks: campaign.clicks || 0,
+      impressions: campaign.impressions || 0,
+      costMicros: campaign.costMicros || 0,
+      conversions: campaign.conversions || 0,
+      ctr: campaign.impressions ? (campaign.clicks || 0) / campaign.impressions : 0,
+    });
+    console.log('fourth step');
+  } catch (error) {
+    console.log('fifth step');
+    res.status(500).json({ error: "Failed to fetch campaign stats", details: error });
+  }
+};
+
 

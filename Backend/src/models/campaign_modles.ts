@@ -26,6 +26,10 @@ export interface Campaign {
   adGroupId?: string;
   campaignURL?: string;
   googleCampaignId?: string;
+  clicks?: number;
+  impressions?: number;
+  costMicros?: number;
+  conversions?: number;
 }
 
 const campaignSchema = new mongoose.Schema<Campaign>({
@@ -48,7 +52,10 @@ const campaignSchema = new mongoose.Schema<Campaign>({
   adGroupId: { type: String },
   campaignURL: { type: String },
   googleCampaignId: { type: String },
-
+  clicks: { type: Number, default: 0 },
+  impressions: { type: Number, default: 0 },
+  costMicros: { type: Number, default: 0 },
+  conversions: { type: Number, default: 0 },
 });
 
 const campaignModel = mongoose.model<Campaign>("Campaigns", campaignSchema);
