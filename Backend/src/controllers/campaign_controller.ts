@@ -23,7 +23,7 @@ export const createCampaign = async (req: Request, res: Response) => {
 export const getAllCampaigns = async (req: Request, res: Response) => {
   try {
     //get only campaigns by user id
-    const campaigns = await campaignModel.find({ creatorId: req.body.userId }).select('+googleCampaignId');
+    const campaigns = await campaignModel.find({ creatorId: req.body.userId });
     res.status(200).json(campaigns);
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
@@ -243,7 +243,6 @@ export const launchGoogleAdsCampaign = async (req: Request, res: Response): Prom
     }, customerId, budgetMicros);
 
     
-    
     const adgroupfromdb = await campaignModel.findById(campaignMongoId);
     let adGroupId = adgroupfromdb?.adGroupId;
     
@@ -297,10 +296,58 @@ export const launchGoogleAdsCampaign = async (req: Request, res: Response): Prom
   }
 };
 
+
+// export const getAllCampaignsByUserId = async (req: Request, res: Response): Promise<void> => {
+//   const { userId } = req.params;
+//   try {
+//     // 1. Get all campaigns for this user
+//     const campaigns = await campaignModel.find({ creatorId: userId }).select('+googleCampaignId');
+
+//     const userGoogleCustomerId = await userModel.findById(userId).select('googleCustomerId');
+//     // 2. Use global refresh token and customer ID
+//     const refreshToken = process.env.GOOGLE_ADS_REFRESH_TOKEN;
+//     const customerId = userGoogleCustomerId?.googleCustomerId;
+//     if (!refreshToken || !customerId) {
+//       res.status(500).json({ error: "Google Ads credentials missing in environment" });
+//       return;
+//     }
+
+
+//     // 3. For each campaign, fetch stats and save the latest stats object directly
+//     await Promise.all(
+//       campaigns.map(async (campaign) => {
+//         if (campaign.googleCampaignId) {
+//           const statsArr = await googleAdsService.getCampaignStatistics(
+//             campaign.googleCampaignId,
+//             "2024-01-01", // or dynamic
+//             "2024-12-31"
+//           );
+//           // Save the first stats object (or latest, depending on your API)
+//           if (statsArr && statsArr.length > 0) {
+//             const stats = statsArr[0];
+//             campaign.clicks = stats.clicks;
+//             campaign.impressions = stats.impressions;
+//             campaign.conversions = stats.conversions;
+//             campaign.costMicros = stats.costMicros;
+//             await campaign.save();
+//           }
+//         }
+//       })
+//     );
+
+//     // 4. Fetch the updated campaigns and return
+//     const updatedCampaigns = await campaignModel.find({ creatorId: userId }).select('+googleCampaignId');
+//     res.status(200).json(updatedCampaigns);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: "Internal server error" });
+//   }
+// };
+
 export const getAllCampaignsByUserId = async (req: Request, res: Response): Promise<void> => {
   const { userId } = req.params;
   try {
-    const campaigns = await campaignModel.find({ creatorId: userId }).select('+googleCampaignId');
+    const campaigns = await campaignModel.find({ creatorId: userId });
     res.status(200).json(campaigns);
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
@@ -308,31 +355,5 @@ export const getAllCampaignsByUserId = async (req: Request, res: Response): Prom
   
 };
 
-export const getCampaignStatsFromDb = async (req: Request, res: Response): Promise<void> => {
-  try {
-    console.log('first step');
-    const { id } = req.params;
-    const campaign = await campaignModel.findById(id);
-
-    console.log('second step');
-    if (!campaign) {
-      res.status(404).json({ error: "Campaign not found" });
-      return;
-    }
-
-    console.log('third step');
-    res.status(200).json({
-      clicks: campaign.clicks || 0,
-      impressions: campaign.impressions || 0,
-      costMicros: campaign.costMicros || 0,
-      conversions: campaign.conversions || 0,
-      ctr: campaign.impressions ? (campaign.clicks || 0) / campaign.impressions : 0,
-    });
-    console.log('fourth step');
-  } catch (error) {
-    console.log('fifth step');
-    res.status(500).json({ error: "Failed to fetch campaign stats", details: error });
-  }
-};
 
 

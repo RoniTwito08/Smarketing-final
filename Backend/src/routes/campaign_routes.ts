@@ -11,7 +11,6 @@ import {
   fetchCampaignStatistics,
   launchGoogleAdsCampaign,
   getAllCampaignsByUserId,
-  getCampaignStatsFromDb,
 } from "../controllers/campaign_controller";
 
 const router = express.Router();
@@ -24,7 +23,7 @@ router.put("/:id", upload.single("campaignImage"), updateCampaign);
 router.delete("/:id", deleteCampaign);
 router.put("/interest/:campaignId", markInterest);
 router.put("/uninterest/:campaignId", removeInterest);
-router.get('/campaigns/:id/statistics', getCampaignStatsFromDb);
+// router.get('/campaigns/:id/statistics', getCampaignStatsFromDb);
 router.post("/google-launch", launchGoogleAdsCampaign);
 router.get("/user/:userId", getAllCampaignsByUserId);
 
