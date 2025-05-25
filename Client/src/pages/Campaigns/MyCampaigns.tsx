@@ -19,7 +19,7 @@ export const MyCampaigns: React.FC<{ onSelectCampaign: (campaign: any) => void }
     if (!user?._id) return;
     try {
       const response = await fetch(`${config.apiUrl}/campaigns/user/${user._id}?is_stats=true`); 
-      if (!response.ok) throw new Error("Failed to fetch campaigns");
+      if (!response.ok) throw new Error("Failed to fetch campaigns"); 
       const data = await response.json();
       setCampaigns(data);
     } catch (error) {
