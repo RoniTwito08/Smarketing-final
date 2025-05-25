@@ -333,51 +333,54 @@ export const launchGoogleAdsCampaign = async (req: Request, res: Response): Prom
 
 export const getAllCampaignsByUserId = async (req: Request, res: Response): Promise<void> => {
   const { userId } = req.params;
-  try {
+  const isStats = req.query.is_stats === 'true'; // Check if the query parameter is set to 'true'
+
+  try { 
     const campaigns = await campaignModel.find({ creatorId: userId });
 
-    // Fetch and update stats for each campaign
-    await Promise.all(campaigns.map(async (campaign) => {
-      if (campaign.googleCampaignId) {
-        const query = `
-          SELECT
-            campaign.id,
-            campaign.name,
-            metrics.impressions,
-            metrics.clicks,
-            metrics.conversions,
-            metrics.cost_micros,
-            segments.date
-          FROM
-            campaign
-          WHERE
-            campaign.id = '${campaign.googleCampaignId}'
-            AND segments.date BETWEEN '2024-01-01' AND '2030-12-31'
-        `;
+    if (isStats) {
+      // Fetch and update stats for each campaign
+      await Promise.all(campaigns.map(async (campaign) => {
+        if (campaign.googleCampaignId) {
+          const query = `
+            SELECT
+              campaign.id,
+              campaign.name,
+              metrics.impressions,
+              metrics.clicks,
+              metrics.conversions,
+              metrics.cost_micros,
+              segments.date
+            FROM
+              campaign
+            WHERE
+              campaign.id = '${campaign.googleCampaignId}'
+              AND segments.date BETWEEN '2024-01-01' AND '2030-12-31'
+          `;
 
-     
-        try {
-          const statsArr = await googleAdsService.getCampaignStatistics(
-            campaign.googleCampaignId,
-            "2024-01-01", // Start date for stats
-            "2030-12-31"  // End date for stats
-          );
+          try {
+            const statsArr = await googleAdsService.getCampaignStatistics(
+              campaign.googleCampaignId,
+              "2024-01-01", // Start date for stats
+              "2030-12-31"  // End date for stats
+            );
 
-          console.log("Received stats:", statsArr);
+            console.log("Received stats:", statsArr);
 
-          if (statsArr && statsArr.length > 0) {
-            const stats = statsArr[0];
-            campaign.clicks = stats.clicks;
-            campaign.impressions = stats.impressions;
-            campaign.conversions = stats.conversions;
-            campaign.costMicros = stats.costMicros;
-            await campaign.save();
+            if (statsArr && statsArr.length > 0) {
+              const stats = statsArr[0];
+              campaign.clicks = stats.clicks;
+              campaign.impressions = stats.impressions;
+              campaign.conversions = stats.conversions;
+              campaign.costMicros = stats.costMicros;
+              await campaign.save();
+            }
+          } catch (error) {
+            console.error("Error fetching stats for campaign ID:", campaign.googleCampaignId, error);
           }
-        } catch (error) {
-          console.error("Error fetching stats for campaign ID:", campaign.googleCampaignId, error);
-        } 
-      }
-    }));
+        }
+      }));
+    }
 
     res.status(200).json(campaigns);
   } catch (error) {
