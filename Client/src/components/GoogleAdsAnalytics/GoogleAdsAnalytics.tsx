@@ -73,7 +73,7 @@ export const GoogleAdsAnalytics: React.FC = () => {
       const response = await fetch(
         `${config.apiUrl}/campaigns/user/${user?._id}?is_stats=true`,
       ); 
-      const data = await response.json();
+      const data = await response.json(); 
       setCampaigns(data);
     } catch (error) {
       console.error("Failed to fetch campaigns:", error);

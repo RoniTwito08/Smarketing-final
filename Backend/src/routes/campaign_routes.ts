@@ -13,7 +13,7 @@ import {
   getAllCampaignsByUserId,
 } from "../controllers/campaign_controller";
 
-const router = express.Router();
+const router = express.Router(); 
 const upload = multer({ dest: "uploads/campaign_images" });
 
 router.get("/", getAllCampaigns);
