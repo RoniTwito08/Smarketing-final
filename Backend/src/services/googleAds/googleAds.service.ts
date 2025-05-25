@@ -42,8 +42,8 @@ export class GoogleAdsService {
   async createAd(adData: {
     adGroupId: string;
     finalUrl: string;
-    headline: string;
-    description: string;
+    headlines: string[];
+    descriptions: string[];
   }, customerId?: string) {
     const targetCustomerId = customerId || this.customerId;
 
@@ -51,17 +51,21 @@ export class GoogleAdsService {
       operations: [
         {
           create: {
-            adGroup: adData.adGroupId,
-            finalUrl: adData.finalUrl,
-            headline: adData.headline,
-            description: adData.description,
+            adGroup: `customers/${targetCustomerId}/adGroups/${adData.adGroupId}`,
+            ad: {
+              finalUrls: [adData.finalUrl],
+              responsiveSearchAd: {
+                headlines: adData.headlines.map((headline) => ({ text: headline })),
+                descriptions: adData.descriptions.map((description) => ({ text: description })),
+              },
+            },
           },
         },
       ],  
     };
 
     const response = await request({
-      url: `${this.baseUrl}/customers/${targetCustomerId}/ads:mutate`,
+      url: `${this.baseUrl}/customers/${targetCustomerId}/adGroupAds:mutate`,
       method: "POST",
       headers: await this.getHeaders(), 
       data: body,

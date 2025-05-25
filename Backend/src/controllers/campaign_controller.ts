@@ -288,8 +288,15 @@ console.log('yyyyyyyyyyyyy');
       await googleAdsService.createAd({
         adGroupId: adGroupId,
         finalUrl: "https://www.google.com",
-        headline: "Your Ad Headline",
-        description: "Your Ad Description",
+        headlines: [
+          "Your Ad Headline",
+          "Another Headline",
+          "Third Headline"
+        ],
+        descriptions: [
+          "Your Ad Description",
+          "Another Description"
+        ],
       }, customerId);
     } else {
       throw new Error("Failed to create or retrieve ad group ID");
