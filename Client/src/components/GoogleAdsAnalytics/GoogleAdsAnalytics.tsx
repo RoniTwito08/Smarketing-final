@@ -63,7 +63,7 @@ export const GoogleAdsAnalytics: React.FC = () => {
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [stats, setStats] = useState<CampaignStats | null>(null);
   const { user } = useAuth();
-
+ 
   useEffect(() => {
     fetchCampaigns();
   }, [customerId]);
@@ -71,7 +71,7 @@ export const GoogleAdsAnalytics: React.FC = () => {
   const fetchCampaigns = async () => {
     try {
       const response = await fetch(
-        `${config.apiUrl}/campaigns/user/${user?._id}`,
+        `${config.apiUrl}/campaigns/user/${user?._id}?is_stats=true`,
       ); 
       const data = await response.json();
       setCampaigns(data);
