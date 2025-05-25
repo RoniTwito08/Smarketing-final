@@ -338,7 +338,7 @@ export const getAllCampaignsByUserId = async (req: Request, res: Response): Prom
   try { 
     const campaigns = await campaignModel.find({ creatorId: userId }); 
 
-    if (isStats) {
+    if (isStats) { 
       console.log('isStats is true');
       // Fetch and update stats for each campaign
       await Promise.all(campaigns.map(async (campaign) => {

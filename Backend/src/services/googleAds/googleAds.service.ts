@@ -757,7 +757,7 @@ export class GoogleAdsService {
    */
   async updateCampaignAndKeywords(
     campaignId: string,
-    campaignUpdates: Partial<Campaign>, 
+    campaignUpdates: Partial<Campaign>,  
     adGroupId?: string,
     keywords?: Array<{
       text: string;
