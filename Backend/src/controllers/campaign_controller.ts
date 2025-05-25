@@ -375,7 +375,7 @@ export const getAllCampaignsByUserId = async (req: Request, res: Response): Prom
           }
         } catch (error) {
           console.error("Error fetching stats for campaign ID:", campaign.googleCampaignId, error);
-        }
+        } 
       }
     }));
 
