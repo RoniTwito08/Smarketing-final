@@ -282,20 +282,27 @@ export const launchGoogleAdsCampaign = async (req: Request, res: Response): Prom
       console.log("Failed to create or retrieve ad group ID");
       throw new Error("Failed to create or retrieve ad group ID");
     }
-console.log('yyyyyyyyyyyyy');
+    // Retrieve the campaign document to get the campaignURL, campaignName, and campaignContent
+    const campaignDoc = await campaignModel.findById(campaignMongoId);
+    if (!campaignDoc || !campaignDoc.campaignURL) {
+      res.status(400).json({ error: "Campaign URL not found" });
+      return;
+    }
+
     // Create an ad under the campaign
     if (adGroupId) {
       await googleAdsService.createAd({
         adGroupId: adGroupId,
-        finalUrl: "https://www.google.com",
+        finalUrl: campaignDoc.campaignURL,
         headlines: [
-          "Your Ad Headline",
-          "Another Headline",
-          "Third Headline"
+          campaignDoc.campaignName, // Use the campaign name as a headline
+          'בדיקה', // Use the campaign content as a description
+          'הזדמנות חד פעמית'
         ],
         descriptions: [
-          "Your Ad Description",
-          "Another Description"
+          campaignDoc.campaignName, // Use the campaign name as a headline
+          'בדיקה', // Use the campaign content as a description
+          'הזדמנות חד פעמית'
         ],
       }, customerId);
     } else {
