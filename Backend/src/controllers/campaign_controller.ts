@@ -8,6 +8,7 @@ import { googleAdsConfig } from "../config/google.config";
 import { CampaignStatus, AdvertisingChannelType } from "../services/googleAds/types";
 import {getGeminiKeywordsFromCampaign} from "../controllers/gemini_controller"; // Adjust the import path as necessary
 import mongoose from "mongoose";
+import businessInfoModel from "../models/businessInfo_models";
 const googleAdsService = new GoogleAdsService(googleAdsConfig);
 
 export const createCampaign = async (req: Request, res: Response) => {
@@ -289,20 +290,25 @@ export const launchGoogleAdsCampaign = async (req: Request, res: Response): Prom
       return;
     }
 
+    
     // Create an ad under the campaign
     if (adGroupId) {
+      // lets take the bisunessName from businessinfos collection
+      const businessInfo = await businessInfoModel.findOne({ userId: userId });
+      const businessName = String(businessInfo?.businessName || "Default Business Name");
+      const businessAddress = String(businessInfo?.businessAddress || "Default Business Address");
       await googleAdsService.createAd({
         adGroupId: adGroupId,
         finalUrl: campaignDoc.campaignURL,
         headlines: [
           campaignDoc.campaignName, // Use the campaign name as a headline
-          'בדיקה', // Use the campaign content as a description
-          'הזדמנות חד פעמית'
+          businessName, // Use the campaign content as a description
+          businessAddress, // Use the campaign content as a description
         ],
         descriptions: [
           campaignDoc.campaignName, // Use the campaign name as a headline
-          'בדיקה', // Use the campaign content as a description
-          'הזדמנות חד פעמית'
+          businessName, // Use the campaign content as a description
+          businessAddress, // Use the campaign content as a description
         ],
       }, customerId);
     } else {
