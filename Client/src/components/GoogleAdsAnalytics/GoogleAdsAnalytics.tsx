@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import {
   Container,
   Paper,
   Typography,
   TextField,
-  Button,
   Grid,
   Card,
   CardContent,
 } from "@mui/material";
-import { DatePicker } from "@mui/x-date-pickers";
 import GoogleAdsRadarChart from "../charts/GoogleAdsRadarChart";
 import GoogleAdsPieChart from "../charts/GoogleAdsPieChart";
 import GoogleAdsChart from "../charts/GoogleAdsChart";
@@ -53,14 +50,20 @@ interface Campaign {
   landingPage?: string;
   feedbacks: any[];
   interestedUsers: string[];
+  clicks?: number;
+  impressions?: number;
+  costMicros?: number;
+  conversions?: number;
+  dailyBreakdown?: DailyStat[];
+  googleCampaignId?: string;
 }
 
 export const GoogleAdsAnalytics: React.FC = () => {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [customerId, setCustomerId] = useState("517-512-4700");
   const [selectedCampaign, setSelectedCampaign] = useState<string>("");
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
+  // const [startDate, setStartDate] = useState<Date | null>(null);
+  // const [endDate, setEndDate] = useState<Date | null>(null);
   const [stats, setStats] = useState<CampaignStats | null>(null);
   const { user } = useAuth();
  
