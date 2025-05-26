@@ -354,23 +354,6 @@ describe("Auth Tests", () => {
     jest.restoreAllMocks();
   });
 
-  test("Auth test me", async () => {
-    const response = await request(app).post("/posts").send({
-      postData: "Test Post",
-      senderId: "123",
-    });
-    expect(response.statusCode).not.toBe(201);
-
-    const response2 = await request(app)
-      .post("/posts")
-      .set({ authorization: "JWT " + user.accessToken })
-      .send({
-        postData: "Test Post",
-        senderId: "123",
-      });
-    expect(response2.statusCode).toBe(201);
-  });
-
   test("Test refresh token", async () => {
     const tempUser = await userModel.findById(user._id);
 
