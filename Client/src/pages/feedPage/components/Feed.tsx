@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CampaignPopup from "../../LandingPageGenerator/CampaignForm/CampaignForm";
 import "./Feed.css";
 import { useAuth } from "../../../context/AuthContext";
@@ -13,6 +13,17 @@ const Feed: React.FC<{ className?: string }> = ({ className }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [refreshFeed, setRefreshFeed] = useState(false); // State for forcing re-render
   const [selectedCampaign, setSelectedCampaign] = useState<any>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  useEffect(() => {
+    if (refreshFeed) {
+      setRefreshKey(prev => prev + 1);
+      const timer = setTimeout(() => {
+        setRefreshFeed(false);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [refreshFeed]);
 
   const handleCampaignSubmit = async (_data: any) => {
     try{
@@ -39,7 +50,11 @@ const Feed: React.FC<{ className?: string }> = ({ className }) => {
       
             const data = await response.json();
             console.log('Campaign launched successfully:', data);
+            console.log('Setting refreshFeed to true');
             setRefreshFeed(true); // Trigger refresh after submission
+            setShowPopup(false); // Close the popup after successful submission
+            setSelectedCampaign(null); // Close the campaign details popup
+            alert('הקמפיין יצא לדרך!')
 
     }catch (error) {
       console.error("Error launching campaign:", error);
@@ -49,8 +64,6 @@ const Feed: React.FC<{ className?: string }> = ({ className }) => {
   const handleDeleteCampaign = (campaignId: string) => {
     console.log("Campaign deleted:", campaignId);
     setRefreshFeed(true); // Trigger refresh after deletion
-    // Reset the refresh state
-    setTimeout(() => setRefreshFeed(false), 1000);
   };
 
   const handleSelectCampaign = (campaign: any) => {
@@ -95,7 +108,7 @@ const Feed: React.FC<{ className?: string }> = ({ className }) => {
 
         <MyCampaigns 
           onSelectCampaign={handleSelectCampaign} 
-          key={refreshFeed ? Date.now() : ""} // Force re-render when `refreshFeed` changes
+          key={refreshKey}
         />
       </div>
 

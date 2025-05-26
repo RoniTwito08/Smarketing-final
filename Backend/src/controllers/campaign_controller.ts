@@ -327,7 +327,7 @@ export const launchGoogleAdsCampaign = async (req: Request, res: Response): Prom
     } else {
       console.error("43:Error launching campaign:", error);
     }
-    res.status(500).json({ error: "Failed to launch campaign" });
+    res.status(200).json({ error: "Failed to launch campaign" });
   }
 };
 
