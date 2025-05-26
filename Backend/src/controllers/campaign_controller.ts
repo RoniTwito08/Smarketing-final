@@ -264,11 +264,11 @@ export const launchGoogleAdsCampaign = async (req: Request, res: Response): Prom
     }, { new: true });
 
     // Generate keywords using Gemini
-    // const keywords = await getGeminiKeywordsFromCampaign(campaign);
-    const keywords = [
-      { keywordText: "ייעוץ משפטי לעסקים", matchType: "PHRASE" },
-      { keywordText: "עורך דין לעסקים", matchType: "EXACT" }
-    ];
+    const keywords = await getGeminiKeywordsFromCampaign(campaign);
+    // const keywords = [
+      // { keywordText: "ייעוץ משפטי לעסקים", matchType: "PHRASE" },
+      // { keywordText: "עורך דין לעסקים", matchType: "EXACT" }
+    // ];
     if (adGroupId) {
       await googleAdsService.addKeywordsToAdGroup(
         adGroupId, 
