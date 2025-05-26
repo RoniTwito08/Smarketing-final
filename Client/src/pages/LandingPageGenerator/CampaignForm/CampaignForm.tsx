@@ -347,6 +347,14 @@ const tourSteps = [
                     statusBox.textContent = "❌ שגיאה בשליחת הפרטים";
                   }
                 });
+                const scrollButton = document.getElementById("headerButtonContainer");
+                const contactTarget = document.getElementById("contact-us-root") || document.querySelector(".contactUs");
+
+                if (scrollButton && contactTarget) {
+                  scrollButton.addEventListener("click", () => {
+                    contactTarget.scrollIntoView({ behavior: "smooth", block: "start" });
+                  });
+                }
               });
             </script>
 
