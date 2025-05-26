@@ -18,6 +18,16 @@ const CampaignCard: React.FC<CampaignCardProps> = ({ campaign, onClick }) => {
       <p>
         <strong>מטרה:</strong> {campaign.campaginPurpose}
       </p>
+      <p>
+        <a
+          href={campaign.campaignURL}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()} 
+        >
+          <strong>קישור לדף נחיתה</strong>
+        </a>
+      </p>
       {campaign.landingPage && (
        <div className={styles.iframeWrapper}>
         <iframe
