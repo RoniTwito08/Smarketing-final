@@ -58,7 +58,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({ open, onClose , onSubmit 
     creatorId: "1234567890",
     campaignName: "קמפיין אביב 2025",
     campaignContent: "קמפיין מיוחד לעונת האביב עם הנחות בלעדיות למוצרים נבחרים!",
-    budget: 5000,
+    budget: 100,
     marketingLevel: "גבוה",
     campaginPurpose: "הגברת מודעות למותג",
     actionToCall: "הצטרפו עכשיו",
@@ -577,7 +577,7 @@ const tourSteps = [
   <input
     type="range"
     name="budget"
-    min="10"
+    min="1"
     max="100"
     step="10"
     value={Math.round(form.budget)}
