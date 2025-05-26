@@ -572,18 +572,19 @@ const tourSteps = [
                 onChange={handleChange}
               />
 
-              <div className="form-group">
-                <label>תקציב: {form.budget} ₪</label>
-                <input
-                  type="range"
-                  name="budget"
-                  min="1000"
-                  max="20000"
-                  step="500"
-                  value={form.budget}
-                  onChange={handleChange}
-                />
-              </div>
+             <div className="form-group">
+  <label>תקציב: {Math.round(form.budget)} ₪</label>
+  <input
+    type="range"
+    name="budget"
+    min="10"
+    max="100"
+    step="10"
+    value={Math.round(form.budget)}
+    onChange={handleChange}
+  />
+</div>
+
 
               <div className="form-group">
                 <label>רמת שיווק</label>
