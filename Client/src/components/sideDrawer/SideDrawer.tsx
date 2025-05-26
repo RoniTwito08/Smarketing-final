@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { extendTheme } from "@mui/material/styles";
 import { AppProvider, Navigation, Router } from "@toolpad/core/AppProvider";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
@@ -8,15 +8,14 @@ import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
 import SettingsIcon from "@mui/icons-material/Settings";
 import AnalysisIcon from "@mui/icons-material/Analytics";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import { ChatList } from "../Chat/ChatList";
-import { ChatModal } from "../Chat/ChatModal";
+import UserLeads from "../Chat/UserLeads";
 import logo from "../../assets/Smarketing.png";
 import { AccountSettings } from "../../pages/userProfileScreen/AccountSettings";
 import { BusinessSetting } from "../../pages/businessProfileScreen/BusinessSetting";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useAuth } from "../../context/AuthContext";
 import MainFeed from "../../pages/feedPage/MainFeed";
-import { User } from "../../types/user";
+//import { User } from "../../types/user";
 import { GoogleAdsAnalytics } from "../GoogleAdsAnalytics/GoogleAdsAnalytics";
 import PlansPage from "../../pages/Plans/PlansPage";
 import Plansicon from "@mui/icons-material/Paid";
@@ -27,8 +26,8 @@ export default function DashboardLayoutBasic(props: any) {
   const router = useDemoRouter("/feed");
   const demoWindow = window ? window() : undefined;
   const { logout } = useAuth();
-  const [selectedChatUser, setSelectedChatUser] = useState<User | null>(null);
-  const [isChatVisible, setIsChatVisible] = useState(false);
+  // const [selectedChatUser, setSelectedChatUser] = useState<User | null>(null);
+  // const [isChatVisible, setIsChatVisible] = useState(false);
 
   useEffect(() => {
     if (router.pathname === "/logout") {
@@ -124,21 +123,21 @@ export default function DashboardLayoutBasic(props: any) {
   }
 
   // Update the chat handling
-  const handleSelectUser = (user: User) => {
-    // If selecting same user, just show chat
-    if (selectedChatUser?._id === user._id) {
-      setIsChatVisible(true);
-      return;
-    }
+  // const handleSelectUser = (user: User) => {
+  //   // If selecting same user, just show chat
+  //   if (selectedChatUser?._id === user._id) {
+  //     setIsChatVisible(true);
+  //     return;
+  //   }
 
-    // If selecting new user, update state and show chat
-    setSelectedChatUser(user);
-    setIsChatVisible(true);
-  };
+  //   // If selecting new user, update state and show chat
+  //   setSelectedChatUser(user);
+  //   setIsChatVisible(true);
+  // };
 
-  const handleCloseChat = () => {
-    setIsChatVisible(false);
-  };
+  // const handleCloseChat = () => {
+  //   setIsChatVisible(false);
+  // };
 
   // Update the route mapping
   const routeComponents: { [key: string]: React.ReactNode } = {
@@ -148,26 +147,9 @@ export default function DashboardLayoutBasic(props: any) {
     "/plans": <PlansPage />,
     "/feed": <MainFeed />,
     "/chats":
-      user && accessToken ? (
-        <div style={{ position: "relative", height: "100%" }}>
-          <ChatList
-            currentUser={user}
-            token={accessToken}
-            onSelectUser={handleSelectUser}
-          />
-          {selectedChatUser && isChatVisible && (
-            <ChatModal
-              token={accessToken}
-              currentUser={user}
-              selectedUser={selectedChatUser}
-              onClose={handleCloseChat}
-            />
-          )}
-        </div>
-      ) : (
-        <div>Please log in to access chat</div>
-      ),
-  };
+      user && accessToken ? 
+        <UserLeads /> : 
+        ( <p> asd</p>)}
 
   const CurrentComponent = routeComponents[router.pathname];
 

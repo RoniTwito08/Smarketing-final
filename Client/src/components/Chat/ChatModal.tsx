@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback, memo } from "react";
 import styles from "./ChatModal.module.css";
 import { User } from "../../types/user";
 import { socketService } from "../../services/socket.service";
-import { ChatMessage } from "../../components/Chat/types";
+import { ChatMessage } from "./types";
 import { getProfilePictureUrl } from "../../utils/imageUtils";
 import { useNavigate } from 'react-router-dom';
 

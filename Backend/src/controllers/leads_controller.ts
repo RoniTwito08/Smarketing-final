@@ -55,5 +55,17 @@ export const updateLead = async (req: Request, res: Response) : Promise<void> =>
     }
 };
 
+export const getUserLeads = async (req: Request, res: Response) => {
+  try {
+    const userId = req.params.userId;
+    const leads = await LeadModel.find({ userId });
+    res.status(200).json(leads);
+  } catch (error) {
+    console.error("Error fetching user leads:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
 
 
