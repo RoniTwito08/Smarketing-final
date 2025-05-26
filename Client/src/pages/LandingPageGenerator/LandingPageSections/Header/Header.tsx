@@ -76,10 +76,11 @@ function Header({ title, buttonText }: HeaderProps) {
             <span className={headerStyles.uploadText}>אין לוגו להציג</span>
           )}
         </div>
-        <h2 className={headerStyles.sectionTitle}>{title}</h2>
+        <h2 className={headerStyles.sectionTitle} >{title}</h2>
         <div className={headerStyles.headerButtonContainer}>
           <button
             className={headerStyles.headerSectionButton}
+            id="headerButtonContainer"
             onClick={handleScroll}
           >
             {buttonText}

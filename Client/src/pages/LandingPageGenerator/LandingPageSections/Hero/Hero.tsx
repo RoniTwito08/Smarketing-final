@@ -52,24 +52,6 @@ function Hero({ title, content, buttonText }: HeroProps) {
         return <h3 {...commonProps}>{textValues[item.id]}</h3>;
       case "content":
         return <p {...commonProps}>{textValues[item.id]}</p>;
-      case "button":
-        return (
-          <button
-            {...(commonProps as any)}
-            onClick={() => {
-              const el =
-                document.getElementById("contactUs") ||
-                document.getElementById("contact-us-root");
-              if (!el) return;
-              const rect = el.getBoundingClientRect();
-              const scrollY = window.pageYOffset;
-              const targetY = rect.top + scrollY - 80;
-              window.scrollTo({ top: targetY, behavior: "smooth" });
-            }}
-          >
-            {textValues[item.id]}
-          </button>
-        );
       default:
         return null;
     }
