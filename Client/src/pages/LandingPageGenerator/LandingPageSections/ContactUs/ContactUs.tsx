@@ -1,14 +1,20 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import axios from "axios";
 import contactStyles from "./contactUs.module.css";
 import { config } from "../../../../config";
+import { useAuth } from "../../../../context/AuthContext";
+
 const ContactUs = () => {
+  const { user } = useAuth();
+  const userIdRef = useRef<HTMLInputElement>(null);
+
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
     phone: "",
     message: "",
   });
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -21,16 +27,21 @@ const ContactUs = () => {
     e.preventDefault();
     setLoading(true);
     setError(null);
+
+    const userId = userIdRef.current?.value; 
+
     try {
       await axios.post(`${config.apiUrl}/leads/createLead`, {
         name: formData.fullName,
         email: formData.email,
         phone: formData.phone,
         message: formData.message,
+        userId: userId, 
       });
+
       setFormData({ fullName: "", email: "", phone: "", message: "" });
     } catch (err: any) {
-      console.error(err);
+      console.error("❌ Error:", err);
       setError(err.response?.data?.message || "שגיאה בשליחת הפרטים");
     } finally {
       setLoading(false);
@@ -44,6 +55,14 @@ const ContactUs = () => {
         השאירו פרטים ונחזור אליכם בהקדם
       </p>
       <form className={contactStyles.contactForm} onSubmit={handleSubmit}>
+        <input
+          type="hidden"
+          name="userId"
+          ref={userIdRef} 
+          value={user?._id || ""}
+          readOnly
+        />
+
         <input
           type="text"
           name="fullName"

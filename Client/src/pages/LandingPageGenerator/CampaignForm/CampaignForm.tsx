@@ -299,20 +299,62 @@ const tourSteps = [
                 padding: 0;
                 background-image: var(--primary-gradient);
                 background-repeat: no-repeat;
-                background-size: cover; /* או "100% 100%" */
-                background-attachment: fixed; /* לא חובה אבל מוסיף עומק */
+                background-size: cover;
+                background-attachment: fixed;
                 font-family: ${userFont} !important;
               }
-
             </style>
-
           </head>
           <body style="background-color: ${colors.primaryColor};">
             ${landingPageHTML}
+
+            <script>
+              document.addEventListener("DOMContentLoaded", function () {
+                const form = document.querySelector("form");
+                const fullNameInput = form.querySelector("input[name='fullName']");
+                const emailInput = form.querySelector("input[name='email']");
+                const phoneInput = form.querySelector("input[name='phone']");
+                const messageInput = form.querySelector("textarea[name='message']");
+                const userIdInput = form.querySelector("input[name='userId']");
+
+                const statusBox = document.createElement("p");
+                statusBox.style.marginTop = "10px";
+                statusBox.style.color = "#444";
+                form.appendChild(statusBox);
+
+                form.addEventListener("submit", async function (e) {
+                  e.preventDefault();
+                  statusBox.textContent = "שולח...";
+
+                  try {
+                    const response = await fetch("${config.apiUrl}/leads/createLead", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        name: fullNameInput.value,
+                        email: emailInput.value,
+                        phone: phoneInput.value,
+                        message: messageInput.value,
+                        userId: userIdInput.value
+                      }),
+                    });
+
+                    if (!response.ok) throw new Error("שליחה נכשלה");
+                    statusBox.textContent = "✅ הפרטים נשלחו בהצלחה!";
+                    form.reset();
+                  } catch (error) {
+                    console.error("שגיאה בשליחה:", error);
+                    statusBox.textContent = "❌ שגיאה בשליחת הפרטים";
+                  }
+                });
+              });
+            </script>
+
             <script type="module" src="${config.apiUrl}/dist/assets/index-9HPqurC3.js"></script>
           </body>
         </html>
-      `;
+        `;
+
   
       try {
         const saveResponse = await fetch(`${config.apiUrl}/api/saveLandingPage`, {
