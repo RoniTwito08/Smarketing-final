@@ -20,8 +20,8 @@ initApp()
     
     if (isProduction) {
       const httpsOptions = {
-        key: fs.readFileSync('/home/cs131/client-key.pem'),
-        cert: fs.readFileSync('/home/cs131/client-cert.pem')
+        key: fs.readFileSync('/home/cs131/certs/myserver.key'),
+        cert: fs.readFileSync('/home/cs131/certs/CSB.crt')
       };
       server = https.createServer(httpsOptions, app);
       // Initialize socket.io with HTTPS server in production
