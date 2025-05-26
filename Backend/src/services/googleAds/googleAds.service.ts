@@ -36,7 +36,7 @@ export class GoogleAdsService {
   }
 
   private async getHeaders() {
-    const accessToken = process.env.GOOGLE_ADD_ACCESS_TOKEN; // Use the access token from the environment
+    const accessToken = await this.authService.getAccessToken(); // Use the access token from the environment
     return {
       Authorization: `Bearer ${accessToken}`,
       "developer-token": this.developerToken,
