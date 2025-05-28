@@ -34,6 +34,20 @@ const MultiStepForm: React.FC = () => {
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     console.log("Form data:", data);
+
+    const mergedPhoneNumber =
+      data.phonePrefix && data.phoneNumberBody
+        ? `${data.phonePrefix}${data.phoneNumberBody}`
+        : undefined;
+
+    const formattedData = {
+      ...data,
+      phoneNumber: mergedPhoneNumber,
+    };
+
+    delete formattedData.phonePrefix;
+    delete formattedData.phoneNumberBody;
+
     const token = localStorage.getItem("accessToken");
     const user = localStorage.getItem("user");
     const userId = JSON.parse(user!)._id;
@@ -44,7 +58,11 @@ const MultiStepForm: React.FC = () => {
     }
 
     try {
-      await businessInfoService.createBusinessInfo(data, userId, token);
+      await businessInfoService.createBusinessInfo(
+        formattedData,
+        userId,
+        token
+      );
       toast.success("הטופס נשלח בהצלחה! הנך מועבר לאזור האישי");
       setTimeout(() => {
         navigate("/profile");
