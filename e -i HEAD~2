@@ -1,0 +1,15 @@
+* [33m167d85c[m[33m ([m[1;36mHEAD -> [m[1;32mfix-gemini[m[33m)[m remove env files from git index
+* [33md5ea253[m fix gemini limit rate and make it better
+*   [33mc7f7ebc[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m Merge pull request #90 from RoniTwito08/addLeadsTable
+[32m|[m[33m\[m  
+[32m|[m * [33m92624e2[m[33m ([m[1;31morigin/addLeadsTable[m[33m)[m add leads table
+* [33m|[m [33m41476be[m Merge pull request #89 from RoniTwito08/jsImplementationToLP
+[34m|[m[33m\[m[33m|[m 
+[34m|[m * [33m845ba94[m[33m ([m[1;31morigin/jsImplementationToLP[m[33m)[m js implementation to Lp
+* [35m|[m [33mdbf467c[m Merge pull request #88 from RoniTwito08/fixContactUsSection
+[36m|[m[35m\[m[35m|[m 
+[36m|[m * [33mea5e88c[m[33m ([m[1;31morigin/fixContactUsSection[m[33m)[m fix contact us section
+* [1;31m|[m [33m74bbb6f[m Merge pull request #87 from RoniTwito08/addLinkToCard
+[1;32m|[m[1;31m\[m[1;31m|[m 
+[1;32m|[m * [33m3b85b05[m[33m ([m[1;31morigin/addLinkToCard[m[33m)[m add link to card
+[1;32m|[m[1;32m/[m  
