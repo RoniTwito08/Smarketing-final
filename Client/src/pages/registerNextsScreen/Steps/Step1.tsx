@@ -163,7 +163,97 @@ const Step1: React.FC = () => {
         </div>
       </div>
 
-      {/* שורה 4: אזורים */}
+      {/* שורה 4: מספר טלפון */}
+      <div style={styles.row}>
+        <div style={{ flex: 1 }}>
+          <label style={styles.label} htmlFor="phonePrefix">
+            קידומת
+          </label>
+          <Controller
+            name="phonePrefix"
+            control={control}
+            defaultValue=""
+            rules={{ required: "בחרי קידומת" }}
+            render={({ field }) => (
+              <select {...field} id="phonePrefix" style={styles.select}>
+                <option value="">בחרי</option>
+                {[
+                  "050",
+                  "051",
+                  "052",
+                  "053",
+                  "054",
+                  "055",
+                  "058",
+                  "072",
+                  "073",
+                  "074",
+                  "075",
+                  "076",
+                  "077",
+                  "078",
+                ].map((prefix) => (
+                  <option key={prefix} value={prefix}>
+                    {prefix}
+                  </option>
+                ))}
+              </select>
+            )}
+          />
+          {errors.phonePrefix && (
+            <p style={{ color: "red" }}>
+              {typeof errors.phonePrefix?.message === "string"
+                ? errors.phonePrefix.message
+                : ""}
+            </p>
+          )}
+        </div>
+
+        <div style={{ flex: 2 }}>
+          <label style={styles.label} htmlFor="phoneNumber">
+            מספר טלפון (7 ספרות)
+          </label>
+          <Controller
+            name="phoneNumberBody"
+            control={control}
+            defaultValue=""
+            rules={{
+              required: "מלאי את מספר הטלפון",
+              pattern: {
+                value: /^[0-9]{7}$/,
+                message: "יש להזין בדיוק 7 ספרות",
+              },
+            }}
+            render={({ field }) => (
+              <input
+                {...field}
+                type="text"
+                id="phoneNumber"
+                placeholder="1234567"
+                maxLength={7}
+                onInput={(e) => {
+                  e.currentTarget.value = e.currentTarget.value.replace(
+                    /\D/g,
+                    ""
+                  );
+                  field.onChange(e); // כדי לעדכן את React Hook Form
+                }}
+                style={styles.input}
+              />
+            )}
+          />
+
+          {errors.phoneNumber && (
+            <p style={{ color: "red" }}>
+              {typeof errors.phoneNumber?.message === "string"
+                ? errors.phoneNumber.message
+                : ""}
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* שורה 5: אזורים */}
       <div style={styles.formGroup}>
         <label style={styles.label} htmlFor="serviceAreas">
           באילו אזורים או מדינות אתה מציע את השירותים שלך?

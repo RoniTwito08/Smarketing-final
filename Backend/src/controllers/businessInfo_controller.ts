@@ -13,6 +13,8 @@ export const createBusinessInfo = async (req: Request, res: Response) => {
 
     const formFields = req.body;
 
+    console.log("phone num controller: " + formFields.phoneNumber);
+
     const logo = files?.logo?.[0]?.path || null;
 
     // נתיבים של תמונות נוספות (מרובות)

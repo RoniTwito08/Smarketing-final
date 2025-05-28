@@ -66,6 +66,10 @@ export type FormValues = {
   /* נתיבי תמונות נוספות של העסק שנשמרו בשרת */
   businessImages?: string[];
 
+  phonePrefix?: string;
+  phoneNumberBody?: string;
+  phoneNumber?: string; // השדה המאוחד שנשלח לבקאנד
+
   /**
    * מטרה לקמפיין. האפשרויות הן:
    * - "brandAwareness": הגדלת המודעות למותג שלך

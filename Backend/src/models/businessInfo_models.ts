@@ -9,6 +9,7 @@ export interface BusinessInfo {
   businessField: String;
   businessFieldDetails?: String;
   serviceAreas: String;
+  phoneNumber?: String;
 
   // שלב 2
   ageGroup: String;
@@ -46,6 +47,7 @@ const BusinessInfoModel = new mongoose.Schema<BusinessInfo>({
   businessField: { type: String, required: true },
   businessFieldDetails: { type: String },
   serviceAreas: { type: String, required: true },
+  phoneNumber: { type: String },
 
   // שלב 2
   // ageGroup: { type: String, required: true },

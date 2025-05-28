@@ -125,6 +125,7 @@ export interface BusinessInfo {
   businessField: String;
   businessFieldDetails?: String;
   serviceAreas: String;
+  phoneNumber?: String;
 
   // שלב 2
   ageGroup: String;
