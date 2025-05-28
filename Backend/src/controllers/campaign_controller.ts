@@ -3,10 +3,13 @@ import campaignModel from "../models/campaign_modles";
 import userModel from "../models/user_models";
 import path from "path";
 import fs from "fs";
-import { GoogleAdsService } from "../services/googleAds/googleAds.service"; 
-import { googleAdsConfig } from "../config/google.config"; 
-import { CampaignStatus, AdvertisingChannelType } from "../services/googleAds/types";
-import {getGeminiKeywordsFromCampaign} from "../controllers/gemini_controller"; // Adjust the import path as necessary
+import { GoogleAdsService } from "../services/googleAds/googleAds.service";
+import { googleAdsConfig } from "../config/google.config";
+import {
+  CampaignStatus,
+  AdvertisingChannelType,
+} from "../services/googleAds/types";
+import { getGeminiKeywordsFromCampaign } from "../controllers/gemini_controller"; // Adjust the import path as necessary
 import mongoose from "mongoose";
 import businessInfoModel from "../models/businessInfo_models";
 const googleAdsService = new GoogleAdsService(googleAdsConfig);
@@ -31,9 +34,14 @@ export const getAllCampaigns = async (req: Request, res: Response) => {
   }
 };
 
-export const getCampaignById = async (req: Request, res: Response): Promise<void> => {
+export const getCampaignById = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
-    const campaign = await campaignModel.findById(req.params.id).populate("feedbacks");
+    const campaign = await campaignModel
+      .findById(req.params.id)
+      .populate("feedbacks");
     if (!campaign) {
       res.status(404).json({ error: "Campaign not found" });
       return;
@@ -45,7 +53,10 @@ export const getCampaignById = async (req: Request, res: Response): Promise<void
   }
 };
 
-export const updateCampaign = async (req: Request, res: Response): Promise<void> => {
+export const updateCampaign = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const campaign = await campaignModel.findById(req.params.id);
     if (!campaign) {
@@ -53,9 +64,13 @@ export const updateCampaign = async (req: Request, res: Response): Promise<void>
       return;
     }
 
-    const updated = await campaignModel.findByIdAndUpdate(req.params.id, {
-      ...req.body,
-    }, { new: true });
+    const updated = await campaignModel.findByIdAndUpdate(
+      req.params.id,
+      {
+        ...req.body,
+      },
+      { new: true }
+    );
 
     res.status(200).json(updated);
   } catch (error) {
@@ -63,7 +78,10 @@ export const updateCampaign = async (req: Request, res: Response): Promise<void>
   }
 };
 
-export const deleteCampaign = async (req: Request, res: Response): Promise<void> => {
+export const deleteCampaign = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const campaign = await campaignModel.findById(req.params.id);
     if (!campaign) {
@@ -79,7 +97,10 @@ export const deleteCampaign = async (req: Request, res: Response): Promise<void>
   }
 };
 
-export const markInterest = async (req: Request, res: Response): Promise<void> => {
+export const markInterest = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const { campaignId } = req.params;
   const { userId } = req.body;
 
@@ -95,13 +116,19 @@ export const markInterest = async (req: Request, res: Response): Promise<void> =
       await campaign.save();
     }
 
-    res.status(200).json({ message: "Marked as interested", interested: campaign.interestedUsers.length });
+    res.status(200).json({
+      message: "Marked as interested",
+      interested: campaign.interestedUsers.length,
+    });
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
 };
 
-export const removeInterest = async (req: Request, res: Response): Promise<void> => {
+export const removeInterest = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const { campaignId } = req.params;
   const { userId } = req.body;
 
@@ -112,31 +139,44 @@ export const removeInterest = async (req: Request, res: Response): Promise<void>
       return;
     }
 
-    campaign.interestedUsers = campaign.interestedUsers?.filter((id) => id !== userId);
+    campaign.interestedUsers = campaign.interestedUsers?.filter(
+      (id) => id !== userId
+    );
     await campaign.save();
 
-    res.status(200).json({ message: "Interest removed", interested: campaign.interestedUsers?.length });
+    res.status(200).json({
+      message: "Interest removed",
+      interested: campaign.interestedUsers?.length,
+    });
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
 };
 
-export const fetchGoogleCampaigns = async (req: Request, res: Response): Promise<void> => {
+export const fetchGoogleCampaigns = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const { customerId } = req.query;
-    if (!customerId || typeof customerId !== 'string') {
-      res.status(400).json({ error: 'Missing or invalid customerId' });
+    if (!customerId || typeof customerId !== "string") {
+      res.status(400).json({ error: "Missing or invalid customerId" });
       return;
     }
 
     const campaigns = await googleAdsService.getCampaigns();
     res.status(200).json(campaigns);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch campaigns', details: error });
+    res
+      .status(500)
+      .json({ error: "Failed to fetch campaigns", details: error });
   }
 };
 
-export const fetchCampaignStatistics = async (req: Request, res: Response): Promise<void> => {
+export const fetchCampaignStatistics = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const { startDate, endDate } = req.query;
     const { id } = req.params;
@@ -152,7 +192,6 @@ export const fetchCampaignStatistics = async (req: Request, res: Response): Prom
       endDate as string
     );
 
-    
     const summary = stats.reduce(
       (acc, item) => {
         acc.clicks += item.clicks;
@@ -177,18 +216,25 @@ export const fetchCampaignStatistics = async (req: Request, res: Response): Prom
       dailyBreakdown: stats,
     });
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch campaign statistics", details: error });
+    res
+      .status(500)
+      .json({ error: "Failed to fetch campaign statistics", details: error });
   }
 };
 
-export const launchGoogleAdsCampaign = async (req: Request, res: Response): Promise<void> => {
+export const launchGoogleAdsCampaign = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
+    console.log("Launching Google Ads campaign...");
     // Destructure budget from request body
-    const { businessName, objective, userId, campaignMongoId, budget } = req.body;
+    const { businessName, objective, userId, campaignMongoId, budget } =
+      req.body;
 
     if (!userId) {
       res.status(400).json({ error: "Missing userId" });
-      return ;
+      return;
     }
 
     if (!campaignMongoId) {
@@ -196,10 +242,9 @@ export const launchGoogleAdsCampaign = async (req: Request, res: Response): Prom
       return;
     }
     // Validate budget (ensure it's a positive number)
-    if (budget === undefined || typeof budget !== 'number' || budget <= 0) {
+    if (budget === undefined || typeof budget !== "number" || budget <= 0) {
       res.status(400).json({ error: "Missing or invalid budget value" });
       return;
-    
     }
     if (!mongoose.Types.ObjectId.isValid(campaignMongoId)) {
       res.status(400).json({ error: "Invalid campaignMongoId format" });
@@ -209,19 +254,18 @@ export const launchGoogleAdsCampaign = async (req: Request, res: Response): Prom
     const googleCustomerIdFromDb = user?.googleCustomerId;
     let customerId = null;
     if (!googleCustomerIdFromDb) {
-    customerId = await googleAdsService.createCustomerClient({
-      businessName,
-      currencyCode: "ILS",
-      timeZone: "Asia/Jerusalem"
-    });
-    await userModel.findByIdAndUpdate(userId, {
-      googleCustomerId: customerId
-    });
-  }else{
-    customerId = googleCustomerIdFromDb;
-  }
+      customerId = await googleAdsService.createCustomerClient({
+        businessName,
+        currencyCode: "ILS",
+        timeZone: "Asia/Jerusalem",
+      });
+      await userModel.findByIdAndUpdate(userId, {
+        googleCustomerId: customerId,
+      });
+    } else {
+      customerId = googleCustomerIdFromDb;
+    }
 
-    
     const today = new Date();
     const startDate = today.toISOString().split("T")[0].replace(/-/g, "");
     const endDate = new Date(today.setMonth(today.getMonth() + 1))
@@ -235,46 +279,69 @@ export const launchGoogleAdsCampaign = async (req: Request, res: Response): Prom
     // Generate a unique campaign name using a timestamp
     const uniqueCampaignName = `קמפיין של ${businessName} - ${Date.now()}`;
 
-    const campaign = await googleAdsService.createCampaign({
-      name: uniqueCampaignName,
-      status: CampaignStatus.PAUSED,
-      advertisingChannelType: AdvertisingChannelType.SEARCH,
-      startDate,
-      endDate,
-    }, customerId, budgetMicros);
+    const campaign = await googleAdsService.createCampaign(
+      {
+        name: uniqueCampaignName,
+        status: CampaignStatus.PAUSED,
+        advertisingChannelType: AdvertisingChannelType.SEARCH,
+        startDate,
+        endDate,
+      },
+      customerId,
+      budgetMicros
+    );
 
-    
     const adgroupfromdb = await campaignModel.findById(campaignMongoId);
     let adGroupId = adgroupfromdb?.adGroupId;
-    
+
     if (!adGroupId) {
-      const newAdGroup = await googleAdsService.createAdGroup({
-        name: businessName,
-        campaignResourceName: campaign.resourceName!,
-        status: "ENABLED",
-      }, customerId);
+      const newAdGroup = await googleAdsService.createAdGroup(
+        {
+          name: businessName,
+          campaignResourceName: campaign.resourceName!,
+          status: "ENABLED",
+        },
+        customerId
+      );
       adGroupId = newAdGroup.id;
     }
 
     // Add detailed logging right before the failing call
 
-    const updatedCampaignDoc = await campaignModel.findByIdAndUpdate(campaignMongoId, {
-      adGroupId: adGroupId,
-      googleCampaignId: campaign.id,
-    }, { new: true });
+    const updatedCampaignDoc = await campaignModel.findByIdAndUpdate(
+      campaignMongoId,
+      {
+        adGroupId: adGroupId,
+        googleCampaignId: campaign.id,
+      },
+      { new: true }
+    );
+
+    const businessInfo = await businessInfoModel.findOne({ userId: userId });
 
     // Generate keywords using Gemini
-    // const keywords = await getGeminiKeywordsFromCampaign(campaign);
-    const keywords = [
-      { keywordText: "ייעוץ משפטי לעסקים", matchType: "PHRASE" },
-      { keywordText: "עורך דין לעסקים", matchType: "EXACT" }
-    ];
+    console.log("before Generating keywords");
+    if (businessInfo === null) {
+      console.error("Business info not found for userId:", userId);
+      return;
+    }
+
+    const keywords = await getGeminiKeywordsFromCampaign(
+      campaign,
+      businessInfo
+    );
+
+    console.log("Generated keywords:", keywords);
+    // const keywords = [
+    //   { keywordText: "ייעוץ משפטי לעסקים", matchType: "PHRASE" },
+    //   { keywordText: "עורך דין לעסקים", matchType: "EXACT" },
+    // ];
     if (adGroupId) {
       await googleAdsService.addKeywordsToAdGroup(
-        adGroupId, 
-        keywords.map(kw => ({ 
-          text: kw.keywordText, 
-          matchType: kw.matchType 
+        adGroupId,
+        keywords.map((kw) => ({
+          text: kw.keywordText,
+          matchType: kw.matchType,
         })),
         customerId
       );
@@ -290,31 +357,36 @@ export const launchGoogleAdsCampaign = async (req: Request, res: Response): Prom
       return;
     }
 
-    
     // Create an ad under the campaign
     if (adGroupId) {
-      // lets take the bisunessName from businessinfos collection
-      const businessInfo = await businessInfoModel.findOne({ userId: userId });
-      const businessName = String(businessInfo?.businessName || "Default Business Name");
-      const businessAddress = String(businessInfo?.businessAddress || "Default Business Address");
-      await googleAdsService.createAd({
-        adGroupId: adGroupId,
-        finalUrl: campaignDoc.campaignURL,
-        headlines: [
-          campaignDoc.campaignName, // Use the campaign name as a headline
-          businessName, // Use the campaign content as a description
-          businessAddress, // Use the campaign content as a description
-        ],
-        descriptions: [
-          campaignDoc.campaignName, // Use the campaign name as a headline
-          businessName, // Use the campaign content as a description
-          businessAddress, // Use the campaign content as a description
-        ],
-      }, customerId);
+      // lets take the businessName from businessinfos collection
+      const businessName = String(
+        businessInfo?.businessName || "Default Business Name"
+      );
+      const businessAddress = String(
+        businessInfo?.businessAddress || "Default Business Address"
+      );
+      await googleAdsService.createAd(
+        {
+          adGroupId: adGroupId,
+          finalUrl: campaignDoc.campaignURL,
+          headlines: [
+            campaignDoc.campaignName, // Use the campaign name as a headline
+            businessName, // Use the campaign content as a description
+            businessAddress, // Use the campaign content as a description
+          ],
+          descriptions: [
+            campaignDoc.campaignName, // Use the campaign name as a headline
+            businessName, // Use the campaign content as a description
+            businessAddress, // Use the campaign content as a description
+          ],
+        },
+        customerId
+      );
     } else {
       throw new Error("Failed to create or retrieve ad group ID");
     }
-    console.log('vvvvvvvvvvvvvvvvvvv');
+    console.log("vvvvvvvvvvvvvvvvvvv");
 
     res.status(201).json({
       message: "Campaign launched successfully",
@@ -323,7 +395,10 @@ export const launchGoogleAdsCampaign = async (req: Request, res: Response): Prom
     });
   } catch (error: any) {
     if (error?.response?.data?.error) {
-      console.error("35:Error launching campaign:", JSON.stringify(error.response.data.error, null, 2));
+      console.error(
+        "35:Error launching campaign:",
+        JSON.stringify(error.response.data.error, null, 2)
+      );
     } else {
       console.error("43:Error launching campaign:", error);
     }
@@ -331,19 +406,23 @@ export const launchGoogleAdsCampaign = async (req: Request, res: Response): Prom
   }
 };
 
-export const getAllCampaignsByUserId = async (req: Request, res: Response): Promise<void> => {
+export const getAllCampaignsByUserId = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const { userId } = req.params;
-  const isStats = req.query.is_stats === 'true'; // Check if the query parameter is set to 'true'
+  const isStats = req.query.is_stats === "true"; // Check if the query parameter is set to 'true'
 
-  try {  
-    const campaigns = await campaignModel.find({ creatorId: userId }); 
+  try {
+    const campaigns = await campaignModel.find({ creatorId: userId });
 
-    if (isStats) { 
-      console.log('isStats is true');
+    if (isStats) {
+      console.log("isStats is true");
       // Fetch and update stats for each campaign
-      await Promise.all(campaigns.map(async (campaign) => {
-        if (campaign.googleCampaignId) {
-          const query = `
+      await Promise.all(
+        campaigns.map(async (campaign) => {
+          if (campaign.googleCampaignId) {
+            const query = `
             SELECT
               campaign.id,
               campaign.name,
@@ -359,29 +438,34 @@ export const getAllCampaignsByUserId = async (req: Request, res: Response): Prom
               AND segments.date BETWEEN '2024-01-01' AND '2030-12-31'
           `;
 
-          try {
-            const statsArr = await googleAdsService.getCampaignStatistics(
-              campaign.googleCampaignId,
-              "2024-01-01", // Start date for stats
-              "2030-12-31"  // End date for stats
-            );
+            try {
+              const statsArr = await googleAdsService.getCampaignStatistics(
+                campaign.googleCampaignId,
+                "2024-01-01", // Start date for stats
+                "2030-12-31" // End date for stats
+              );
 
-            console.log("Received stats:", statsArr);
+              console.log("Received stats:", statsArr);
 
-            if (statsArr && statsArr.length > 0) {
-              const stats = statsArr[0];
-              campaign.clicks = stats.clicks;
-              campaign.impressions = stats.impressions;
-              campaign.conversions = stats.conversions;
-              campaign.costMicros = stats.costMicros;
-              await campaign.save();
-              console.log('campaign saved');
+              if (statsArr && statsArr.length > 0) {
+                const stats = statsArr[0];
+                campaign.clicks = stats.clicks;
+                campaign.impressions = stats.impressions;
+                campaign.conversions = stats.conversions;
+                campaign.costMicros = stats.costMicros;
+                await campaign.save();
+                console.log("campaign saved");
+              }
+            } catch (error) {
+              console.error(
+                "Error fetching stats for campaign ID:",
+                campaign.googleCampaignId,
+                error
+              );
             }
-          } catch (error) {
-            console.error("Error fetching stats for campaign ID:", campaign.googleCampaignId, error);
           }
-        }
-      }));
+        })
+      );
     }
 
     res.status(200).json(campaigns);
@@ -390,6 +474,3 @@ export const getAllCampaignsByUserId = async (req: Request, res: Response): Prom
     res.status(500).json({ error: "Internal server error" });
   }
 };
-
-
-
