@@ -24,7 +24,7 @@
 
 .arrowButtons button {
   pointer-events: auto;
-  background-color: white;
+  background-color: black;
   border: 2px solid var(--primary-color, #007bff);
   color: var(--primary-color, #007bff);
   border-radius: 50%;
