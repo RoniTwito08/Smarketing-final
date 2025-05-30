@@ -1,161 +1,268 @@
+:root {
+  --primary-color: #ffffff;
+  --secondary-color: #ffffff;
+  --tertiary-color: #1e90ff;
+  --text-color: #000000;
+}
+
+/* עטיפה כללית */
 .featuresSection {
-  container-type: inline-size;
   position: relative;
   width: 100%;
+  padding: 60px 24px;
+  overflow: hidden;
+  border-radius: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 50px;
+  text-align: center;
+}
+
+/* ---------- חצים – סגנון קבוע ---------- */
+.arrowButtons {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  transform: translateY(-50%);
+  padding: 0 12px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.arrowButtons button {
+  pointer-events: auto;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  text-align: center;
-  overflow: hidden;
-  transition: all 0.3s ease-in-out;
-  margin-bottom: 10%;
-  padding: 40px 20px;
-  border-radius: 16px;
-  flex-wrap: wrap;
-  gap: 20px;
+  font-size: 16px;
+  background: #fff;
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0,0,0,.12);
+  opacity: 0;
+  transform: scale(.9);
+  transition: opacity .25s ease, transform .25s ease;
+  cursor: pointer;
 }
 
-.featuresContentContainer {
+.featuresSection:hover .arrowButtons button {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.arrowButtons button:hover {
+  background: var(--primary-color);
+  color: #fff;
+  transform: scale(1.1);
+}
+
+/* ---------- Template 0 — תמונה ימין + רשימת ✔ ---------- */
+.twoColLayout {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
+  gap: 40px;
   flex-wrap: wrap;
-  gap: 30px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 
-.featuresContent {
-  flex: 1 1 45%;
-  max-width: 45%;
-  text-align: right;
-  padding: 20px;
+.featuresImage {
+  width: 480px;
+  max-width: 90%;
+  border-radius: 16px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.1);
 }
 
 .featuresList {
   list-style: none;
   padding: 0;
   margin: 0;
+  display: grid;
+  gap: 18px;
 }
 
 .featureItem {
-  margin-bottom: 12px;
-  margin-right: 20px;
-  text-align: right;
-}
-
-.featureText {
   font-size: 18px;
-  color: var(--text-color, #555);
-  cursor: text;
-  outline: none;
-}
-
-.featureText:focus {
-  outline: 2px solid rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.5);
-}
-
-.featuresImageContainer {
-  flex: 1 1 45%;
-  max-width: 45%;
+  color: var(--text-color);
   display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.featureItem svg { color: var(--tertiary-color); }
+
+/* ---------- Template 1 — “Glass” Cards סביב תמונה ---------- */
+.glassWrapper {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 60px;
   justify-content: center;
   align-items: center;
-  padding: 20px;
+  width: 100%;
 }
 
-.featuresImage {
-  max-width: 100%;
-  height: auto;
-  border-radius: 12px;
-  box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.1);
+.glassImage {
+  width: 520px;
+  max-width: 90%;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.12);
 }
 
-.actionBar {
-  position: absolute;
-  top: 12px;
-  right: -20px;
+.glassGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+  gap: 20px;
+  width: 400px;
+  max-width: 90%;
 }
 
-/* רספונסיביות לפי רוחב מסך */
+.glassCard {
+  backdrop-filter: blur(10px);
+  background: rgba(255,255,255,0.55);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 16px;
+  padding: 24px 20px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+  transition: transform .3s ease;
+}
+
+.glassCard:hover { transform: translateY(-6px); }
+
+/* ---------- Template 2 — שורה אלכסונית ---------- */
+.diagonalWrapper {
+  width: 100%;
+  overflow: hidden;
+}
+
+.diagonalRow {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+  transform: skewX(-10deg);
+}
+
+.diagonalCard {
+  flex: 1 1 200px;
+  max-width: 220px;
+  background: #fff;
+  border-radius: 14px;
+  padding: 26px 18px;
+  box-shadow: 0 6px 22px rgba(0,0,0,.08);
+  transform: skewX(10deg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: transform .3s ease;
+}
+
+.diagonalCard:hover { transform: skewX(10deg) translateY(-6px); }
+
+.diagonalCard svg { color: var(--tertiary-color); margin-bottom: 12px; }
+
+.featureText { outline: none; }
+
+/* רספונסיביות */
 @media (max-width: 768px) {
-  .featuresContent,
-  .featuresImageContainer {
-    max-width: 100%;
-    flex: 1 1 100%;
-    text-align: center;
-  }
-  .featureText {
-    font-size: 16px;
-  }
-  .featuresSection {
-    padding: 30px 15px;
-  }
-  .featuresImage {
-    max-width: 80%;
-  }
+  .twoColLayout       { flex-direction: column; text-align: center; }
+  .glassWrapper       { gap: 40px; }
+  .diagonalRow        { transform: none; }
+  .diagonalCard       { transform: none; }
 }
 
-/* רספונסיביות קטנה יותר */
+
+/* ---------- Template 2 – Hero Card + Floating Tilt Cards ---------- */
+.fancyWrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 60px;
+  padding: 60px 24px 180px;   /* מקום לקלפים הצפים */
+}
+
+.fancyHero {
+  position: relative;
+  width: 100%;
+  max-width: 820px;
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(0,0,0,.15);
+}
+
+.fancyHero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 80% 20%, rgba(30,144,255,.45), rgba(30,144,255,.15) 60%, transparent 80%);
+  animation: pulse 8s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,100% { transform: scale(1); }
+  50%     { transform: scale(1.08); }
+}
+
+.fancyImage {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.fancyCards {
+  position: absolute;
+  bottom: -90px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 28px;
+  flex-wrap: wrap;
+  justify-content: center;
+  perspective: 1000px;
+}
+
+.fancyCard {
+  width: 180px;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 26px 20px;
+  box-shadow: 0 12px 28px rgba(0,0,0,.12);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transform: rotateY(var(--tilt));
+  transition: transform .4s ease, box-shadow .4s ease;
+}
+
+.fancyCard:hover {
+  box-shadow: 0 18px 40px rgba(0,0,0,.18);
+  transform: rotateY(var(--tilt)) translateY(-10px);
+}
+
+.fancyCard svg {
+  font-size: 26px;
+  color: var(--tertiary-color);
+  margin-bottom: 12px;
+}
+
+@media (max-width: 768px) {
+  .fancyWrapper      { padding-bottom: 220px; }
+  .fancyCards        { bottom: -110px; gap: 20px; }
+  .fancyCard         { width: 46%; --tilt: 0deg; }
+}
+
 @media (max-width: 480px) {
-  .featuresContent {
-    padding: 10px;
-  }
-  .featureText {
-    font-size: 14px;
-  }
-  .featuresImage {
-    max-width: 90%;
-  }
-}
-
-/* קונטיינרים - למי שתומך ב־@container */
-@container (max-width: 768px) and (min-width: 577px) {
-  .featuresSection {
-    flex-direction: column;
-    padding: 25px;
-  }
-
-  .featuresContent {
-    max-width: 100%;
-    text-align: center;
-  }
-
-  .featuresImageContainer {
-    max-width: 100%;
-  }
-
-  .featureText {
-    font-size: 16px;
-  }
-}
-
-@container (max-width: 576px) {
-  .featuresSection {
-    flex-direction: column;
-    padding: 20px 10px;
-  }
-
-  .featuresContent {
-    max-width: 100%;
-    padding: 10px;
-    text-align: center;
-  }
-
-  .featureText {
-    font-size: 14px;
-  }
-
-  .featuresImageContainer {
-    max-width: 100%;
-    padding: 10px;
-  }
-
-  .featuresImage {
-    width: 100%;
-    max-width: 100%;
-    height: auto;
-    border-radius: 10px;
-  }
+  .fancyCard { width: 90%; --tilt: 0deg; }
 }

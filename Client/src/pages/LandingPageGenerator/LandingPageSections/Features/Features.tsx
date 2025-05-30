@@ -1,6 +1,7 @@
-import featuresStyles from './features.module.css';
-import ActionsButtons from '../../LandingPageActions/ActionsButtons/ActionsButtons';
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
+import { FaArrowLeft, FaArrowRight, FaCheckCircle } from "react-icons/fa";
+import ActionsButtons from "../../LandingPageActions/ActionsButtons/ActionsButtons";
+import featuresStyles from "./features.module.css";
 
 interface FeaturesProps {
   content: string[];
@@ -8,25 +9,98 @@ interface FeaturesProps {
   onDelete?: () => void;
 }
 
-const Features = ({ content, image, onDelete }: FeaturesProps) => {
-  const [isHovered, setIsHovered] = useState(false);
+export default function Features({ content, image, onDelete }: FeaturesProps) {
   const [services, setServices] = useState<string[]>([]);
+  const [isHovered, setIsHovered] = useState(false);
+  const [templateIndex, setTemplateIndex] = useState(0);
 
   useEffect(() => {
-    const initialServices = content
+    const cleaned = content
       .slice(2, content.length - 3)
-      .map(s => s.replace(/['",]/g, '').trim());
-    setServices(initialServices);
+      .map(s => s.replace(/['",]/g, "").trim())
+      .slice(0, 4);         // תמיד 4 פיצ’רים
+    setServices(cleaned);
   }, [content]);
 
-  const handleBlur = (index: number, e: React.FocusEvent<HTMLSpanElement>) => {
-    const newText = e.currentTarget.innerText;
+  const handleBlur = (i: number, e: React.FocusEvent<HTMLSpanElement>) => {
+    const txt = e.currentTarget.innerText;
     setServices(prev => {
       const copy = [...prev];
-      copy[index] = newText;
+      copy[i] = txt;
       return copy;
     });
   };
+
+  const template0 = (
+    <div className={featuresStyles.twoColLayout}>
+      <img src={image} className={featuresStyles.featuresImage} />
+      <ul className={featuresStyles.featuresList}>
+        {services.map((s, i) => (
+          <li key={i} className={featuresStyles.featureItem}>
+            <span
+              contentEditable
+              suppressContentEditableWarning
+              onBlur={e => handleBlur(i, e)}
+              className={featuresStyles.featureText}
+            >
+              {s}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+
+  const template1 = (
+    <div className={featuresStyles.glassWrapper}>
+      <img src={image} className={featuresStyles.glassImage} />
+      <div className={featuresStyles.glassGrid}>
+        {services.map((s, i) => (
+          <div key={i} className={featuresStyles.glassCard}>
+            <span
+              contentEditable
+              suppressContentEditableWarning
+              onBlur={e => handleBlur(i, e)}
+              className={featuresStyles.featureText}
+            >
+              {s}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  const template2 = (
+  <div className={featuresStyles.fancyWrapper}>
+    <div className={featuresStyles.fancyHero}>
+      <img src={image} className={featuresStyles.fancyImage} />
+    </div>
+    {/* ארבעת הקלפים – כל אחד מקבל הטיה שונה */}
+    <div className={featuresStyles.fancyCards}>
+      {services.map((s, i) => (
+        <div
+          key={i}
+          className={featuresStyles.fancyCard}
+          style={{ "--tilt": `${i % 2 === 0 ? -6 : 6}deg` } as React.CSSProperties}
+        >
+          <FaCheckCircle />
+          <span
+            contentEditable
+            suppressContentEditableWarning
+            onBlur={e => handleBlur(i, e)}
+            className={featuresStyles.featureText}
+          >
+            {s}
+          </span>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+
+  const templates = [template0, template1, template2];
 
   return (
     <section
@@ -34,31 +108,18 @@ const Features = ({ content, image, onDelete }: FeaturesProps) => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className={featuresStyles.featuresContentContainer}>
-        <div className={featuresStyles.featuresImageContainer}>
-          <img
-            src={image}
-            alt="Business Services"
-            className={featuresStyles.featuresImage}
-          />
+      {isHovered && (
+        <div className={featuresStyles.arrowButtons}>
+          <button onClick={() => setTemplateIndex((templateIndex - 1 + templates.length) % templates.length)}>
+            <FaArrowRight />
+          </button>
+          <button onClick={() => setTemplateIndex((templateIndex + 1) % templates.length)}>
+            <FaArrowLeft />
+          </button>
         </div>
-        <div className={featuresStyles.featuresContent}>
-          <ul className={featuresStyles.featuresList}>
-            {services.map((service, idx) => (
-              <li key={idx} className={featuresStyles.featureItem}>
-                <span
-                  contentEditable
-                  suppressContentEditableWarning
-                  onBlur={e => handleBlur(idx, e)}
-                  className={featuresStyles.featureText}
-                >
-                  {service}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
+      )}
+
+      {templates[templateIndex]}
 
       {isHovered && onDelete && (
         <div className={featuresStyles.actionBar}>
@@ -67,6 +128,4 @@ const Features = ({ content, image, onDelete }: FeaturesProps) => {
       )}
     </section>
   );
-};
-
-export default Features;
+}

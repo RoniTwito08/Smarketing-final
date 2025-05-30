@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import heroStyles from "./hero.module.css";
 
 interface HeroProps {
@@ -7,23 +8,14 @@ interface HeroProps {
   buttonText: string;
 }
 
-type ItemType = {
-  id: string;
-  type: "title" | "content" | "button";
-};
-
-const items: ItemType[] = [
-  { id: "1", type: "title" },
-  { id: "2", type: "content" },
-  { id: "3", type: "button" },
-];
-
-function Hero({ title, content, buttonText }: HeroProps) {
+export default function Hero({ title, content, buttonText }: HeroProps) {
   const [textValues, setTextValues] = useState<{ [key: string]: string }>({
     "1": title,
     "2": content,
     "3": buttonText,
   });
+
+  const [templateIndex, setTemplateIndex] = useState(0);
 
   useEffect(() => {
     setTextValues({ "1": title, "2": content, "3": buttonText });
@@ -34,40 +26,107 @@ function Hero({ title, content, buttonText }: HeroProps) {
     setTextValues((prev) => ({ ...prev, [id]: newText }));
   };
 
-  const renderContent = (item: ItemType) => {
-    const commonProps = {
-      contentEditable: true,
-      suppressContentEditableWarning: true,
-      onBlur: (e: React.FocusEvent<HTMLElement>) => handleBlur(item.id, e),
-      className:
-        item.type === "title"
-          ? heroStyles.heroTitle
-          : item.type === "content"
-          ? heroStyles.heroText
-          : heroStyles.heroButton,
-    };
+  const templates = [
+    <section className={heroStyles.heroContainer} key="classic">
+      <div className={heroStyles.heroContent}>
+        <h3
+          contentEditable
+          suppressContentEditableWarning
+          onBlur={(e) => handleBlur("1", e)}
+          className={heroStyles.heroTitle}
+        >
+          {textValues["1"]}
+        </h3>
+        <p
+          contentEditable
+          suppressContentEditableWarning
+          onBlur={(e) => handleBlur("2", e)}
+          className={heroStyles.heroText}
+        >
+          {textValues["2"]}
+        </p>
+        <button
+          contentEditable
+          suppressContentEditableWarning
+          onBlur={(e) => handleBlur("3", e)}
+          className={heroStyles.heroButton}
+        >
+          {textValues["3"]}
+        </button>
+      </div>
+    </section>,
 
-    switch (item.type) {
-      case "title":
-        return <h3 {...commonProps}>{textValues[item.id]}</h3>;
-      case "content":
-        return <p {...commonProps}>{textValues[item.id]}</p>;
-      default:
-        return null;
-    }
-  };
+    <section className={heroStyles.splitLayout} key="split">
+      <div className={heroStyles.splitLeft}>
+        <h3
+          contentEditable
+          suppressContentEditableWarning
+          onBlur={(e) => handleBlur("1", e)}
+          className={heroStyles.heroTitle}
+        >
+          {textValues["1"]}
+        </h3>
+        <p
+          contentEditable
+          suppressContentEditableWarning
+          onBlur={(e) => handleBlur("2", e)}
+          className={heroStyles.heroText}
+        >
+          {textValues["2"]}
+        </p>
+        <button
+          contentEditable
+          suppressContentEditableWarning
+          onBlur={(e) => handleBlur("3", e)}
+          className={heroStyles.heroButton}
+        >
+          {textValues["3"]}
+        </button>
+      </div>
+      <div className={heroStyles.splitRight}></div>
+    </section>,
+
+    <section className={heroStyles.overlayHero} key="overlay">
+      <div className={heroStyles.overlayContent}>
+        <h3
+          contentEditable
+          suppressContentEditableWarning
+          onBlur={(e) => handleBlur("1", e)}
+          className={heroStyles.overlayTitle}
+        >
+          {textValues["1"]}
+        </h3>
+        <p
+          contentEditable
+          suppressContentEditableWarning
+          onBlur={(e) => handleBlur("2", e)}
+          className={heroStyles.overlayText}
+        >
+          {textValues["2"]}
+        </p>
+        <button
+          contentEditable
+          suppressContentEditableWarning
+          onBlur={(e) => handleBlur("3", e)}
+          className={heroStyles.overlayButton}
+        >
+          {textValues["3"]}
+        </button>
+      </div>
+    </section>,
+  ];
 
   return (
-    <section className={heroStyles.heroContainer}>
-      <div className={heroStyles.heroContent}>
-        {items.map((item) => (
-          <div key={item.id} className={heroStyles.heroItem}>
-            {renderContent(item)}
-          </div>
-        ))}
+    <div className={heroStyles.wrapper}>
+      <div className={heroStyles.arrowButtons}>
+        <button onClick={() => setTemplateIndex((templateIndex - 1 + templates.length) % templates.length)}>
+          <FaArrowRight />
+        </button>
+        <button onClick={() => setTemplateIndex((templateIndex + 1) % templates.length)}>
+          <FaArrowLeft />
+        </button>
       </div>
-    </section>
+      {templates[templateIndex]}
+    </div>
   );
 }
-
-export default Hero;

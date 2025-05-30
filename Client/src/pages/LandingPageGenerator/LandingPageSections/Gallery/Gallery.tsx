@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { DragDropContext, Droppable, Draggable, DropResult } from "react-beautiful-dnd";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import galleryStyle from "./gallery.module.css";
 import { useAuth } from "../../../../context/AuthContext";
 import { businessInfoService } from "../../../../services/besinessInfo.service";
@@ -7,70 +7,82 @@ import { config } from "../../../../config";
 
 export default function Gallery() {
   const [images, setImages] = useState<string[]>([]);
+  const [templateIndex, setTemplateIndex] = useState(0);
   const { user, accessToken } = useAuth();
   const userId = user?._id;
 
-  if (!userId || !accessToken) return null;
-
   useEffect(() => {
+    if (!userId || !accessToken) return;
     businessInfoService
       .getBusinessInfo(userId, accessToken)
       .then((data) => {
-        const urls = data.data.businessImages.map((path: string) =>
-          config.apiUrl + "/" + path
-        );
+        const urls = data.data.businessImages.map((path: string) => `${config.apiUrl}/${path}`);
         setImages(urls);
       })
-      .catch((err) => {
-        console.error("Failed to fetch gallery images:", err);
-      });
+      .catch(console.error);
   }, [userId, accessToken]);
 
-  const handleDragEnd = (result: DropResult) => {
-    if (!result.destination) return;
-    const reordered = [...images];
-    const [moved] = reordered.splice(result.source.index, 1);
-    reordered.splice(result.destination.index, 0, moved);
-    setImages(reordered);
-  };
+  const templates = [
+
+    images.length && (
+      <div className={galleryStyle.mainSideTemplate} key="side">
+        <div className={galleryStyle.largeImage}>
+          <img src={images[0]} className={galleryStyle.image} />
+        </div>
+        <div className={galleryStyle.sideImages}>
+          {images.slice(1, 5).map((url) => (
+            <div className={galleryStyle.smallImageBox} key={url}>
+              <img src={url} className={galleryStyle.image} />
+            </div>
+          ))}
+        </div>
+      </div>
+    ),
+
+
+    images.length && (
+      <div className={galleryStyle.featuredWithThumbs} key="featured">
+        <div className={galleryStyle.largeTopImage}>
+          <img src={images[0]} className={galleryStyle.image} />
+        </div>
+        <div className={galleryStyle.thumbnailRow}>
+          {images.slice(1, 4).map((url) => (
+            <div className={galleryStyle.thumbnailBox} key={url}>
+              <img src={url} className={galleryStyle.image} />
+            </div>
+          ))}
+        </div>
+      </div>
+    ),
+
+    images.length && (
+      <div className={galleryStyle.collageTemplate} key="collage">
+        {images.slice(0, 10).map((url, i) => (
+          <div
+            className={galleryStyle.collageItem}
+            key={url}
+            style={{ "--r": i % 2 ? 3 : -3 } as React.CSSProperties}
+          >
+            <img src={url} className={galleryStyle.image} />
+          </div>
+        ))}
+      </div>
+    ),
+  ].filter(Boolean);
+
+  if (!userId || !accessToken || !templates.length) return null;
 
   return (
-    <section className={galleryStyle.galleryContainer}>
-      <DragDropContext onDragEnd={handleDragEnd}>
-        <Droppable droppableId="gallery" direction="horizontal">
-          {(provided) => (
-            <div
-              className={galleryStyle.imageGrid}
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-            >
-              {images.length > 0 ? (
-                images.map((url, index) => (
-                  <Draggable key={url} draggableId={url} index={index}>
-                    {(provided) => (
-                      <div
-                        className={galleryStyle.imageBox}
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                      >
-                        <img
-                          src={url}
-                          alt={`Gallery Image ${index + 1}`}
-                          className={galleryStyle.image}
-                        />
-                      </div>
-                    )}
-                  </Draggable>
-                ))
-              ) : (
-                <div className={galleryStyle.noImages}>אין תמונות להצגה</div>
-              )}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
+    <section className={galleryStyle.galleryWrapper}>
+      <div className={galleryStyle.arrowButtons}>
+        <button onClick={() => setTemplateIndex((templateIndex - 1 + templates.length) % templates.length)}>
+          <FaArrowRight />
+        </button>
+        <button onClick={() => setTemplateIndex((templateIndex + 1) % templates.length)}>
+          <FaArrowLeft />
+        </button>
+      </div>
+      {templates[templateIndex]}
     </section>
   );
 }
