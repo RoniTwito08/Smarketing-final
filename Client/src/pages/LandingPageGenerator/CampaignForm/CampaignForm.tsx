@@ -309,6 +309,34 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
     setUserFont(font);
   };
 
+  const cleanForProduction = (root: HTMLElement) => {
+      root
+        .querySelectorAll(
+          '.actionButtonsContainer, .actionBar, [data-resize-handle], [class*="arrowButtons"]'
+        )
+        .forEach(el => el.remove());
+      [
+        "data-rbd-draggable-id",
+        "data-rbd-draggable-context-id",
+        "data-rbd-drag-handle-draggable-id",
+        "data-rbd-drag-handle-context-id",
+        "draggable",
+        "tabindex",
+        "role",
+        "aria-describedby",
+      ].forEach(attr =>
+        root.querySelectorAll(`[${attr}]`).forEach(el => el.removeAttribute(attr))
+      );
+
+      root
+        .querySelectorAll("[contenteditable]")
+        .forEach(el => el.removeAttribute("contenteditable"));
+      root
+        .querySelectorAll("[suppresscontenteditablewarning]")
+        .forEach(el => el.removeAttribute("suppresscontenteditablewarning"));
+  };
+
+
   const handleSaveLandingPage = async () => {
     setIsSidebarOpen(false);
 
@@ -316,6 +344,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
       if (!landingPageRef.current) return;
 
       const clone = landingPageRef.current.cloneNode(true) as HTMLElement;
+      cleanForProduction(clone);        
       clone
         .querySelectorAll("[data-resize-handle]")
         .forEach((el) => el.remove());
@@ -327,7 +356,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
           <head>
             <meta charset="UTF-8">
             <title>Landing Page</title>
-            <link rel="stylesheet" href="${config.apiUrl}/dist/assets/index-B03tdSug.css">
+            <link rel="stylesheet" href="${config.apiUrl}/dist/assets/index-CjQB-7du.css">
 
             <style>
               :root {
@@ -387,6 +416,9 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
                     });
 
                     if (!response.ok) throw new Error("שליחה נכשלה");
+                    setTimeout(() => {
+                      statusBox.textContent = "";
+                    }, 3000); // Clear status after 3 seconds
                     statusBox.textContent = "✅ הפרטים נשלחו בהצלחה!";
                     form.reset();
                   } catch (error) {
@@ -435,7 +467,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
           ...form,
           creatorId: user._id,
           landingPage: savedLandingPage.file,
-          campaignURL: `${BASE_URL}/${savedLandingPage.file}`,
+          campaignURL: `${BASE_URL}/landing-page/${savedLandingPage.file}`,
         };
 
         const campaignResponse = await fetch(`${config.apiUrl}/campaigns`, {
@@ -498,7 +530,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
     setShowMobilePopup(false);
     setShowTabletPopup(false);
     setShowDesktopPopup(false);
-    // window.location.reload();
+    window.location.reload();
     onClose();
   };
 
@@ -509,7 +541,6 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
     "--secondary-color": colors.secondaryColor,
     "--tertiary-color": colors.tertiaryColor,
     "--text-color": colors.textColor,
-    //backgroundColor: colors.primaryColor,     // ← paint the background directly
   } as any;
 
   return (
@@ -573,7 +604,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
                     >
                       {landingPageData.map((section, index) => (
                         <Draggable
-                          draggableId={section.sectionName + index} // This should be unique
+                          draggableId={section.sectionName + index} 
                           index={index}
                           isDragDisabled={["header", "hero", "footer"].includes(
                             section.sectionName || ""

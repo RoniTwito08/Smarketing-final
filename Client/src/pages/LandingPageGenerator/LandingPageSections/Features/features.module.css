@@ -53,6 +53,11 @@
   cursor: pointer;
 }
 
+.actionBar {
+  position: absolute;
+  top: 12px;
+  right: 0px;
+}
 .featuresSection:hover .arrowButtons button {
   opacity: 1;
   transform: scale(1);

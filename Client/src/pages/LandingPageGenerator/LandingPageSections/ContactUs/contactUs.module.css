@@ -48,12 +48,15 @@
   font-size: 28px;
   font-weight: 800;
   margin-bottom: 12px;
+  color: var(--text-color, #333);
 }
 
 .description {
   font-size: 18px;
   margin-bottom: 24px;
   line-height: 1.5;
+  color: var(--text-color, #333);
+
 }
 
 /* טמפלייט 1 – רגיל עם פינות עגולות */
@@ -108,7 +111,7 @@
   transition: background 0.3s ease, transform 0.3s ease;
   background-color: var(--tertiary-color);
   background-image: var(--tertiary-gradient);
-  color: white;
+  color: var(--text-color, #fff);
   margin-top: 10px;
 }
 
@@ -139,11 +142,15 @@
 .leftText {
   flex: 1;
   min-width: 280px;
+  color: var(--text-color, #333);
+
 }
 
 .rightForm {
   flex: 1;
   min-width: 300px;
+  color: var(--text-color, #333);
+
 }
 
 .template1 {
@@ -151,13 +158,15 @@
   border-radius: 20px;
   max-width: 700px;
   margin: auto;
+  
 }
 
 .template1 .title {
   font-size: 30px;
   font-weight: 700;
   color: #1a1a1a;
-  margin-bottom: 16px;
+  margin-bottom: 16px;  
+
 }
 
 .template1 .description {
@@ -176,10 +185,13 @@
   justify-content: space-between;
   max-width: 950px;
   margin: auto;
+
 }
 
 .template2 .leftText {
   flex: 1;
+  color: var(--text-color, #333);
+
 }
 
 .template2 .leftText .title {
@@ -187,12 +199,15 @@
   font-weight: 800;
   color: #2c3e50;
   margin-bottom: 14px;
+  color: var(--text-color, #333);
 }
 
 .template2 .leftText .description {
   font-size: 16px;
   line-height: 1.6;
   color: #555;
+  color: var(--text-color, #333);
+
 }
 
 .template2 .rightForm {
