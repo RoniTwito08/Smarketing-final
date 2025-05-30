@@ -45,14 +45,6 @@ export default function Hero({ title, content, buttonText }: HeroProps) {
         >
           {textValues["2"]}
         </p>
-        <button
-          contentEditable
-          suppressContentEditableWarning
-          onBlur={(e) => handleBlur("3", e)}
-          className={heroStyles.heroButton}
-        >
-          {textValues["3"]}
-        </button>
       </div>
     </section>,
 
@@ -74,14 +66,6 @@ export default function Hero({ title, content, buttonText }: HeroProps) {
         >
           {textValues["2"]}
         </p>
-        <button
-          contentEditable
-          suppressContentEditableWarning
-          onBlur={(e) => handleBlur("3", e)}
-          className={heroStyles.heroButton}
-        >
-          {textValues["3"]}
-        </button>
       </div>
       <div className={heroStyles.splitRight}></div>
     </section>,
@@ -104,14 +88,6 @@ export default function Hero({ title, content, buttonText }: HeroProps) {
         >
           {textValues["2"]}
         </p>
-        <button
-          contentEditable
-          suppressContentEditableWarning
-          onBlur={(e) => handleBlur("3", e)}
-          className={heroStyles.overlayButton}
-        >
-          {textValues["3"]}
-        </button>
       </div>
     </section>,
   ];

@@ -72,11 +72,13 @@
   gap: 40px;
   padding: 60px;
   flex-wrap: wrap;
+  
 }
 
 .splitLeft {
   flex: 1;
   min-width: 300px;
+  
 }
 
 .splitRight {
@@ -84,6 +86,7 @@
   min-height: 300px;
   border-radius: 16px;
   background: linear-gradient(to right, #ddd, var(--tertiary-color));
+  
 }
 
 .overlayHero {
@@ -91,8 +94,8 @@
   padding: 100px 20px;
   position: relative;
   text-align: center;
-  color: white;
   border-radius: 12px;
+  color: var(--text-color);
 }
 
 .overlayContent {
