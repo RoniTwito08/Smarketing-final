@@ -45,6 +45,7 @@
   line-height: 1.5;
   cursor: text;
   min-height: 60px;
+  color: var(--text-color, #333);
 }
 
 .reviewText:focus {
@@ -143,7 +144,7 @@
 
 .arrowButtons button {
   pointer-events: auto;
-  background: #ffffff;
+  background: black;
   border: 2px solid var(--primary-color);
   color: var(--primary-color);
   border-radius: 50%;

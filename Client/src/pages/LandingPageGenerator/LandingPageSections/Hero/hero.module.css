@@ -32,15 +32,28 @@
   color: var(--text-color);
 }
 
+.heroTitle:focus {
+  outline: 2px solid rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.6);
+}
+
 .heroText {
   font-size: 18px;
   margin-bottom: 25px;
   color: var(--text-color);
 }
 
+
+.heroText:focus {
+  outline: 2px solid rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.6);
+}
+
 .heroButton {
   background-color: var(--tertiary-color);
-  color: white;
+  color: var(--text-color);
   padding: 12px 24px;
   font-size: 16px;
   border: none;
@@ -159,7 +172,7 @@
   align-items: center;
   justify-content: center;
   font-size: 16px;
-  background: #ffffff;
+  background: black;
   border: 2px solid var(--primary-color);
   color: var(--primary-color);
   border-radius: 50%;
