@@ -8,7 +8,6 @@
   color: var(--text-color, #333);
 }
 
-/* עיצוב כפתורים צדדיים כמו ב־AboutUs */
 .arrowButtons {
   position: absolute;
   top: 50%;
@@ -59,14 +58,12 @@
 
 }
 
-/* טמפלייט 1 – רגיל עם פינות עגולות */
 .formRounded input,
 .formRounded textarea {
   border-radius: 30px;
   border: 1px solid #ccc;
 }
 
-/* טמפלייט 2 – פסים מתחת */
 .formOutlined input,
 .formOutlined textarea {
   border: none;
@@ -323,7 +320,6 @@
   }
 }
 
-/* ---------- אפקט כללי על שדות ---------- */
 .contactForm input,
 .contactForm textarea {
   transition: border .25s ease, background .25s ease, box-shadow .25s ease;
@@ -336,7 +332,6 @@
   outline: none;
 }
 
-/* ---------- Template 1 – “Soft Card” ---------- */
 .template1 {
   background: #ffffff;
   border-radius: 26px;
@@ -352,7 +347,6 @@
   pointer-events: none;
 }
 
-/* ---------- Template 2 – Split עם פס צבעוני ---------- */
 .template2 {
   position: relative;
   overflow: hidden;
@@ -370,7 +364,6 @@
   pointer-events: none;
 }
 
-/* ---------- Template 3 – Glass Card ---------- */
 .template3 .card {
   backdrop-filter: blur(14px);
   background: rgba(255, 255, 255, 0.55);
@@ -387,7 +380,6 @@
   pointer-events: none;
 }
 
-/* ---------- אנימציית ריחוף על כפתור ---------- */
 .submitButton {
   transition: background .3s ease, transform .3s ease, box-shadow .3s ease;
 }
@@ -402,5 +394,4 @@
   box-shadow: 0 6px 16px rgba(0,0,0,.12);
 }
 
-/* ---------- חצים – יישור סופי ---------- */
 .arrowButtons { z-index: 6; }

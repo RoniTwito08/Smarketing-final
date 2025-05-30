@@ -13,7 +13,6 @@
   overflow: hidden;
 }
 
-/* חצים – עיצוב אחיד כמו בגלריה */
 .arrowButtons {
   position: absolute;
   top: 50%;
@@ -177,7 +176,6 @@
   .thumbnailBox { height: 140px; }
 }
 
-/* חצים – סגנון אחיד */
 .arrowButtons {
   position: absolute;
   top: 50%;

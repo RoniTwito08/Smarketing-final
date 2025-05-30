@@ -18,7 +18,7 @@ export default function Features({ content, image, onDelete }: FeaturesProps) {
     const cleaned = content
       .slice(2, content.length - 3)
       .map(s => s.replace(/['",]/g, "").trim())
-      .slice(0, 4);         // תמיד 4 פיצ’רים
+      .slice(0, 4);         
     setServices(cleaned);
   }, [content]);
 
@@ -76,7 +76,6 @@ export default function Features({ content, image, onDelete }: FeaturesProps) {
     <div className={featuresStyles.fancyHero}>
       <img src={image} className={featuresStyles.fancyImage} />
     </div>
-    {/* ארבעת הקלפים – כל אחד מקבל הטיה שונה */}
     <div className={featuresStyles.fancyCards}>
       {services.map((s, i) => (
         <div
