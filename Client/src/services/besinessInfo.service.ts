@@ -18,14 +18,17 @@ export const businessInfoService = {
         });
       } else if (typeof value === "object") {
         if (key === "socialLinks") {
-          console.log("socialLinks", value);
           formData.append("socialLinks", JSON.stringify(value));
+        } else {
+          // כל אובייקט אחר – לדלג (לא לנסות להכניס אותו)
+          console.warn(`לא הוזן ערך עבור ${key} מסוג object`);
         }
-        continue;
       } else {
         formData.append(key, value.toString());
       }
     }
+
+    console.log("formData entries:", Array.from(formData.entries()));
 
     // קבצים
     if (data.logoFile) {

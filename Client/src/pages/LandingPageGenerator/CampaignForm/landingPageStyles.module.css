@@ -489,3 +489,25 @@ input[type="range"] {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+.startTourButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  margin-top: 12px;
+  background-color: white;
+  border: 2px solid #007bff;
+  color: #007bff;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 6px rgba(0, 123, 255, 0.1);
+}
+
+.startTourButton:hover {
+  background-color: #007bff;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+}

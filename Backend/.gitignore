@@ -4,10 +4,8 @@ node_modules/
 # Ignore dist directory
 dist/
 
-# Ignore .env file
-.env
 
-.env_dev
+
 
 src/landingPages/
 

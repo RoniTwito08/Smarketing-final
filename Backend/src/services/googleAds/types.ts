@@ -114,3 +114,51 @@ export interface GoogleAdsConfig {
   customerId: string;
   redirectUri: string;
 }
+
+export interface BusinessInfo {
+  userId: String;
+
+  // שלב 1
+  businessName: String;
+  businessType: String;
+  businessAddress?: String;
+  businessField: String;
+  businessFieldDetails?: String;
+  serviceAreas: String;
+  phoneNumber?: String;
+
+  // שלב 2
+  ageGroup: String;
+  gender: String;
+  specificMarketSegment: String;
+  typicalCustomers: String;
+
+  // שלב 3
+  serviceDescription: String;
+  uniqueService: String;
+  specialPackages: String;
+  incentives: String;
+
+  // שלב 4
+  logo: String;
+  businessImages: String[];
+  designPreferences?: String;
+  socialLinks?: {
+    facebook?: String;
+    instagram?: String;
+    tiktok?: String;
+    linkedin?: String;
+    other?: String;
+  };
+
+  // שלב 5
+  objective:
+    | String
+    | "brandAwareness"
+    | "reach"
+    | "siteVisit"
+    | "engagement"
+    | "videoViews"
+    | "sales"
+    | undefined;
+}

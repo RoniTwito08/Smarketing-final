@@ -13,6 +13,8 @@ import { colorComboData } from "./sideBarData";
 import Font from "./Fonts/Font";
 import { FontData } from "./sideBarData";
 import Chat from "./Chat/Chat";
+import SidebarTourPopup from "./SidebarTourPopup/SidebarTourPopup";
+import { useRef } from "react";
 
 interface RemovedSection {
   section: any;
@@ -60,8 +62,52 @@ const Sidebar = ({
     tertiaryColor: '',
     textColor: ''
   });
+  const actionsRef = useRef<HTMLDivElement>(null);
+const colorRef = useRef<HTMLDivElement>(null);
+const fontRef = useRef<HTMLDivElement>(null);
+const removeRef = useRef<HTMLDivElement>(null);
+const chatRef = useRef<HTMLDivElement>(null);
+const responsiveRef = useRef<HTMLDivElement>(null);
+
+const [sidebarTourStep, setSidebarTourStep] = useState(0);
+const [showSidebarTour, setShowSidebarTour] = useState(false);
+
+const sidebarTourSteps = [
+  {
+    ref: actionsRef,
+    title: "פעולות כלליות",
+    description: "כאן תוכל לשנות את מבנה הדף, מיקום סקשנים ועוד.",
+  },
+  {
+    ref: colorRef,
+    title: "צבעים",
+    description: "בחר קומבינציית צבעים מותאמת למותג שלך.",
+  },
+  {
+    ref: fontRef,
+    title: "גופנים",
+    description: "בחר גופן שישדר את סגנון העסק שלך.",
+  },
+  {
+    ref: removeRef,
+    title: "הסרת סקשנים",
+    description: "הצג או הסתר סקשנים מדף הנחיתה שלך.",
+  },
+  {
+    ref: chatRef,
+    title: "צ׳אט עם AI",
+    description: "כאן תוכל לקבל עזרה מהבינה המלאכותית.",
+  },
+  {
+    ref: responsiveRef,
+    title: "רספונסיביות",
+    description: "צפה בדף שלך במובייל, טאבלט ודסקטופ.",
+  },
+];
+
 
   const handleIconClick = (icon: string) => {
+    
     if (icon === "chat") {
       setSelectedIcon(icon === selectedIcon ? null : icon);
       setIsOpen(true);
@@ -133,33 +179,41 @@ const Sidebar = ({
         </div>
         <nav className={styles.sidebarMenu}>
           <div
+          ref={actionsRef}
             className={styles.sidebarItem}
             onClick={() => handleIconClick("actions")}
             data-tooltip="פעולות"
+            
           >
             <AiOutlineExclamationCircle size={30} />
             {isOpen && <span>פעולות</span>}
+            
           </div>
 
           <div
+          ref={colorRef}
             className={styles.sidebarItem}
             onClick={() => handleIconClick("color")}
             data-tooltip="צבעים"
+            
           >
             <IoIosColorFilter size={30} />
             {isOpen && <span>צבעים</span>}
           </div>
 
           <div
+          ref={fontRef}
             className={styles.sidebarItem}
             onClick={() => handleIconClick("font")}
             data-tooltip="גופנים"
+            
           >
             <AiOutlineFontColors size={30} />
             {isOpen && <span>גופנים</span>}
           </div>
 
           <div
+          ref={removeRef}
             className={styles.sidebarItem}
             onClick={() => handleIconClick("removeSection")}
             data-tooltip="הסרת סקשנים"
@@ -169,6 +223,7 @@ const Sidebar = ({
           </div>
 
           <div
+          ref={chatRef}
             className={styles.sidebarItem}
             onClick={() => handleIconClick("chat")}
             data-tooltip="צ'אט"
@@ -178,6 +233,7 @@ const Sidebar = ({
           </div>
 
           <div
+          ref={responsiveRef}
             className={styles.sidebarItem}
             onClick={() => handleIconClick("responsive")}
             data-tooltip="רספונסיבי"
@@ -185,6 +241,8 @@ const Sidebar = ({
             <MdOutlinePhoneIphone size={30} />
             {isOpen && <span>רספונסיבי</span>}
           </div>
+          
+          
         </nav>
 
         {isOpen && <div className={styles.divider}></div>}
@@ -255,6 +313,13 @@ const Sidebar = ({
             )}
             {selectedIcon === "actions" && (
               <div className={styles.actionsExplanation}>
+                <button onClick={() => {
+                  setShowSidebarTour(true);
+                  setSidebarTourStep(0);
+                }} className={styles.startTourButton}>
+                  <AiOutlineExclamationCircle size={30} />
+                  תרצה הדרכה מהירה על הסיידבר?
+                </button>
                 <p>
                   ברוכים הבאים למערכת שלנו – כאן תוכלו לעשות כל מה שתמיד חלמתם עליו עבור דף הנחיתה שלכם!
                 </p>
@@ -268,6 +333,7 @@ const Sidebar = ({
                   <li>להתאים את הטון השיווקי ולהעביר את המסר בצורה מקצועית ומושכת.</li>
                 </ul>
                 <p>בואו להפוך את דף הנחיתה שלכם לכלי שיווקי עוצמתי ומותאם אישית!</p>
+
               </div>
             )}
             
@@ -323,6 +389,28 @@ const Sidebar = ({
               </div>
             )}
           </div>
+        )}
+        {showSidebarTour && (
+          <SidebarTourPopup
+            title={sidebarTourSteps[sidebarTourStep].title}
+            description={sidebarTourSteps[sidebarTourStep].description}
+            targetRef={sidebarTourSteps[sidebarTourStep].ref}
+            step={sidebarTourStep}
+            totalSteps={sidebarTourSteps.length}
+            onNext={() => {
+              if (sidebarTourStep < sidebarTourSteps.length - 1) {
+                setSidebarTourStep(prev => prev + 1);
+              } else {
+                setShowSidebarTour(false);
+              }
+            }}
+            onBack={() => {
+              if (sidebarTourStep > 0) {
+                setSidebarTourStep(prev => prev - 1);
+              }
+            }}
+            onSkip={() => setShowSidebarTour(false)}
+          />
         )}
 
       </motion.div>
