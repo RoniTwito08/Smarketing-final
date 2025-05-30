@@ -5,7 +5,6 @@
   --text-color: #000000;
 }
 
-/* עטיפה כללית */
 .featuresSection {
   position: relative;
   width: 100%;
@@ -20,7 +19,6 @@
   text-align: center;
 }
 
-/* ---------- חצים – סגנון קבוע ---------- */
 .arrowButtons {
   position: absolute;
   top: 50%;
@@ -69,7 +67,6 @@
   transform: scale(1.1);
 }
 
-/* ---------- Template 0 — תמונה ימין + רשימת ✔ ---------- */
 .twoColLayout {
   display: flex;
   gap: 40px;
@@ -115,7 +112,6 @@
 
 .featureItem svg { color: var(--tertiary-color); }
 
-/* ---------- Template 1 — “Glass” Cards סביב תמונה ---------- */
 .glassWrapper {
   position: relative;
   display: flex;
@@ -153,7 +149,6 @@
 
 .glassCard:hover { transform: translateY(-6px); }
 
-/* ---------- Template 2 — שורה אלכסונית ---------- */
 .diagonalWrapper {
   width: 100%;
   overflow: hidden;
@@ -188,7 +183,6 @@
 
 .featureText { outline: none; }
 
-/* רספונסיביות */
 @media (max-width: 768px) {
   .twoColLayout       { flex-direction: column; text-align: center; }
   .glassWrapper       { gap: 40px; }
@@ -197,7 +191,6 @@
 }
 
 
-/* ---------- Template 2 – Hero Card + Floating Tilt Cards ---------- */
 .fancyWrapper {
   position: relative;
   width: 100%;
@@ -205,7 +198,8 @@
   flex-direction: column;
   align-items: center;
   gap: 60px;
-  padding: 60px 24px 180px;   /* מקום לקלפים הצפים */
+  padding: 60px 24px 180px;
+  margin-bottom: 60px;  
 }
 
 .fancyHero {

@@ -20,9 +20,6 @@ const ContactUs = () => {
   const [error, setError] = useState<string | null>(null);
   const [templateIndex, setTemplateIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
-  // const isFirstTemplate = templateIndex === 0;
-  // const isSecondTemplate = templateIndex === 1;
-  // const isThirdTemplate = templateIndex === 2;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -66,14 +63,12 @@ const ContactUs = () => {
   );
 
   const templates = [
-  /* Template 1 – Soft Card */
   <div className={contactStyles.template1} key="t1">
     <h2 className={contactStyles.title}>📞 צור קשר</h2>
     <p className={contactStyles.description}>נשמח לשוחח איתך ולשמוע עוד!</p>
     {renderForm("formRounded")}
   </div>,
 
-  /* Template 2 – Split עם פס צבעוני נטוי */
   <div className={contactStyles.template2} key="t2">
       <div className={contactStyles.leftText}>
         <h2 className={contactStyles.title}>💬 דברו איתנו</h2>
@@ -86,7 +81,6 @@ const ContactUs = () => {
       </div>
   </div>,
 
-  /* Template 3 – Glass Card */
   <div className={contactStyles.template3} key="t3">
     <div className={contactStyles.card}>
       <h2 className={contactStyles.title}>📬 השאירו פרטים</h2>
