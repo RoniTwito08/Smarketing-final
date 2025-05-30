@@ -1,7 +1,7 @@
-import reviewsStyles from './reviews.module.css';
-import { FaStar, FaStarHalfAlt } from "react-icons/fa";
+import reviewsStyles from "./reviews.module.css";
+import { FaStar, FaStarHalfAlt, FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { useEffect, useState } from "react";
-import ActionsButtons from '../../LandingPageActions/ActionsButtons/ActionsButtons';
+import ActionsButtons from "../../LandingPageActions/ActionsButtons/ActionsButtons";
 
 interface ReviewsProps {
   content: string[];
@@ -12,75 +12,136 @@ const Reviews = ({ content, onDelete }: ReviewsProps) => {
   const [randomIndex, setRandomIndex] = useState<number | null>(null);
   const [isHovered, setIsHovered] = useState(false);
   const [reviews, setReviews] = useState<string[]>([]);
+  const [templateIndex, setTemplateIndex] = useState(0);
 
   useEffect(() => {
-    const initialReviews = content
+    const cleaned = content
       .slice(2, content.length - 3)
-      .map(review => review.replace(/['",]/g, "").trim());
-    setReviews(initialReviews);
+      .map(r => r.replace(/['",]/g, "").trim());
+    setReviews(cleaned);
   }, [content]);
 
   useEffect(() => {
-    setRandomIndex(Math.floor(Math.random() * reviews.length));
+    if (reviews.length) setRandomIndex(Math.floor(Math.random() * reviews.length));
   }, [reviews]);
 
-  const handleBlur = (index: number, e: React.FocusEvent<HTMLParagraphElement>) => {
+  const handleBlur = (i: number, e: React.FocusEvent<HTMLParagraphElement>) => {
     const newText = e.currentTarget.innerText;
     setReviews(prev => {
       const copy = [...prev];
-      copy[index] = newText;
+      copy[i] = newText;
       return copy;
     });
   };
 
-  return (
-    
-    <section
-      className={reviewsStyles.reviewsSection}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <div className={reviewsStyles.reviewsContainer}>
-        {reviews.map((review, index) => (
-          <div key={index} className={reviewsStyles.reviewCard}>
-            <img
-              src={
-                index % 2 === 0
-                  ? "/src/assets/menReviewer.png"
-                  : "/src/assets/womenReviewer.png"
-              }
-              className={reviewsStyles.pic}
-              alt="Reviewer"
-            />
+  const renderStars = (i: number) =>
+    i === randomIndex
+      ? (
+        <>
+          <FaStar /><FaStar /><FaStar /><FaStar /><FaStarHalfAlt />
+        </>
+      ) : (
+        <>
+          <FaStar /><FaStar /><FaStar /><FaStar /><FaStar />
+        </>
+      );
+
+  const templates = [
+    <div className={reviewsStyles.gridContainer} key="grid">
+      {reviews.map((txt, i) => (
+        <div className={`${reviewsStyles.reviewCardBase} ${reviewsStyles.gridCard}`} key={i}>
+          <img
+            src={i % 2 ? "/src/assets/womenReviewer.png" : "/src/assets/menReviewer.png"}
+            className={reviewsStyles.pic}
+            alt="Reviewer"
+          />
+          <p
+            className={reviewsStyles.reviewText}
+            contentEditable
+            suppressContentEditableWarning
+            onBlur={e => handleBlur(i, e)}
+          >
+            {txt}
+          </p>
+          <div className={reviewsStyles.stars}>{renderStars(i)}</div>
+        </div>
+      ))}
+    </div>,
+
+    <div className={reviewsStyles.mediaContainer} key="media">
+      {reviews.map((txt, i) => (
+        <div className={`${reviewsStyles.reviewCardBase} ${reviewsStyles.mediaCard}`} key={i}>
+          <img
+            src={i % 2 ? "/src/assets/womenReviewer.png" : "/src/assets/menReviewer.png"}
+            className={reviewsStyles.pic}
+            alt="Reviewer"
+          />
+          <div>
             <p
               className={reviewsStyles.reviewText}
               contentEditable
               suppressContentEditableWarning
-              onBlur={e => handleBlur(index, e)}
+              onBlur={e => handleBlur(i, e)}
             >
-              {review}
+              {txt}
             </p>
-            <div className={reviewsStyles.stars}>
-              {index === randomIndex ? (
-                <>
-                  <FaStar /><FaStar /><FaStar /><FaStar /><FaStarHalfAlt />
-                </>
-              ) : (
-                <>
-                  <FaStar /><FaStar /><FaStar /><FaStar /><FaStar />
-                </>
-              )}
-            </div>
+            <div className={reviewsStyles.stars}>{renderStars(i)}</div>
           </div>
-        ))}
-      </div>
-      {isHovered && onDelete && (
-        <div className={reviewsStyles.actionBar}>
-          <ActionsButtons onDelete={onDelete} sectionName="reviews" />
         </div>
-      )}
-    </section>
-  );
+      ))}
+    </div>,
+
+    <div className={reviewsStyles.stackedContainer} key="stacked">
+      {reviews.map((txt, i) => (
+        <div className={`${reviewsStyles.reviewCardBase} ${reviewsStyles.stackedCard}`} key={i}>
+          <img
+            src={i % 2 ? "/src/assets/womenReviewer.png" : "/src/assets/menReviewer.png"}
+            className={reviewsStyles.pic}
+            alt="Reviewer"
+          />
+          <p
+            className={reviewsStyles.reviewText}
+            contentEditable
+            suppressContentEditableWarning
+            onBlur={e => handleBlur(i, e)}
+          >
+            {txt}
+          </p>
+          <div className={reviewsStyles.stars}>{renderStars(i)}</div>
+        </div>
+      ))}
+    </div>,
+  ];
+
+  const prevTemplate = () =>
+    setTemplateIndex(prev => (prev - 1 + templates.length) % templates.length);
+  const nextTemplate = () =>
+    setTemplateIndex(prev => (prev + 1) % templates.length);
+
+
+return (
+  <section
+    className={reviewsStyles.reviewsSection}
+    onMouseEnter={() => setIsHovered(true)}
+    onMouseLeave={() => setIsHovered(false)}
+  >
+    <div className={reviewsStyles.wrapper}>
+      <div className={reviewsStyles.arrowButtons}>
+        <button onClick={prevTemplate}><FaArrowRight /></button>
+        <button onClick={nextTemplate}><FaArrowLeft /></button>
+      </div>
+
+      {templates[templateIndex]}
+    </div>
+
+    {isHovered && onDelete && (
+      <div className={reviewsStyles.actionBar}>
+        <ActionsButtons onDelete={onDelete} sectionName="reviews" />
+      </div>
+    )}
+  </section>
+);
+
 };
 
 export default Reviews;

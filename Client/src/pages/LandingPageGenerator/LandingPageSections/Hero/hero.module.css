@@ -1,205 +1,182 @@
 :root {
   --primary-color: #ffffff;
   --secondary-color: #ffffff;
-  --tertiary-color: #ffffff;
+  --tertiary-color: #1e90ff;
   --text-color: #000000;
   --primary-gradient: none;
   --secondary-gradient: none;
   --tertiary-gradient: none;
 }
 
-.heroContainer {
+.wrapper {
   position: relative;
-  width: 100%;
-  min-height: 60vh;
+}
+
+
+.heroContainer {
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
   text-align: center;
-  overflow: hidden;
-  transition: all 0.3s ease-in-out;
-  border-radius: 12px;
-  margin: 20px auto;
-  padding: 40px;
 }
 
 .heroContent {
-  position: relative;
-  z-index: 10;
-  padding: 20px;
-  margin: 0 10%;
+  max-width: 800px;
 }
 
 .heroTitle {
-  font-size: 52px;
-  font-weight: 900;
-  color: var(--text-color, #333);
-  border-image: var(--primary-gradient);
-  background-clip: text;
-  -webkit-background-clip: text;
-  text-shadow:
-    2px 2px 4px rgba(0, 0, 0, 0.2),
-    0 0 25px rgba(255, 255, 255, 0.1),
-    0 0 50px rgba(255, 255, 255, 0.1);
+  font-size: 48px;
+  font-weight: bold;
   margin-bottom: 20px;
-  cursor: pointer;
-  transition: transform 0.3s ease-in-out, text-shadow 0.3s ease-in-out;
+  color: var(--text-color);
 }
-
-.heroTitle:hover {
-  transform: scale(1.05);
-  text-shadow:
-    4px 4px 8px rgba(0, 0, 0, 0.4),
-    0 0 30px rgba(255, 255, 255, 0.7),
-    0 0 60px rgba(255, 255, 255, 0.5);
-}
-
 
 .heroText {
   font-size: 18px;
-  color: var(--text-color, #555);
   margin-bottom: 25px;
-  line-height: 1.6;
-  cursor: pointer;
+  color: var(--text-color);
 }
 
 .heroButton {
-  font-size: 18px;
-  font-weight: bold;
+  background-color: var(--tertiary-color);
+  color: white;
   padding: 12px 24px;
+  font-size: 16px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease-in-out;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
-  background-color: var(--tertiary-color);
-  background-image: var(--tertiary-gradient);
-  color: var(--text-color, #333);
 }
 
 .heroButton:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  opacity: 0.9;
 }
 
-.editContainer {
-  display: inline-flex;
+.splitLayout {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 8px;
-  justify-content: center;
+  gap: 40px;
+  padding: 60px;
+  flex-wrap: wrap;
 }
 
-.editInput {
-  font-size: inherit;
-  font-family: inherit;
-  color: inherit;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 6px 10px;
-  background: #fff;
-  width: auto;
-  min-width: 200%;
-  max-width: 100%;
-  resize: vertical;
-  overflow-wrap: break-word;
-  word-break: break-word;
+.splitLeft {
+  flex: 1;
+  min-width: 300px;
 }
 
-.saveButton {
-  background-color: #27ae60;
-  color: #fff;
+.splitRight {
+  flex: 1;
+  min-height: 300px;
+  border-radius: 16px;
+  background: linear-gradient(to right, #ddd, var(--tertiary-color));
+}
+
+.overlayHero {
+  background: url('/your-image.jpg') center/cover no-repeat;
+  padding: 100px 20px;
+  position: relative;
+  text-align: center;
+  color: white;
+  border-radius: 12px;
+}
+
+.overlayContent {
+  padding: 40px;
+  border-radius: 12px;
+  max-width: 800px;
+  margin: auto;
+}
+
+.overlayTitle {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.overlayText {
+  font-size: 18px;
+  margin-bottom: 25px;
+}
+
+.overlayButton {
+  background-color: var(--tertiary-color);
+  color: white;
+  padding: 12px 24px;
   border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
+  font-size: 16px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
-.saveButton:hover {
-  background-color: #1e8449;
-  transform: translateY(-2px);
-}
-
-.heroTitle[contenteditable]:focus,
-.heroText[contenteditable]:focus,
-.heroButton[contenteditable]:focus {
-  outline: 2px solid rgba(0, 0, 0, 0.1);
-  outline-offset: 4px;
+.overlayButton:hover {
+  opacity: 0.9;
 }
 
 @media (max-width: 768px) {
-  .heroContainer {
-    min-height: auto;
-  }
-  .heroTitle {
+  .heroTitle,
+  .overlayTitle {
     font-size: 32px;
   }
-  .heroText {
-    font-size: 16px;
-  }
-  .heroButton {
-    font-size: 16px;
-    padding: 10px 20px;
-  }
-}
 
-@container (max-width: 768px) and (min-width: 577px) {
-  .heroContainer {
+  .heroText,
+  .overlayText {
+    font-size: 16px;
+  }
+
+  .splitLayout {
     flex-direction: column;
+  }
+
+  .splitRight {
+    min-height: 200px;
+  }
+
+  .overlayHero {
     padding: 60px 20px;
-    min-height: auto;
-  }
-
-  .heroContent {
-    margin: 0 5%;
-    padding: 20px;
-    text-align: center;
-  }
-
-  .heroTitle {
-    font-size: 32px;
-    line-height: 1.3;
-  }
-
-  .heroText {
-    font-size: 16px;
-    margin-bottom: 20px;
-    line-height: 1.5;
-  }
-
-  .heroButton {
-    font-size: 16px;
-    padding: 10px 20px;
   }
 }
 
-@container (max-width: 350px) {
-  .heroContainer {
-    flex-direction: column;
-    padding: 20px 10px;
-    min-height: auto;
-  }
+/* חצים – עיצוב אחיד כמו בגלריה */
+.arrowButtons {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  transform: translateY(-50%);
+  padding: 0 12px;
+  pointer-events: none;
+  z-index: 4;
+}
 
-  .heroContent {
-    margin: 0 5px;
-    padding: 10px;
-    text-align: center;
-  }
+.arrowButtons button {
+  pointer-events: auto;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  background: #ffffff;
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  cursor: pointer;
+}
 
-  .heroTitle {
-    font-size: 24px;
-    line-height: 1.2;
-  }
+.wrapper:hover .arrowButtons button {
+  opacity: 1;
+  transform: scale(1);
+}
 
-  .heroText {
-    font-size: 14px;
-    line-height: 1.4;
-    margin-bottom: 15px;
-  }
-
-  .heroButton {
-    font-size: 14px;
-    padding: 8px 16px;
-  }
+.arrowButtons button:hover {
+  background: var(--primary-color);
+  color: #ffffff;
+  transform: scale(1.1);
 }

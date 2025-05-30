@@ -1,100 +1,391 @@
 .contactSection {
-    max-width: 500px;
-    margin: auto;
-    padding: 30px;
-    border-radius: 16px;
-    text-align: center;
-    margin-top: 5%;
-    margin-bottom: 5%;
+  position: relative;
+  max-width: 1000px;
+  margin: 60px auto;
+  padding: 20px;
+  text-align: center;
+  font-family: var(--font-family, "Segoe UI", sans-serif);
+  color: var(--text-color, #333);
+}
+
+/* עיצוב כפתורים צדדיים כמו ב־AboutUs */
+.arrowButtons {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  transform: translateY(-50%);
+  padding: 0 12px;
+  pointer-events: none;
+}
+
+.arrowButtons button {
+  pointer-events: auto;
+  background-color: white;
+  border: 2px solid var(--primary-color, #007bff);
+  color: var(--primary-color, #007bff);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.arrowButtons button:hover {
+  background-color: var(--primary-color, #007bff);
+  color: white;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.description {
+  font-size: 18px;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+/* טמפלייט 1 – רגיל עם פינות עגולות */
+.formRounded input,
+.formRounded textarea {
+  border-radius: 30px;
+  border: 1px solid #ccc;
+}
+
+/* טמפלייט 2 – פסים מתחת */
+.formOutlined input,
+.formOutlined textarea {
+  border: none;
+  border-bottom: 2px solid #ccc;
+  border-radius: 0;
+}
+
+.formFilled input,
+.formFilled textarea {
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}
+
+.contactForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.contactForm input,
+.contactForm textarea {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 16px;
+  transition: 0.3s ease;
+  color: var(--text-color, #333);
+}
+
+.contactForm textarea {
+  resize: none;
+  height: 120px;
+}
+
+.submitButton {
+  padding: 14px;
+  font-size: 18px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+  background-color: var(--tertiary-color);
+  background-image: var(--tertiary-gradient);
+  color: white;
+  margin-top: 10px;
+}
+
+.submitButton:hover {
+  background-color: var(--secondary-color);
+  background-image: var(--secondary-gradient);
+  transform: translateY(-2px);
+}
+
+.submitButton:active {
+  transform: translateY(1px);
+}
+
+.error {
+  color: red;
+  font-size: 14px;
+}
+
+.splitSection {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.leftText {
+  flex: 1;
+  min-width: 280px;
+}
+
+.rightForm {
+  flex: 1;
+  min-width: 300px;
+}
+
+.template1 {
+  padding: 40px;
+  border-radius: 20px;
+  max-width: 700px;
+  margin: auto;
+}
+
+.template1 .title {
+  font-size: 30px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 16px;
+}
+
+.template1 .description {
+  font-size: 17px;
+  color: #555;
+  margin-bottom: 32px;
+  line-height: 1.6;
+}
+
+.template2 {
+  display: flex;
+  gap: 40px;
+  border-radius: 24px;
+  padding: 40px 50px;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 950px;
+  margin: auto;
+}
+
+.template2 .leftText {
+  flex: 1;
+}
+
+.template2 .leftText .title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #2c3e50;
+  margin-bottom: 14px;
+}
+
+.template2 .leftText .description {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #555;
+}
+
+.template2 .rightForm {
+  flex: 1;
+  max-width: 450px;
+}
+
+.template3 .card {
+  padding: 48px 36px;
+  border-radius: 20px;
+  max-width: 600px;
+  margin: auto;
+  text-align: center;
+}
+
+.template3 .card .title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1f3b66;
+  margin-bottom: 12px;
+}
+
+.template3 .card .description {
+  font-size: 16px;
+  color: #2e2e2e;
+  margin-bottom: 30px;
+  line-height: 1.5;
+}
+
+@media screen and (max-width: 768px) {
+  .contactSection {
+    padding: 20px;
   }
-  
   .title {
-    font-size: 28px;
-    font-weight: 800;
-    color: var(--text-color, #333);
-    margin-bottom: 12px;
+    font-size: 24px;
   }
-  
   .description {
-    font-size: 18px;
-    color: var(--text-color, #333);
-    margin-bottom: 24px;
-    line-height: 1.5;
+    font-size: 16px;
   }
-  
-  .contactForm {
-    display: flex;
+  .splitSection {
     flex-direction: column;
-    gap: 16px;
+    text-align: center;
   }
-  
+}
+
+@media screen and (max-width: 768px) {
+  .template2 {
+    flex-direction: column;
+    padding: 30px 20px;
+    text-align: center;
+  }
+
+  .template2 .leftText {
+    text-align: center;
+  }
+
+  .template2 .rightForm {
+    width: 100%;
+  }
+
+  .template2 .leftText .title {
+    font-size: 24px;
+  }
+
+  .template2 .leftText .description {
+    font-size: 15px;
+  }
+
   .contactForm input,
   .contactForm textarea {
-    width: 100%;
-    padding: 12px 15px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 16px;
-    background: #fff;
-    color: var(--text-color, #333);
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    font-size: 15px;
+    padding: 10px 14px;
   }
-  
-  .contactForm input:focus,
-  .contactForm textarea:focus {
-    border-color: var(--primary-color, #007bff);
-    box-shadow: 0 0 10px rgba(0, 123, 255, 0.15);
-    outline: none;
-  }
-  
-  .contactForm textarea {
-    resize: none;
-    height: 120px;
-  }
-  
+
   .submitButton {
-    color: var(--text-color, #ffffff);
-    padding: 14px;
-    border: none;
-    border-radius: 8px;
-    font-size: 18px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.3s ease, transform 0.3s ease;
-    background-color: var(--tertiary-color);
-    background-image: var(--tertiary-gradient);
-    margin-top: 10px;
+    font-size: 16px;
+    padding: 12px;
   }
-  
-  .submitButton:hover {
-    background-color: var(--secondary-color);
-    background-image: var(--secondary-gradient);
-    transform: translateY(-3px);
+}
+
+@container (max-width: 768px) {
+  .template2 {
+    flex-direction: column;
+    padding: 30px 20px;
+    text-align: center;
   }
-  
-  .submitButton:active {
-    transform: translateY(1px);
+
+  .template2 .leftText {
+    text-align: center;
   }
-  
-  @media screen and (max-width: 768px) {
-    .contactSection {
-      margin-top: 10%;
-      margin-bottom: 10%;
-      max-width: 90%;
-      padding: 20px;
-    }
-  
-    .title {
-      font-size: 24px;
-    }
-  
-    .description {
-      font-size: 16px;
-    }
-  
-    .submitButton {
-      font-size: 16px;
-      padding: 12px;
-    }
+
+  .template2 .rightForm {
+    width: 100%;
   }
-  
+
+  .template2 .leftText .title {
+    font-size: 24px;
+  }
+
+  .template2 .leftText .description {
+    font-size: 15px;
+  }
+
+  .contactForm input,
+  .contactForm textarea {
+    font-size: 15px;
+    padding: 10px 14px;
+  }
+
+  .submitButton {
+    font-size: 16px;
+    padding: 12px;
+  }
+}
+
+/* ---------- אפקט כללי על שדות ---------- */
+.contactForm input,
+.contactForm textarea {
+  transition: border .25s ease, background .25s ease, box-shadow .25s ease;
+}
+
+.contactForm input:focus,
+.contactForm textarea:focus {
+  border-color: var(--tertiary-color);
+  box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.15);
+  outline: none;
+}
+
+/* ---------- Template 1 – “Soft Card” ---------- */
+.template1 {
+  background: #ffffff;
+  border-radius: 26px;
+  box-shadow: 0 14px 42px rgba(0, 0, 0, 0.08);
+  padding: 60px 50px;
+}
+
+.template1::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 26px;
+  pointer-events: none;
+}
+
+/* ---------- Template 2 – Split עם פס צבעוני ---------- */
+.template2 {
+  position: relative;
+  overflow: hidden;
+}
+
+.template2::after {
+  content: "";
+  position: absolute;
+  left: -120px;
+  top: -60px;
+  width: 240px;
+  height: 140%;
+  opacity: 0.15;
+  transform: rotate(-12deg);
+  pointer-events: none;
+}
+
+/* ---------- Template 3 – Glass Card ---------- */
+.template3 .card {
+  backdrop-filter: blur(14px);
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.template3 .card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* ---------- אנימציית ריחוף על כפתור ---------- */
+.submitButton {
+  transition: background .3s ease, transform .3s ease, box-shadow .3s ease;
+}
+
+.submitButton:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 10px 22px rgba(0,0,0,.12);
+}
+
+.submitButton:active {
+  transform: translateY(0);
+  box-shadow: 0 6px 16px rgba(0,0,0,.12);
+}
+
+/* ---------- חצים – יישור סופי ---------- */
+.arrowButtons { z-index: 6; }

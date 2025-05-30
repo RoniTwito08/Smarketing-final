@@ -1,75 +1,222 @@
-.galleryContainer {
-    max-width: 1200px;
-    margin: 5% auto 0 auto;
-    padding: 20px;
-    border-radius: 12px;
-  }
-  
-  .title {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
-  }
-  
-  .imageGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 10px;
-    justify-items: center; 
-  }
-  
-  .imageBox {
-    position: relative;
-    width: 100%; 
-    max-width: 300px; 
-    aspect-ratio: 1 / 1; 
-    border-radius: 8px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    transition: 0.3s;
-  }
-  
-  .imageBox:hover {
-    background: rgba(0, 123, 255, 0.1);
-  }
-  
-  .uploadInput {
-    display: none;
-  }
-  
-  .uploadLabel {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-  }
-  
-  .uploadText {
-    font-size: 30px;
-    color: black;
-  }
-  
-  .image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 8px;
-  }
-  
-  @media (max-width: 768px) {
-    .imageGrid {
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .imageGrid {
-      grid-template-columns: 1fr;
-    }
-  }
-  
+:root {
+  --primary-color: #ffffff;
+  --secondary-color: #ffffff;
+  --tertiary-color: #1e90ff;
+  --text-color: #000000;
+}
+
+.galleryWrapper {
+  position: relative;
+  max-width: 1300px;
+  margin: 80px auto;
+  padding: 20px;
+  overflow: hidden;
+}
+
+/* חצים – עיצוב אחיד כמו בגלריה */
+.arrowButtons {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  transform: translateY(-50%);
+  padding: 0 12px;
+  pointer-events: none;
+  z-index: 4;
+}
+
+.arrowButtons button {
+  pointer-events: auto;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  background: #ffffff;
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  cursor: pointer;
+}
+
+.wrapper:hover .arrowButtons button {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.arrowButtons button:hover {
+  background: var(--primary-color);
+  color: #ffffff;
+  transform: scale(1.1);
+}
+
+
+.imageBox,
+.smallImageBox,
+.masonryItem,
+.largeImage,
+.largeTopImage,
+.thumbnailBox,
+.halfImageBox,
+.fullImageBox {
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .35s ease;
+}
+
+.imageBox::after,
+.smallImageBox::after,
+.masonryItem::after,
+.largeImage::after,
+.largeTopImage::after,
+.thumbnailBox::after,
+.halfImageBox::after,
+.fullImageBox::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 0%, rgba(0,0,0,.35) 100%);
+  opacity: 0;
+  transition: opacity .35s ease;
+}
+
+.imageBox:hover .image,
+.smallImageBox:hover .image,
+.masonryItem:hover .image,
+.largeImage:hover .image,
+.largeTopImage:hover .image,
+.thumbnailBox:hover .image,
+.halfImageBox:hover .image,
+.fullImageBox:hover .image { transform: scale(1.07); }
+
+.imageBox:hover::after,
+.smallImageBox:hover::after,
+.masonryItem:hover::after,
+.largeImage:hover::after,
+.largeTopImage:hover::after,
+.thumbnailBox:hover::after,
+.halfImageBox:hover::after,
+.fullImageBox:hover::after { opacity: 1; }
+
+.gridTemplate {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.mainSideTemplate {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.largeImage { flex: 2 1 60%; aspect-ratio: 16/9; }
+.sideImages { flex: 1 1 35%; display: flex; flex-direction: column; gap: 16px; }
+.smallImageBox { aspect-ratio: 16/9; }
+
+.masonryTemplate {
+  column-count: 3;
+  column-gap: 18px;
+}
+@media (max-width:1000px){ .masonryTemplate{column-count:2;} }
+@media (max-width:600px){ .masonryTemplate{column-count:1;} }
+
+.masonryItem { break-inside: avoid; margin: 0 0 18px 0; }
+
+.collageTemplate {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 22px;
+  justify-content: center;
+}
+.collageItem {
+  width: 240px;
+  height: 160px;
+  transform: rotate(calc(var(--r) * 1deg));
+  transition: transform .35s ease;
+}
+.collageItem:hover { transform: rotate(0deg) scale(1.05); }
+
+.featuredWithThumbs { max-width: 1100px; margin: 0 auto; }
+.largeTopImage { height: 440px; margin-bottom: 24px; }
+.thumbnailRow { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; }
+.thumbnailBox { width: 260px; height: 180px; }
+
+.row { display: flex; gap: 18px; }
+.halfImageBox { flex: 1; height: 200px; }
+.fullImageBox { flex: 1; height: 200px; }
+
+@media (max-width:1024px) {
+  .largeImage { flex: 1 1 100%; }
+  .sideImages { flex-direction: row; flex-wrap: wrap; }
+  .smallImageBox { flex: 1 1 48%; }
+  .largeTopImage { height: 320px; }
+  .thumbnailBox { height: 160px; width: 46%; }
+}
+
+@media (max-width:600px) {
+  .gridTemplate { grid-template-columns: 1fr; }
+  .sideImages { flex-direction: column; }
+  .smallImageBox,
+  .thumbnailBox { width: 100%; }
+  .largeTopImage { height: 220px; }
+  .thumbnailBox { height: 140px; }
+}
+
+/* חצים – סגנון אחיד */
+.arrowButtons {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  transform: translateY(-50%);
+  padding: 0 12px;
+  pointer-events: none;
+  z-index: 4;
+}
+
+.arrowButtons button {
+  pointer-events: auto;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  background: #ffffff;
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  cursor: pointer;
+}
+
+.galleryWrapper:hover .arrowButtons button {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.arrowButtons button:hover {
+  background: var(--primary-color);
+  color: #ffffff;
+  transform: scale(1.1);
+}
