@@ -80,10 +80,30 @@ const getGoogleCustomerIdByUserId = async (
   }
 };
 
+const getUserByEmail = async (req: Request, res: Response) => {
+  const email = req.params.email;
+  try {
+    console.log("before fetching user by email:", email);
+    const user = await userModel.findOne({ email });
+
+    console.log("getUserByEmail - user:", user);
+
+    if (!user) {
+      return res.status(404).json({ exists: false });
+    }
+
+    return res.status(200).json({ exists: true });
+  } catch (error) {
+    console.error("Error fetching user by email:", error);
+    return res.status(500).json({ message: "Server error", exists: false });
+  }
+};
+
 export default {
   getUserById,
   deleteUserById,
   getAllUsers,
   getEmailById,
   getGoogleCustomerIdByUserId,
+  getUserByEmail,
 };

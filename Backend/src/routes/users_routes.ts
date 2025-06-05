@@ -29,6 +29,10 @@ import { authMiddleware } from "../controllers/auth_controller";
 
 router.get("/", usersController.getAllUsers);
 
+router.get("/email/:email", (req, res) => {
+  usersController.getUserByEmail(req, res);
+});
+
 // /**
 //  * @swagger
 //  * /users:
@@ -105,7 +109,7 @@ router.delete("/:id", authMiddleware, (req, res) => {
   usersController.deleteUserById(req, res);
 });
 
-router.get("/email/:id", usersController.getEmailById);
+// router.get("/email/:id", usersController.getEmailById);
 
 router.get("/google-customer-id/:userId", async (req, res, next) => {
   try {

@@ -9,6 +9,7 @@ import { loginUser, googleSignin } from "../../../services/api";
 import { useAuth } from "../../../context/AuthContext";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import { AuthResponse } from "../../../types/user";
+import { checkUserExists } from "../../../services/api";
 
 type LoginInputs = {
   email: string;
@@ -74,11 +75,15 @@ const LoginForm: React.FC = () => {
     }
   };
 
+  interface GoogleSigninResponse extends AuthResponse {
+    isNewUser: boolean;
+  }
+
   const googleResponseMessage = async (
     credentialResponse: CredentialResponse
   ) => {
     try {
-      const res: AuthResponse = await googleSignin(credentialResponse);
+      const res: GoogleSigninResponse = await googleSignin(credentialResponse);
 
       if (res.accessToken) {
         const profilePicUrl = res.user.profilePicture
@@ -102,7 +107,14 @@ const LoginForm: React.FC = () => {
           res.accessToken
         );
 
-        navigate("/profile", { replace: true });
+        if (res.isNewUser) {
+          // משתמש חדש – נשלח למסך רישום
+          setTimeout(() => {
+            navigate("/stepper");
+          }, 1500);
+          return;
+        } else navigate("/profile", { replace: true });
+        return;
       } else {
         toast.error("ההתחברות עם גוגל נכשלה, נסה שוב מאוחר יותר.");
         console.error(" No accessToken received from backend");
