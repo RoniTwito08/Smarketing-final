@@ -57,7 +57,11 @@ const googleSignin = async (req: Request, res: Response): Promise<void> => {
     const email = payload.email;
     let user = await userModel.findOne({ email });
 
+    let isNewUser = false;
+
     if (!user) {
+      isNewUser = true;
+
       const randomPassword = crypto.randomBytes(16).toString("hex");
 
       user = await userModel.create({
@@ -109,6 +113,7 @@ const googleSignin = async (req: Request, res: Response): Promise<void> => {
           : null,
       },
       accessToken: tokens.accessToken,
+      isNewUser,
     });
   } catch (err: any) {
     res.status(400).send({ message: err.message });
@@ -477,44 +482,40 @@ export default {
   createToken,
 };
 
-
-interface Pizza{
-prepare(): void;
+interface Pizza {
+  prepare(): void;
 }
 
-class pizzaMargherita implements Pizza{
-    prepare(): void {
-    }
+class pizzaMargherita implements Pizza {
+  prepare(): void {}
 }
-class pizzaPepperoni implements Pizza{
-    prepare(): void {
-    }
+class pizzaPepperoni implements Pizza {
+  prepare(): void {}
 }
-class pizzaFectory{
-    static createPizza(type: string): Pizza {
-        switch (type.toLowerCase()) {
-            case "margherita":
-                return new pizzaMargherita();
-            case "pepperoni":
-                return new pizzaPepperoni();
-            default:
-                throw new Error("Unknown pizza type");
-        }
+class pizzaFectory {
+  static createPizza(type: string): Pizza {
+    switch (type.toLowerCase()) {
+      case "margherita":
+        return new pizzaMargherita();
+      case "pepperoni":
+        return new pizzaPepperoni();
+      default:
+        throw new Error("Unknown pizza type");
     }
+  }
 }
-class Singelton{
-    private static instance: Singelton | null = null;
-    private constructor() {
-        // private constructor to prevent instantiation
-    }
+class Singelton {
+  private static instance: Singelton | null = null;
+  private constructor() {
+    // private constructor to prevent instantiation
+  }
 
-    public static getInstance(): Singelton {
-        if (this.instance === null) {
-            this.instance = new Singelton();
-        }
-        return this.instance;
+  public static getInstance(): Singelton {
+    if (this.instance === null) {
+      this.instance = new Singelton();
     }
+    return this.instance;
+  }
 
-    public doSomething(): void {
-    }
+  public doSomething(): void {}
 }

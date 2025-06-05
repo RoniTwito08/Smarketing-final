@@ -41,11 +41,15 @@ export const loginUser = async (email: string, password: string) => {
   }
 };
 
+interface GoogleSigninResponse extends AuthResponse {
+  isNewUser: boolean;
+}
+
 export const googleSignin = async (
   credentialResponse: CredentialResponse
-): Promise<AuthResponse> => {
+): Promise<GoogleSigninResponse> => {
   try {
-    const response = await api.post<AuthResponse>(
+    const response = await api.post<GoogleSigninResponse>(
       "/auth/google",
       credentialResponse
     );
@@ -106,6 +110,19 @@ export const usersService = {
       throw error.response?.data || "Failed to update profile";
     }
   },
+};
+
+// בדיקה אם המשתמש קיים לפי מייל
+export const checkUserExists = async (email: string): Promise<boolean> => {
+  const res = await fetch(`${API_BASE_URL}/users/email/${email}`);
+  console.log("checkUserExists response:", res);
+
+  if (!res.ok) return false;
+
+  const data = await res.json();
+  console.log("checkUserExists data:", data);
+
+  return data.exists === true;
 };
 
 export default api;
