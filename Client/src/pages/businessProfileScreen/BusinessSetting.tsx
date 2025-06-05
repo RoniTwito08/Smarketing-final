@@ -23,6 +23,11 @@ export const BusinessSetting = () => {
     // formState: { errors },
   } = useForm<FormValues>();
 
+  const selectedBusinessField = useWatch({
+    control,
+    name: "businessField",
+  });
+
   // const socialPlatforms = [
   //   "Facebook",
   //   "Instagram",
@@ -41,6 +46,19 @@ export const BusinessSetting = () => {
     "עורך דין",
     "מטפל הוליסטי",
     "מורה פרטי",
+    "צלם",
+    "קוסמטיקאית",
+    "בונה אתרים",
+    "מפעיל סדנאות",
+    "מטפל רגשי",
+    "נטורופת",
+    "מנחה הורים",
+    "יועץ עסקי",
+    "ספר / מעצב שיער",
+    "מנהל מדיה חברתית",
+    "מעצבת פנים",
+    "יועצת תזונה",
+    "אחר", // כדי להפעיל שדה טקסט
   ];
 
   const onSubmit = async (data: Partial<FormValues>) => {
@@ -188,6 +206,21 @@ export const BusinessSetting = () => {
               )}
             />
           </div>
+
+          {selectedBusinessField === "אחר" && (
+            <div className="businessFieldRow">
+              <label htmlFor="customBusinessField">
+                נא פרט את תחום הפעילות:
+              </label>
+              <Controller
+                name="customBusinessField"
+                control={control}
+                defaultValue=""
+                rules={{ required: "נא לפרט את התחום אם בחרת 'אחר'" }}
+                render={({ field }) => <input {...field} />}
+              />
+            </div>
+          )}
 
           <div className="businessFieldRow">
             <label htmlFor="businessFieldDetails">פרטים נוספים:</label>

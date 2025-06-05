@@ -70,6 +70,10 @@ export function convertBusinessInfoToSlim(raw: any): SlimBusinessInfo {
     businessName: String(info.businessName), //צריך להמיר כי זה סטרינגים של מודיול אז זה שונה ממה שלמעלה
     businessType: String(info.businessType),
     businessField: String(info.businessField),
+    customBusinessField:
+      info.businessField === "אחר" && info.customBusinessField
+        ? String(info.customBusinessField)
+        : undefined,
     businessFieldDetails: info.businessFieldDetails
       ? String(info.businessFieldDetails)
       : undefined,

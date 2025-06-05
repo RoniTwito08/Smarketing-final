@@ -7,6 +7,7 @@ export interface BusinessInfo {
   businessType: String;
   businessAddress?: String;
   businessField: String;
+  customBusinessField?: String;
   businessFieldDetails?: String;
   serviceAreas: String;
   phoneNumber?: String;
@@ -45,6 +46,7 @@ const BusinessInfoModel = new mongoose.Schema<BusinessInfo>({
   businessType: { type: String, required: true },
   businessAddress: { type: String },
   businessField: { type: String, required: true },
+  customBusinessField: { type: String },
   businessFieldDetails: { type: String },
   serviceAreas: { type: String, required: true },
   phoneNumber: { type: String },

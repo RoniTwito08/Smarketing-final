@@ -18,6 +18,19 @@ const Step1: React.FC = () => {
     "עורך דין",
     "מטפל הוליסטי",
     "מורה פרטי",
+    "צלם",
+    "קוסמטיקאית",
+    "בונה אתרים",
+    "מפעיל סדנאות",
+    "מטפל רגשי",
+    "נטורופת",
+    "מנחה הורים",
+    "יועץ עסקי",
+    "ספר / מעצב שיער",
+    "מנהל מדיה חברתית",
+    "מעצבת פנים",
+    "יועצת תזונה",
+    "אחר", // כדי להפעיל שדה טקסט
   ];
 
   const businessType = watch("businessType");
@@ -112,7 +125,93 @@ const Step1: React.FC = () => {
         )}
       </div>
 
-      {/* שורה 3: תחום הפעילות + פרטים נוספים */}
+      {/* שורה 3: תחום הפעילות (בחירה + "אחר" בטקסט) */}
+      <div style={styles.row}>
+        <div style={{ flex: 1 }}>
+          <label style={styles.label} htmlFor="businessField">
+            מה תחום הפעילות של העסק שלך?
+          </label>
+          <Controller
+            name="businessField"
+            control={control}
+            defaultValue=""
+            rules={{ required: "יש לבחור תחום פעילות" }}
+            render={({ field }) => (
+              <select {...field} id="businessField" style={styles.select}>
+                <option value="">בחר תחום</option>
+                {professions.map((profession) => (
+                  <option key={profession} value={profession}>
+                    {profession}
+                  </option>
+                ))}
+              </select>
+            )}
+          />
+          {errors.businessField && (
+            <p style={{ color: "red" }}>
+              {typeof errors.businessField?.message === "string"
+                ? errors.businessField.message
+                : ""}
+            </p>
+          )}
+        </div>
+
+        {/* תיבת טקסט מופיעה רק אם נבחר "אחר" */}
+        {watch("businessField") === "אחר" && (
+          <div style={{ flex: 1, marginRight: "1rem" }}>
+            <label style={styles.label} htmlFor="customBusinessField">
+              נא לציין את התחום
+            </label>
+            <Controller
+              name="customBusinessField"
+              control={control}
+              defaultValue=""
+              rules={{ required: "יש להזין תחום" }}
+              render={({ field }) => (
+                <input
+                  {...field}
+                  type="text"
+                  id="customBusinessField"
+                  placeholder="הקלד את התחום שלך"
+                  style={styles.input}
+                />
+              )}
+            />
+            {errors.customBusinessField && (
+              <p style={{ color: "red" }}>
+                {typeof errors.customBusinessField?.message === "string"
+                  ? errors.customBusinessField.message
+                  : ""}
+              </p>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* שורה נפרדת: פרטים נוספים */}
+      <div style={styles.row}>
+        <div style={{ flex: 1 }}>
+          <label style={styles.label} htmlFor="businessFieldDetails">
+            פרטים נוספים
+          </label>
+          <Controller
+            name="businessFieldDetails"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <input
+                {...field}
+                type="text"
+                id="businessFieldDetails"
+                placeholder="לא חובה"
+                style={styles.input}
+              />
+            )}
+          />
+        </div>
+      </div>
+
+      {/* שורה 3: תחום הפעילות + פרטים נוספים
       <div style={styles.row}>
         <div style={{ flex: 1 }}>
           <label style={styles.label} htmlFor="businessField">
@@ -161,7 +260,7 @@ const Step1: React.FC = () => {
             )}
           />
         </div>
-      </div>
+      </div> */}
 
       {/* שורה 4: מספר טלפון */}
       <div style={styles.row}>

@@ -123,6 +123,7 @@ export interface BusinessInfo {
   businessType: String;
   businessAddress?: String;
   businessField: String;
+  customBusinessField?: String;
   businessFieldDetails?: String;
   serviceAreas: String;
   phoneNumber?: String;
