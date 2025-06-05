@@ -36,6 +36,10 @@ export const createBusinessInfo = async (req: Request, res: Response) => {
       logo,
       businessImages,
       socialLinks: parsedSocialLinks,
+      customBusinessField:
+        formFields.businessField === "אחר"
+          ? formFields.customBusinessField || ""
+          : "",
     });
 
     await businessInfo.save();
@@ -93,6 +97,10 @@ export const updateBusinessInfo = async (req: Request, res: Response) => {
         (file: Express.Multer.File) =>
           `uploads/business_pictures/${file.filename}`
       );
+    }
+
+    if (data.businessField !== "אחר") {
+      data.customBusinessField = undefined;
     }
 
     const updated = await businessInfoModel.findByIdAndUpdate(
