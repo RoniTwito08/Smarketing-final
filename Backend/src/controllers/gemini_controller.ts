@@ -39,8 +39,11 @@ export async function getGeminiKeywordsFromCampaign(
   🏢 Business Information:
   - Business Name: ${business.businessName}
   - Type: ${business.businessType}
-  - Field: ${business.businessField}
-  - Niche: ${business.businessFieldDetails ?? "N/A"}
+- Field: ${
+    business.businessField === "אחר"
+      ? business.customBusinessField || "Other"
+      : business.businessField
+  }  - Niche: ${business.businessFieldDetails ?? "N/A"}
   - Location / Service Areas: ${business.serviceAreas}
   - Description: ${business.serviceDescription}
   - Unique Value: ${business.uniqueService}

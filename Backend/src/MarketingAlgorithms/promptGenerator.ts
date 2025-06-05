@@ -10,7 +10,11 @@ export function generatePrompt(
   return `
 You are a smart marketing assistant.
 
-Business: ${businessInfo.businessName} (${businessInfo.businessField})
+Business: ${businessInfo.businessName} (${
+    businessInfo.businessField === "אחר"
+      ? businessInfo.customBusinessField
+      : businessInfo.businessField
+  })
 Unique Selling Point: ${businessInfo.uniqueService}
 Service Description: ${businessInfo.serviceDescription}
 Location/Service Area: ${businessInfo.serviceAreas}

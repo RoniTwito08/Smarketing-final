@@ -12,6 +12,9 @@ export type FormValues = {
   /* תחום הפעילות של העסק (שדה חובה) */
   businessField: string;
 
+  /* תחום פעילות מותאם אישית (אופציונלי) */
+  customBusinessField?: string;
+
   /* פרטים נוספים על תחום העסק (אופציונלי) */
   businessFieldDetails?: string;
 

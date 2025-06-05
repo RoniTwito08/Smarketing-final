@@ -32,6 +32,7 @@ export interface SlimBusinessInfo {
   businessName: string;
   businessType: string;
   businessField: string;
+  customBusinessField?: string;
   businessFieldDetails?: string;
   serviceAreas: string;
   serviceDescription: string;
