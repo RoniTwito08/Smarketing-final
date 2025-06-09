@@ -356,7 +356,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
           <head>
             <meta charset="UTF-8">
             <title>Landing Page</title>
-            <link rel="stylesheet" href="${config.apiUrl}/dist/assets/index-CjQB-7du.css">
+            <link rel="stylesheet" href="${config.apiUrl}/dist/assets/index-C0_UC-YC.css">
 
             <style>
               :root {
