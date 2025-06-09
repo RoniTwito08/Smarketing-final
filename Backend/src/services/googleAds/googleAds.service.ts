@@ -23,7 +23,7 @@ interface GoogleAdsCreateCustomerResponse {
 }
 
 export class GoogleAdsService {
-  private baseUrl = "https://googleads.googleapis.com/v17";
+  private baseUrl = "https://googleads.googleapis.com/v20";
   private authService: AuthService;
   private customerId: string;
   private developerToken: string;
