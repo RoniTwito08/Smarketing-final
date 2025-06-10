@@ -24,7 +24,6 @@ import { MdCancel } from "react-icons/md";
 import { config } from "../../../config";
 import TourPopup from "../LandingPageSections/TourPopup/TourPopup";
 
-const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:5173";
 interface CampaignForm {
   creatorId: string;
   campaignName: string;
@@ -356,7 +355,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
           <head>
             <meta charset="UTF-8">
             <title>Landing Page</title>
-            <link rel="stylesheet" href="${config.apiUrl}/dist/assets/index-CjQB-7du.css">
+            <link rel="stylesheet" href="${config.apiUrl}/dist/assets/index-C0_UC-YC.css">
 
             <style>
               :root {
@@ -467,7 +466,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
           ...form,
           creatorId: user._id,
           landingPage: savedLandingPage.file,
-          campaignURL: `${BASE_URL}/landing-page/${savedLandingPage.file}`,
+          campaignURL: `/landing-page/${savedLandingPage.file}`,
         };
 
         const campaignResponse = await fetch(`${config.apiUrl}/campaigns`, {

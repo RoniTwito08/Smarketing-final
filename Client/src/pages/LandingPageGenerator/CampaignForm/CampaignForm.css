@@ -221,3 +221,54 @@
 .buttonGroup button .icon {
   order: 1;
 }
+/* ===== רספונסיביות למסכים עד 768px ===== */
+@media (max-width: 768px) {
+  .landingPage-container {
+    padding: 16px;
+    width: 90%;
+  }
+
+  .popup,
+  .popup-form,
+  .popup-landing {
+    width: 95%;
+    max-width: 95vw;
+    padding: 20px;
+    margin-top: 20px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr; /* עמודה אחת במסכים צרים */
+  }
+
+  .form-grid textarea {
+    grid-column: span 1;
+  }
+
+  .popup-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .popup-actions button,
+  .cancel-btn,
+  .submit-btn {
+    width: 100%;
+  }
+
+  .popup-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .buttonGroup {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .buttonGroup button {
+    width: 100%;
+    justify-content: center;
+  }
+}

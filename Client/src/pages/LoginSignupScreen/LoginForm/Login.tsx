@@ -9,7 +9,6 @@ import { loginUser, googleSignin } from "../../../services/api";
 import { useAuth } from "../../../context/AuthContext";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import { AuthResponse } from "../../../types/user";
-import { checkUserExists } from "../../../services/api";
 
 type LoginInputs = {
   email: string;

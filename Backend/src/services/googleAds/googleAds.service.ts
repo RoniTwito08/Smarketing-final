@@ -11,7 +11,7 @@ import dotenv from 'dotenv';
 import campaignModel from "../../models/campaign_modles"; 
 import userModel from "../../models/user_models";
 // Load environment variables
-dotenv.config({ path: './Backend/.env_dev' });
+dotenv.config({ path: './Backend/.env' });
 
 interface GoogleAdsCreateCustomerResponse {
   customerClient: {
@@ -23,7 +23,7 @@ interface GoogleAdsCreateCustomerResponse {
 }
 
 export class GoogleAdsService {
-  private baseUrl = "https://googleads.googleapis.com/v17";
+  private baseUrl = "https://googleads.googleapis.com/v20";
   private authService: AuthService;
   private customerId: string;
   private developerToken: string;
@@ -44,6 +44,8 @@ export class GoogleAdsService {
     };
   }
 
+  baseUrlSite = process.env.BASE_URL || "https://smarketing.cs.colman.ac.il/";
+
   // create ad under campaign
   async createAd(adData: {
     adGroupId: string;
@@ -59,7 +61,7 @@ export class GoogleAdsService {
           create: {
             adGroup: `customers/${targetCustomerId}/adGroups/${adData.adGroupId}`,
             ad: {
-              finalUrls: [adData.finalUrl],
+              finalUrls: [`${this.baseUrlSite}${adData.finalUrl}`],
               responsiveSearchAd: {
                 headlines: adData.headlines.map((headline) => ({ text: headline })),
                 descriptions: adData.descriptions.map((description) => ({ text: description })),

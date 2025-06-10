@@ -1,23 +1,29 @@
 .feed {
   display: flex;
   flex-wrap: wrap;
-  gap: 25px;
+  gap: 24px;
   width: 100%;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .post-card {
-  flex: 0 1 calc(33.333% - 17px); /* 3 columns with gap consideration */
-  min-width: 300px;
+  flex: 1 1 calc(33.333% - 24px); /* שלוש עמודות */
+  min-width: 280px;
+  max-width: 100%;
   background: white;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .post-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transform: translateY(-6px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
 .post-image {
@@ -28,11 +34,35 @@
 
 .post-content {
   padding: 16px;
+  flex-grow: 1;
 }
 
-
-@media (max-width: 768px) {
+/* בינוני – 2 עמודות */
+@media (max-width: 1024px) {
   .post-card {
-    flex: 0 1 100%; /* 1 column */
+    flex: 1 1 calc(50% - 24px);
   }
+}
+
+/* מובייל – עמודה אחת */
+@media (max-width: 640px) {
+  .post-card {
+    flex: 1 1 100%;
+  }
+
+  .post-content {
+    padding: 14px;
+  }
+}
+.load-more-btn {
+  display: block;
+  width: 150px;
+  margin: 20px auto;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
 }
