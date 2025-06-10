@@ -3,13 +3,20 @@ import { runMarketingAlgo } from "../MarketingAlgorithms/index";
 import { findBusinessInfoByUserId } from "../services/businessInfo.service";
 import { GoogleAdsService } from "../services/googleAds/googleAds.service";
 import userModel from "../models/user_models";
-import { Campaign } from "../services/googleAds/types";
+import {
+  AdvertisingChannelType,
+  Campaign,
+  CampaignStatus,
+} from "../services/googleAds/types";
 
+console.log("Cron job is loading");
 
 // everyday at 8:00 AM
 async function handleDailyMarketingJob() {
+  console.log("cron job is running now");
   try {
     const users = await userModel.find({ googleCustomerId: { $ne: null } });
+    console.log("users " + users);
 
     for (const user of users) {
       try {
@@ -31,6 +38,7 @@ async function handleDailyMarketingJob() {
 
         // get all campigns of the user
         const campaigns: Campaign[] = await googleAdsService.getCampaigns();
+
         // for test:
         // enum CampaignStatus {
         //   ENABLED = "ENABLED",
@@ -55,7 +63,7 @@ async function handleDailyMarketingJob() {
         //     advertisingChannelType: AdvertisingChannelType.SEARCH,
         //     startDate: "20250420",
         //     endDate: "20250520",
-        //     // campaignBudget: "customers/5582899409/campaignBudgets/1111111",
+        //     campaignBudget: "customers/5582899409/campaignBudgets/1111111",
         //     biddingStrategyType: "MANUAL_CPC",
         //     manualCpc: { enhancedCpcEnabled: true },
         //     adGroupId: "987654321",
@@ -89,10 +97,11 @@ async function handleDailyMarketingJob() {
         //   },
         // ];
 
+        console.log("campigns" + campaigns);
 
         for (const campaign of campaigns) {
           const result = await runMarketingAlgo(campaign, rawBusiness);
-
+          console.log(result);
 
           const { suggestions } = result;
 
@@ -104,7 +113,6 @@ async function handleDailyMarketingJob() {
             status: campaign.status,
             campaignBudget: campaign.campaignBudget,
           };
-
 
           const keywordIdeas = suggestions.llmSuggestions?.keywordIdeas ?? [];
           const formattedKeywords = keywordIdeas.map((kw) => ({
@@ -124,7 +132,6 @@ async function handleDailyMarketingJob() {
               adGroupId,
               formattedKeywords
             );
-
           } catch (err) {
             console.error(`Failed to update campaign "${campaign.name}":`, err);
           }
@@ -140,4 +147,4 @@ async function handleDailyMarketingJob() {
 
 cron.schedule("0 8 * * *", handleDailyMarketingJob);
 
-void handleDailyMarketingJob();
+// void handleDailyMarketingJob();
