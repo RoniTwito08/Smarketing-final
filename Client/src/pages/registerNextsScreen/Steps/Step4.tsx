@@ -207,6 +207,7 @@ const styles = {
     fontSize: "14px",
   } as const,
   container: {
+    direction: "rtl",
     fontFamily: "Assistant, sans-serif",
     maxWidth: "800px",
     margin: "0 auto",

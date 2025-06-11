@@ -8,8 +8,7 @@ const Step2: React.FC = () => {
     formState: { errors },
   } = useFormContext();
 
-  const onSubmit = () => {
-  };
+  const onSubmit = () => {};
 
   const ageRanges = [
     "0-3",
@@ -146,6 +145,7 @@ const Step2: React.FC = () => {
 
 const styles = {
   container: {
+    direction: "rtl",
     fontFamily: "Assistant, sans-serif",
     maxWidth: "800px",
     margin: "0 auto",

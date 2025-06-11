@@ -25,6 +25,9 @@ const rtlCache = createCache({
 // Create RTL theme
 const rtlTheme = createTheme({
   direction: "rtl",
+  typography: {
+    fontFamily: `"Assistant", "Arial", sans-serif`,
+  },
   // Add any other theme customizations here
   components: {
     MuiTextField: {
