@@ -45,7 +45,7 @@ export const createBusinessInfo = async (req: Request, res: Response) => {
     await businessInfo.save();
 
     return res.status(201).json({
-      message: "Business info created successfully",
+      message: "פרטי עסק נוצרו בהצלחה",
       data: businessInfo,
     });
   } catch (error) {

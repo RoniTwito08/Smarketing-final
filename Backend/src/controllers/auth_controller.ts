@@ -440,7 +440,7 @@ const updateProfile = async (req: Request, res: Response): Promise<void> => {
     await user.save();
 
     res.status(200).send({
-      message: "Profile updated successfully",
+      message: "פרופיל עודכן בהצלחה",
       user: {
         _id: user._id,
         fullName: user.fullName,

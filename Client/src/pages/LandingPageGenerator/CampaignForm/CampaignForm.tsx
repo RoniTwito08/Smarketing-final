@@ -23,6 +23,8 @@ import { IoRocketOutline } from "react-icons/io5";
 import { MdCancel } from "react-icons/md";
 import { config } from "../../../config";
 import TourPopup from "../LandingPageSections/TourPopup/TourPopup";
+import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:5173";
 interface CampaignForm {
@@ -310,32 +312,33 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
   };
 
   const cleanForProduction = (root: HTMLElement) => {
+    root
+      .querySelectorAll(
+        '.actionButtonsContainer, .actionBar, [data-resize-handle], [class*="arrowButtons"]'
+      )
+      .forEach((el) => el.remove());
+    [
+      "data-rbd-draggable-id",
+      "data-rbd-draggable-context-id",
+      "data-rbd-drag-handle-draggable-id",
+      "data-rbd-drag-handle-context-id",
+      "draggable",
+      "tabindex",
+      "role",
+      "aria-describedby",
+    ].forEach((attr) =>
       root
-        .querySelectorAll(
-          '.actionButtonsContainer, .actionBar, [data-resize-handle], [class*="arrowButtons"]'
-        )
-        .forEach(el => el.remove());
-      [
-        "data-rbd-draggable-id",
-        "data-rbd-draggable-context-id",
-        "data-rbd-drag-handle-draggable-id",
-        "data-rbd-drag-handle-context-id",
-        "draggable",
-        "tabindex",
-        "role",
-        "aria-describedby",
-      ].forEach(attr =>
-        root.querySelectorAll(`[${attr}]`).forEach(el => el.removeAttribute(attr))
-      );
+        .querySelectorAll(`[${attr}]`)
+        .forEach((el) => el.removeAttribute(attr))
+    );
 
-      root
-        .querySelectorAll("[contenteditable]")
-        .forEach(el => el.removeAttribute("contenteditable"));
-      root
-        .querySelectorAll("[suppresscontenteditablewarning]")
-        .forEach(el => el.removeAttribute("suppresscontenteditablewarning"));
+    root
+      .querySelectorAll("[contenteditable]")
+      .forEach((el) => el.removeAttribute("contenteditable"));
+    root
+      .querySelectorAll("[suppresscontenteditablewarning]")
+      .forEach((el) => el.removeAttribute("suppresscontenteditablewarning"));
   };
-
 
   const handleSaveLandingPage = async () => {
     setIsSidebarOpen(false);
@@ -344,7 +347,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
       if (!landingPageRef.current) return;
 
       const clone = landingPageRef.current.cloneNode(true) as HTMLElement;
-      cleanForProduction(clone);        
+      cleanForProduction(clone);
       clone
         .querySelectorAll("[data-resize-handle]")
         .forEach((el) => el.remove());
@@ -457,7 +460,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
           }
         );
         if (!saveResponse.ok) {
-          alert("Error saving landing page");
+          toast.success("בעיה בשמירת דף הנחיתה!");
           return;
         }
 
@@ -476,25 +479,28 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
           body: JSON.stringify(campaignData),
         });
         if (!campaignResponse.ok) {
-          alert("Error saving campaign in DB");
+          toast.error("שגיאה בשמירת הקמפיין במסד הנתונים");
           return;
         }
         const campaignResult = await campaignResponse.json();
         console.log("Campaign created:", campaignResult);
 
-        alert("Landing page saved successfully!");
+        toast.success("קמפיין ודף נחיתה נשמרו בהצלחה!");
 
-        if (onSubmit) {
-          onSubmit(form);
-        }
+        setTimeout(() => {
+          if (onSubmit) {
+            onSubmit(form);
+          }
 
-        if (onClose) {
-          onClose();
-        }
-        handleClose();
+          if (onClose) {
+            onClose();
+          }
+
+          handleClose();
+        }, 2000);
       } catch (error) {
         console.error(error);
-        alert("Error saving landing page and campaign");
+        toast.error("שגיאה בשמירת דף הנחיתה והקמפיין");
       }
     }, 500);
   };
@@ -545,6 +551,17 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
 
   return (
     <div>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       {error && <p className="text-red-500">❌ {error}</p>}
 
       {submitted && landingPageData ? (
@@ -604,7 +621,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
                     >
                       {landingPageData.map((section, index) => (
                         <Draggable
-                          draggableId={section.sectionName + index} 
+                          draggableId={section.sectionName + index}
                           index={index}
                           isDragDisabled={["header", "hero", "footer"].includes(
                             section.sectionName || ""
