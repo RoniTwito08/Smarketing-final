@@ -91,7 +91,7 @@ export const deleteCampaign = async (
 
     // מחיקה ללא טיפול בתמונה
     await campaignModel.findByIdAndDelete(req.params.id);
-    res.status(200).json({ message: "Campaign deleted successfully" });
+    res.status(200).json({ message: "קמפיין נמחק בהצלחה" });
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }

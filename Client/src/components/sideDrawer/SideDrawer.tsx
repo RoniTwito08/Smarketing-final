@@ -106,6 +106,9 @@ export default function DashboardLayoutBasic(props: any) {
         xl: 1536,
       },
     },
+    typography: {
+      fontFamily: `"Assistant", "Arial", sans-serif`,
+    },
   });
 
   function useDemoRouter(initialPath: string): Router {
@@ -146,10 +149,8 @@ export default function DashboardLayoutBasic(props: any) {
     "/settings/business-settings": <BusinessSetting />,
     "/plans": <PlansPage />,
     "/feed": <MainFeed />,
-    "/chats":
-      user && accessToken ? 
-        <UserLeads /> : 
-        ( <p> asd</p>)}
+    "/chats": user && accessToken ? <UserLeads /> : <p> asd</p>,
+  };
 
   const CurrentComponent = routeComponents[router.pathname];
 

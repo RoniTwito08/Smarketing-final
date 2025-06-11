@@ -5,8 +5,12 @@ import { useAuth } from "../../context/AuthContext";
 import { config } from "../../config";
 import CampaignCard from "./CampaignCard";
 import CampaignDetailsPopup from "./CampaignDetailsPopup";
+import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 
-export const MyCampaigns: React.FC<{ onSelectCampaign: (campaign: any) => void }> = ({ onSelectCampaign }) => {
+export const MyCampaigns: React.FC<{
+  onSelectCampaign: (campaign: any) => void;
+}> = ({ onSelectCampaign }) => {
   const { user } = useAuth();
   const [campaigns, setCampaigns] = useState<any[]>([]);
   const [selectedCampaign, setSelectedCampaign] = useState<any>(null);
@@ -15,11 +19,13 @@ export const MyCampaigns: React.FC<{ onSelectCampaign: (campaign: any) => void }
     fetchCampaigns();
   }, [user?._id]);
 
-  const fetchCampaigns = async () => { 
+  const fetchCampaigns = async () => {
     if (!user?._id) return;
     try {
-      const response = await fetch(`${config.apiUrl}/campaigns/user/${user._id}?is_stats=true`); 
-      if (!response.ok) throw new Error("Failed to fetch campaigns"); 
+      const response = await fetch(
+        `${config.apiUrl}/campaigns/user/${user._id}?is_stats=true`
+      );
+      if (!response.ok) throw new Error("Failed to fetch campaigns");
       const data = await response.json();
       setCampaigns(data);
     } catch (error) {
@@ -28,7 +34,7 @@ export const MyCampaigns: React.FC<{ onSelectCampaign: (campaign: any) => void }
   };
 
   const handleCampaignClick = (campaign: any) => {
-    onSelectCampaign(campaign);  // Pass the selected campaign to the parent component
+    onSelectCampaign(campaign); // Pass the selected campaign to the parent component
   };
 
   const closePopup = () => {
@@ -37,7 +43,9 @@ export const MyCampaigns: React.FC<{ onSelectCampaign: (campaign: any) => void }
 
   const handleDeleteCampaign = (campaignId: string) => {
     // Remove the deleted campaign from the list
-    setCampaigns((prevCampaigns) => prevCampaigns.filter((campaign) => campaign._id !== campaignId));
+    setCampaigns((prevCampaigns) =>
+      prevCampaigns.filter((campaign) => campaign._id !== campaignId)
+    );
   };
 
   const handleSubmitCampaign = async () => {
@@ -46,37 +54,49 @@ export const MyCampaigns: React.FC<{ onSelectCampaign: (campaign: any) => void }
     try {
       console.log("Submitting campaign:", selectedCampaign);
       const response = await fetch(`${config.apiUrl}/campaigns/google-launch`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           businessName: selectedCampaign.campaignName,
           objective: selectedCampaign.campaginPurpose,
-          userId: user._id
+          userId: user._id,
         }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to launch campaign');
+        throw new Error(errorData.error || "Failed to launch campaign");
       }
 
       const data = await response.json();
-      console.log('Campaign launched successfully:', data);
-      
+      console.log("Campaign launched successfully:", data);
+
       // Close the popup and refresh the campaigns list
       closePopup();
       await fetchCampaigns();
-
     } catch (error) {
-      console.error('Error launching campaign:', error);
-      alert('Failed to launch campaign. Please try again.');
+      console.error("Error launching campaign:", error);
+      setTimeout(() => {
+        toast.error("שגיאה בהשקת הקמפיין. אנא נסה שוב.");
+      }, 2000);
     }
   };
 
   return (
     <div className={styles.campaignsContainer}>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       {campaigns.length > 0 ? (
         <div className={styles.cardsGrid}>
           {campaigns.map((campaign) => (
@@ -100,7 +120,6 @@ export const MyCampaigns: React.FC<{ onSelectCampaign: (campaign: any) => void }
         />
       )}
     </div>
-
   );
 };
 
