@@ -8,6 +8,7 @@ import { config } from "../../config";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import "./BusinessSetting.css";
 // import { useWatch } from "react-hook-form";
+import { ToastContainer } from "react-toastify";
 
 export const BusinessSetting = () => {
   const { user, accessToken } = useAuth();
@@ -141,6 +142,17 @@ export const BusinessSetting = () => {
 
   return (
     <form className="profileContainer" onSubmit={handleSubmit(onSubmit)}>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <div className="userInfo">
         <div className="userDetails">
           <div className="businessFieldRow">
