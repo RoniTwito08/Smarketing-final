@@ -692,7 +692,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
                 />
 
                 <div className="form-group">
-                  <label>תקציב: {Math.round(form.budget)} ₪</label>
+                  <label>תקציב יומי: {Math.round(form.budget)} ₪</label>
                   <input
                     type="range"
                     name="budget"

@@ -17,8 +17,6 @@ import { useAuth } from "../../context/AuthContext";
 import MainFeed from "../../pages/feedPage/MainFeed";
 //import { User } from "../../types/user";
 import { GoogleAdsAnalytics } from "../GoogleAdsAnalytics/GoogleAdsAnalytics";
-import PlansPage from "../../pages/Plans/PlansPage";
-import Plansicon from "@mui/icons-material/Paid";
 
 export default function DashboardLayoutBasic(props: any) {
   const { window } = props;
@@ -49,11 +47,6 @@ export default function DashboardLayoutBasic(props: any) {
       segment: "analytics",
       title: "ניתוחים ונתונים",
       icon: <AnalysisIcon />,
-    },
-    {
-      segment: "plans",
-      title: "מסלול השיווק שלי",
-      icon: <Plansicon />,
     },
     {
       segment: "chats",
@@ -143,8 +136,7 @@ export default function DashboardLayoutBasic(props: any) {
   const routeComponents: { [key: string]: React.ReactNode } = {
     "/analytics": <GoogleAdsAnalytics />,
     "/settings/account": <AccountSettings />,
-    "/settings/business-settings": <BusinessSetting />,
-    "/plans": <PlansPage />,
+    "/settings/business-settings": <BusinessSetting />,  
     "/feed": <MainFeed />,
     "/chats":
       user && accessToken ? 
