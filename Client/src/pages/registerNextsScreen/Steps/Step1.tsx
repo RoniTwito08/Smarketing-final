@@ -380,6 +380,7 @@ const Step1: React.FC = () => {
 
 const styles = {
   container: {
+    direction: "rtl",
     fontFamily: "Assistant, sans-serif",
     maxWidth: "800px",
     margin: "0 auto",

@@ -93,11 +93,27 @@ const MultiStepForm: React.FC = () => {
             borderBottom: "1px solid #e0e0e0",
           }}
         >
+          {/* <Stepper
+  activeStep={activeStep}
+  sx={{ direction: "rtl", flexDirection: "row-reverse" }} // <-- הוספה חשובה
+></Stepper> */}
           {/* Stepper למעלה */}
-          <Stepper activeStep={activeStep}>
+          <Stepper
+            activeStep={activeStep}
+            sx={{ direction: "rtl", flexDirection: "row-reverse" }}
+          >
             {steps.map((_, index) => (
               <Step key={index}>
-                <StepLabel>{stepsHeader[index]}</StepLabel>
+                <StepLabel
+                  sx={{
+                    flexDirection: "row-reverse", // הופך את סדר: מספר -> טקסט
+                    "& .MuiStepLabel-label": {
+                      textAlign: "right",
+                    },
+                  }}
+                >
+                  {stepsHeader[index]}
+                </StepLabel>
               </Step>
             ))}
           </Stepper>
@@ -116,7 +132,15 @@ const MultiStepForm: React.FC = () => {
           </Box>
 
           {/* כפתורי שליטה */}
-          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
+
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row-reverse",
+              justifyContent: "space-between",
+              mt: 2,
+            }}
+          >
             <Button
               color="inherit"
               disabled={activeStep === 0}
