@@ -51,11 +51,6 @@ export default function DashboardLayoutBasic(props: any) {
       icon: <AnalysisIcon />,
     },
     {
-      segment: "plans",
-      title: "מסלול השיווק שלי",
-      icon: <Plansicon />,
-    },
-    {
       segment: "chats",
       title: "לידים",
       icon: <CalendarTodayOutlinedIcon />,
@@ -147,7 +142,6 @@ export default function DashboardLayoutBasic(props: any) {
     "/analytics": <GoogleAdsAnalytics />,
     "/settings/account": <AccountSettings />,
     "/settings/business-settings": <BusinessSetting />,
-    "/plans": <PlansPage />,
     "/feed": <MainFeed />,
     "/chats": user && accessToken ? <UserLeads /> : <p> asd</p>,
   };

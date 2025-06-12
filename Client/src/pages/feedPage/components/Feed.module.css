@@ -14,7 +14,7 @@
   text-align: center !important;
   color: #1e3a8a !important;
   font-size: 1.8rem;
-  font-family: 'Assistant', sans-serif;
+  font-family: "Assistant", sans-serif;
   margin-bottom: 10px;
 }
 
@@ -28,7 +28,7 @@
 .noPostsMessage {
   text-align: center !important;
   color: #475569 !important;
-  font-family: 'Assistant', sans-serif !important;
+  font-family: "Assistant", sans-serif !important;
   font-size: 1.1rem !important;
   padding: 2rem 1rem !important;
   line-height: 1.5;
@@ -42,5 +42,25 @@
   .noPostsMessage {
     font-size: 1rem !important;
     padding: 1.5rem 1rem !important;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    background-color: rgba(0, 0, 0, 0);
+  }
+  to {
+    background-color: rgba(0, 0, 0, 0.6);
+  }
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
 }

@@ -1,0 +1,110 @@
+.creditCardContainer {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 1000px;
+}
+
+.creditCard {
+  width: 320px;
+  height: 200px;
+  border-radius: 15px;
+  background: linear-gradient(180deg, #ff9500, #eccb79);
+  color: #fff;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.6s;
+}
+
+.cardFront,
+.cardBack {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  backface-visibility: hidden;
+  padding: 20px;
+  box-sizing: border-box;
+  border-radius: 15px;
+}
+
+.cardFront {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.chip {
+  width: 50px;
+  height: 30px;
+  background: gold;
+  border-radius: 5px;
+}
+
+.cardNumber {
+  font-size: 18px;
+  letter-spacing: 3px;
+}
+
+.cardHolder,
+.cardExpiry {
+  display: flex;
+  justify-content: space-between;
+}
+
+.cardBack {
+  background: linear-gradient(135deg, #ff9500, #eccb79);
+  transform: rotateY(180deg);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0;
+}
+
+.magneticStripe {
+  background: #333;
+  height: 40px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.cvvSection {
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cvvLabel {
+  color: #ccc;
+  font-size: 12px;
+  margin-right: 10px;
+}
+
+.cvvBox {
+  background-color: #fff;
+  color: #000;
+  padding: 5px;
+  width: 50px;
+  text-align: center;
+  font-size: 16px;
+  border-radius: 5px;
+}
+
+.signature {
+  border-top: 1px solid #ccc;
+  margin-top: 10px;
+  height: 20px;
+  background-color: #fff;
+  color: #000;
+  font-size: 10px;
+  text-align: left;
+  padding: 3px;
+  width: 70%;
+  margin-left: 20px;
+  border-radius: 5px;
+}
+
+.flipped {
+  transform: rotateY(180deg);
+}
