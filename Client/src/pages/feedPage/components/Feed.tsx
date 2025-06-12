@@ -7,6 +7,7 @@ import MyCampaigns from "../../Campaigns/MyCampaigns";
 import CampaignDetailsPopup from "../../Campaigns/CampaignDetailsPopup";
 import { config } from "../../../config";
 import { ToastContainer } from "react-toastify";
+import CreditCard from "../../../components/CreditCard/CreditCard";
 
 const Feed: React.FC<{ className?: string }> = ({ className }) => {
   const { user } = useAuth();
@@ -15,6 +16,7 @@ const Feed: React.FC<{ className?: string }> = ({ className }) => {
   const [refreshFeed, setRefreshFeed] = useState(false); // State for forcing re-render
   const [selectedCampaign, setSelectedCampaign] = useState<any>(null);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [showCreditCard, setShowCreditCard] = useState(false);
 
   useEffect(() => {
     if (refreshFeed) {
@@ -122,9 +124,28 @@ const Feed: React.FC<{ className?: string }> = ({ className }) => {
           קמפיין חדש
         </button>
 
+        <button
+          onClick={() => setShowCreditCard(true)}
+          style={{
+            background: "linear-gradient(135deg, #10b981, #059669)",
+            color: "#fff",
+            border: "none",
+            padding: "12px 24px",
+            fontSize: "1rem",
+            borderRadius: "12px",
+            cursor: "pointer",
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+            transition: "all 0.3s ease",
+            marginBottom: "2rem",
+            display: "inline-block",
+            marginRight: "1rem",
+          }}
+        >
+          הוסף כרטיס אשראי
+        </button>
+
         <MyCampaigns onSelectCampaign={handleSelectCampaign} key={refreshKey} />
       </div>
-
       <CampaignPopup
         open={showPopup}
         onClose={() => setShowPopup(false)}
@@ -137,6 +158,16 @@ const Feed: React.FC<{ className?: string }> = ({ className }) => {
           onSubmit={handleCampaignSubmit}
           onDelete={handleDeleteCampaign}
         />
+      )}
+      {showCreditCard && (
+        <div onClick={() => setShowCreditCard(false)} className="card-backdrop">
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="card-animated enlarged-card"
+          >
+            <CreditCard />
+          </div>
+        </div>
       )}
     </div>
   );
