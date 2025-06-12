@@ -161,13 +161,14 @@ const sidebarTourSteps = [
     document.documentElement.style.setProperty("--font", font);
     onFontChange(font);
   };
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
   return (
     <>
       <motion.div
         className={`${styles.sidebar} ${isOpen ? styles.open : styles.closed}`}
         initial={{ width: "5%" }}
-        animate={{ width: isOpen ? "25%" : "8%" }}
+        animate={{ width: isOpen ? (isMobile ? "50%" : "25%") : (isMobile ? "15%" : "8%") }}
         transition={{ duration: 0.9 }}
       >
         <div className={styles.sidebarHeader}>
