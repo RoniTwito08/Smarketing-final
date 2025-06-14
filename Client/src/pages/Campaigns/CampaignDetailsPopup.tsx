@@ -110,7 +110,10 @@ const CampaignDetailsPopup: React.FC<CampaignDetailsPopupProps> = ({
             onClick={(e) => e.stopPropagation()}
             className="card-animated enlarged-card"
           >
-            <CreditCard />
+            <CreditCard
+              onSave={() => setShowCreditCard(false)} // פונקציה שתתבצע כשנשמור את פרטי התשלום
+              onCancel={() => setShowCreditCard(false)}
+            />
           </div>
         </div>
       )}

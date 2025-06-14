@@ -1,38 +1,16 @@
 import React, { useState } from "react";
 import styles from "./CreditCard.module.css";
+interface CreditCardProps {
+  onSave: () => void;
+  onCancel: () => void;
+}
 
-const CreditCard: React.FC = () => {
+const CreditCard: React.FC<CreditCardProps> = ({ onSave, onCancel }) => {
   const [cardNumber, setCardNumber] = useState("0000 0000 0000 0000");
   const [cardholderName, setCardholderName] = useState("");
   const [expiryDate, setExpiryDate] = useState("MM/YY");
   const [cvv, setCvv] = useState("###");
   const [isFlipped, setIsFlipped] = useState(false);
-
-  const formatCardNumber = (value: string) => {
-    const digits = value.replace(/\D/g, "").slice(0, 16);
-    const padded = digits.padEnd(16, "0");
-    return padded.replace(/(.{4})/g, "$1 ").trim();
-  };
-
-  const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCardNumber(formatCardNumber(e.target.value));
-  };
-
-  const formatExpiry = (value: string) => {
-    const digits = value.replace(/\D/g, "").slice(0, 4);
-    if (digits.length < 2) return digits;
-    if (digits.length < 3) return digits.slice(0, 2) + "/" + digits.slice(2);
-    return digits.slice(0, 2) + "/" + digits.slice(2).padEnd(2, "Y");
-  };
-
-  const handleExpiryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setExpiryDate(formatExpiry(e.target.value));
-  };
-
-  const handleCvvChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.slice(0, 3);
-    setCvv(value.padEnd(3, "#"));
-  };
 
   return (
     <>
@@ -63,16 +41,7 @@ const CreditCard: React.FC = () => {
         </div>
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: "16px",
-          marginTop: "30px",
-          direction: "rtl",
-        }}
-      >
+      <div className={styles.creditCardAllInputs}>
         <input
           placeholder="שם בעל כרטיס"
           maxLength={14}
@@ -80,12 +49,7 @@ const CreditCard: React.FC = () => {
           onChange={(e) =>
             setCardholderName(e.target.value.replace(/[^A-Za-z\s]/g, ""))
           }
-          style={{
-            margin: "8px",
-            padding: "8px",
-            width: "240px",
-            fontFamily: "monospace",
-          }}
+          className={styles.creditCardInput}
         />
 
         <input
@@ -105,12 +69,7 @@ const CreditCard: React.FC = () => {
             const formatted = raw.replace(/(.{4})/g, "$1 ").trim();
             setCardNumber(formatted.padEnd(19, "0"));
           }}
-          style={{
-            margin: "8px",
-            padding: "8px",
-            width: "240px",
-            fontFamily: "monospace",
-          }}
+          className={styles.creditCardInput}
         />
 
         <input
@@ -133,12 +92,7 @@ const CreditCard: React.FC = () => {
             }
             setExpiryDate(formatted.padEnd(5, "MM/YY"));
           }}
-          style={{
-            margin: "8px",
-            padding: "8px",
-            width: "240px",
-            fontFamily: "monospace",
-          }}
+          className={styles.creditCardInput}
         />
 
         <input
@@ -159,13 +113,16 @@ const CreditCard: React.FC = () => {
             const digits = e.target.value.replace(/\D/g, "").slice(0, 3);
             setCvv(digits.padEnd(3, "#"));
           }}
-          style={{
-            margin: "8px",
-            padding: "8px",
-            width: "240px",
-            fontFamily: "monospace",
-          }}
+          className={styles.creditCardInput}
         />
+        <div className={styles.buttonsContainer}>
+          <button onClick={onCancel} className={styles.cancelBtn}>
+            ביטול
+          </button>
+          <button onClick={onSave} className={styles.saveBtn}>
+            שמור
+          </button>
+        </div>
       </div>
     </>
   );
