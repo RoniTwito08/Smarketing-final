@@ -142,6 +142,7 @@ export default function DashboardLayoutBasic(props: any) {
     "/analytics": <GoogleAdsAnalytics />,
     "/settings/account": <AccountSettings />,
     "/settings/business-settings": <BusinessSetting />,
+    "/settings": <AccountSettings />,
     "/feed": <MainFeed />,
     "/chats": user && accessToken ? <UserLeads /> : <p> asd</p>,
   };
@@ -176,6 +177,8 @@ export default function DashboardLayoutBasic(props: any) {
             </div>
           ),
         }}
+        defaultSidebarCollapsed={true}
+        sidebarExpandedWidth={250}
       >
         <PageContainer sx={{ padding: "0px", margin: "0px", width: "100%" }}>
           {CurrentComponent}
