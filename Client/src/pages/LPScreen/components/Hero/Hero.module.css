@@ -10,7 +10,7 @@
 }
 .hero{
   position:relative;
-  min-height:55vh;
+  min-height:80vh;
   padding-top:140px;
   overflow:hidden;
   color:#fff;
@@ -38,7 +38,8 @@
 }
 .primaryBtn{
   padding:16px 40px;
-  background:#3a86ff;
+  background:#183286;
+  color: #ffffff;
   border-radius:12px;
   font-size:1.05rem;
   font-weight:600;
@@ -62,7 +63,7 @@
   overflow:hidden
 }
 .animation{
-  width:100%;
+  width:80%;
   height:auto
 }
 .dots{
