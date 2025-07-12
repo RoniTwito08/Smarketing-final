@@ -1,12 +1,13 @@
 import React from "react";
 import { useFormContext, Controller } from "react-hook-form";
+import styles from "./step1.module.css";
 
 const Step1: React.FC = () => {
   const {
     control,
     watch,
     formState: { errors },
-  } = useFormContext(); // חיבור לקונטקסט של הטופס הראשי
+  } = useFormContext();
 
   const professions = [
     "מעצב גרפי",
@@ -30,18 +31,19 @@ const Step1: React.FC = () => {
     "מנהל מדיה חברתית",
     "מעצבת פנים",
     "יועצת תזונה",
-    "אחר", // כדי להפעיל שדה טקסט
+    "אחר",
   ];
 
   const businessType = watch("businessType");
+  const businessField = watch("businessField");
 
   return (
-    <div style={styles.container}>
-      <h1 style={styles.header}>מידע כללי</h1>
+    <div className={styles.container}>
+      <h1 className={styles.header}>מידע כללי</h1>
 
-      {/* שורה 1: שם העסק */}
-      <div style={styles.formGroup}>
-        <label style={styles.label} htmlFor="businessName">
+      {/* שם העסק */}
+      <div className={styles.formGroup}>
+        <label htmlFor="businessName" className={styles.label}>
           מה שם העסק שלך?
         </label>
         <Controller
@@ -50,27 +52,18 @@ const Step1: React.FC = () => {
           defaultValue=""
           rules={{ required: "שדה חובה" }}
           render={({ field }) => (
-            <input
-              {...field}
-              type="text"
-              id="businessName"
-              style={styles.input}
-            />
+            <input {...field} type="text" id="businessName" className={styles.input} />
           )}
         />
         {errors.businessName && (
-          <p style={{ color: "red" }}>
-            {typeof errors.businessName?.message === "string"
-              ? errors.businessName.message
-              : ""}
-          </p>
+          <p className={styles.error}>{errors.businessName?.message as string}</p>
         )}
       </div>
 
-      {/* שורה 2: סוג העסק + כתובת העסק */}
-      <div style={styles.row}>
-        <div style={{ flex: 1 }}>
-          <label style={styles.label} htmlFor="businessType">
+      {/* סוג העסק + כתובת */}
+      <div className={styles.row}>
+        <div className={styles.col}>
+          <label htmlFor="businessType" className={styles.label}>
             מה סוג העסק שלך?
           </label>
           <Controller
@@ -79,7 +72,7 @@ const Step1: React.FC = () => {
             defaultValue=""
             rules={{ required: "יש לבחור סוג עסק" }}
             render={({ field }) => (
-              <select {...field} id="businessType" style={styles.select}>
+              <select {...field} id="businessType" className={styles.select}>
                 <option value="">בחר סוג עסק</option>
                 <option value="פיזי">עסק פיזי</option>
                 <option value="דיגיטלי">עסק דיגיטלי</option>
@@ -87,17 +80,13 @@ const Step1: React.FC = () => {
             )}
           />
           {errors.businessType && (
-            <p style={{ color: "red" }}>
-              {typeof errors.businessType?.message === "string"
-                ? errors.businessType.message
-                : ""}
-            </p>
+            <p className={styles.error}>{errors.businessType?.message as string}</p>
           )}
         </div>
 
         {businessType === "פיזי" && (
-          <div style={{ flex: 1 }}>
-            <label style={styles.label} htmlFor="businessAddress">
+          <div className={styles.col}>
+            <label htmlFor="businessAddress" className={styles.label}>
               כתובת העסק
             </label>
             <Controller
@@ -106,29 +95,20 @@ const Step1: React.FC = () => {
               defaultValue=""
               rules={{ required: "יש למלא כתובת" }}
               render={({ field }) => (
-                <input
-                  {...field}
-                  type="text"
-                  id="businessAddress"
-                  style={styles.input}
-                />
+                <input {...field} type="text" id="businessAddress" className={styles.input} />
               )}
             />
             {errors.businessAddress && (
-              <p style={{ color: "red" }}>
-                {typeof errors.businessAddress?.message === "string"
-                  ? errors.businessAddress.message
-                  : ""}
-              </p>
+              <p className={styles.error}>{errors.businessAddress?.message as string}</p>
             )}
           </div>
         )}
       </div>
 
-      {/* שורה 3: תחום הפעילות (בחירה + "אחר" בטקסט) */}
-      <div style={styles.row}>
-        <div style={{ flex: 1 }}>
-          <label style={styles.label} htmlFor="businessField">
+      {/* תחום הפעילות + “אחר” */}
+      <div className={styles.row}>
+        <div className={styles.col}>
+          <label htmlFor="businessField" className={styles.label}>
             מה תחום הפעילות של העסק שלך?
           </label>
           <Controller
@@ -137,29 +117,24 @@ const Step1: React.FC = () => {
             defaultValue=""
             rules={{ required: "יש לבחור תחום פעילות" }}
             render={({ field }) => (
-              <select {...field} id="businessField" style={styles.select}>
+              <select {...field} id="businessField" className={styles.select}>
                 <option value="">בחר תחום</option>
-                {professions.map((profession) => (
-                  <option key={profession} value={profession}>
-                    {profession}
+                {professions.map((p) => (
+                  <option key={p} value={p}>
+                    {p}
                   </option>
                 ))}
               </select>
             )}
           />
           {errors.businessField && (
-            <p style={{ color: "red" }}>
-              {typeof errors.businessField?.message === "string"
-                ? errors.businessField.message
-                : ""}
-            </p>
+            <p className={styles.error}>{errors.businessField?.message as string}</p>
           )}
         </div>
 
-        {/* תיבת טקסט מופיעה רק אם נבחר "אחר" */}
-        {watch("businessField") === "אחר" && (
-          <div style={{ flex: 1, marginRight: "1rem" }}>
-            <label style={styles.label} htmlFor="customBusinessField">
+        {businessField === "אחר" && (
+          <div className={styles.col}>
+            <label htmlFor="customBusinessField" className={styles.label}>
               נא לציין את התחום
             </label>
             <Controller
@@ -172,144 +147,68 @@ const Step1: React.FC = () => {
                   {...field}
                   type="text"
                   id="customBusinessField"
-                  placeholder="הקלד את התחום שלך"
-                  style={styles.input}
+                  placeholder="הקלד/י תחום"
+                  className={styles.input}
                 />
               )}
             />
             {errors.customBusinessField && (
-              <p style={{ color: "red" }}>
-                {typeof errors.customBusinessField?.message === "string"
-                  ? errors.customBusinessField.message
-                  : ""}
-              </p>
+              <p className={styles.error}>{errors.customBusinessField?.message as string}</p>
             )}
           </div>
         )}
       </div>
 
-      {/* שורה נפרדת: פרטים נוספים */}
-      <div style={styles.row}>
-        <div style={{ flex: 1 }}>
-          <label style={styles.label} htmlFor="businessFieldDetails">
-            פרטים נוספים
-          </label>
-          <Controller
-            name="businessFieldDetails"
-            control={control}
-            defaultValue=""
-            render={({ field }) => (
-              <input
-                {...field}
-                type="text"
-                id="businessFieldDetails"
-                placeholder="לא חובה"
-                style={styles.input}
-              />
-            )}
-          />
-        </div>
+      {/* פרטים נוספים */}
+      <div className={styles.formGroup}>
+        <label htmlFor="businessFieldDetails" className={styles.label}>
+          פרטים נוספים
+        </label>
+        <Controller
+          name="businessFieldDetails"
+          control={control}
+          defaultValue=""
+          render={({ field }) => (
+            <input
+              {...field}
+              type="text"
+              id="businessFieldDetails"
+              placeholder="לא חובה"
+              className={styles.input}
+            />
+          )}
+        />
       </div>
 
-      {/* שורה 3: תחום הפעילות + פרטים נוספים
-      <div style={styles.row}>
-        <div style={{ flex: 1 }}>
-          <label style={styles.label} htmlFor="businessField">
-            מה תחום הפעילות של העסק שלך?
-          </label>
-          <Controller
-            name="businessField"
-            control={control}
-            defaultValue=""
-            rules={{ required: "יש לבחור תחום פעילות" }}
-            render={({ field }) => (
-              <select {...field} id="businessField" style={styles.select}>
-                <option value="">בחר תחום</option>
-                {professions.map((profession) => (
-                  <option key={profession} value={profession}>
-                    {profession}
-                  </option>
-                ))}
-              </select>
-            )}
-          />
-          {errors.businessField && (
-            <p style={{ color: "red" }}>
-              {typeof errors.businessField?.message === "string"
-                ? errors.businessField.message
-                : ""}
-            </p>
-          )}
-        </div>
-        <div style={{ flex: 1 }}>
-          <label style={styles.label} htmlFor="businessFieldDetails">
-            פרטים נוספים
-          </label>
-          <Controller
-            name="businessFieldDetails"
-            control={control}
-            defaultValue=""
-            render={({ field }) => (
-              <input
-                {...field}
-                type="text"
-                id="businessFieldDetails"
-                placeholder="לא חובה"
-                style={styles.input}
-              />
-            )}
-          />
-        </div>
-      </div> */}
-
-      {/* שורה 4: מספר טלפון */}
-      <div style={styles.row}>
-        <div style={{ flex: 1 }}>
-          <label style={styles.label} htmlFor="phonePrefix">
+      {/* טלפון */}
+      <div className={styles.row}>
+        <div className={styles.colSmall}>
+          <label htmlFor="phonePrefix" className={styles.label}>
             קידומת
           </label>
           <Controller
             name="phonePrefix"
             control={control}
             defaultValue=""
-            rules={{ required: "בחרי קידומת" }}
+            rules={{ required: "בחר קידומת" }}
             render={({ field }) => (
-              <select {...field} id="phonePrefix" style={styles.select}>
-                <option value="">בחרי</option>
-                {[
-                  "050",
-                  "051",
-                  "052",
-                  "053",
-                  "054",
-                  "055",
-                  "058",
-                  "072",
-                  "073",
-                  "074",
-                  "075",
-                  "076",
-                  "077",
-                  "078",
-                ].map((prefix) => (
-                  <option key={prefix} value={prefix}>
-                    {prefix}
+              <select {...field} id="phonePrefix" className={styles.select}>
+                <option value="">בחר</option>
+                {["050","051","052","053","054","055","058","072","073","074","075","076","077","078"].map((p) => (
+                  <option key={p} value={p}>
+                    {p}
                   </option>
                 ))}
               </select>
             )}
           />
           {errors.phonePrefix && (
-            <p style={{ color: "red" }}>
-              {typeof errors.phonePrefix?.message === "string"
-                ? errors.phonePrefix.message
-                : ""}
-            </p>
+            <p className={styles.error}>{errors.phonePrefix?.message as string}</p>
           )}
         </div>
 
-        <div style={{ flex: 2 }}>
-          <label style={styles.label} htmlFor="phoneNumber">
+        <div className={styles.col}>
+          <label htmlFor="phoneNumberBody" className={styles.label}>
             מספר טלפון (7 ספרות)
           </label>
           <Controller
@@ -317,44 +216,33 @@ const Step1: React.FC = () => {
             control={control}
             defaultValue=""
             rules={{
-              required: "מלאי את מספר הטלפון",
-              pattern: {
-                value: /^[0-9]{7}$/,
-                message: "יש להזין בדיוק 7 ספרות",
-              },
+              required: "יש להזין מספר טלפון",
+              pattern: { value: /^[0-9]{7}$/, message: "7 ספרות בלבד" },
             }}
             render={({ field }) => (
               <input
                 {...field}
                 type="text"
-                id="phoneNumber"
-                placeholder="1234567"
+                id="phoneNumberBody"
                 maxLength={7}
+                placeholder="1234567"
+                className={styles.input}
                 onInput={(e) => {
-                  e.currentTarget.value = e.currentTarget.value.replace(
-                    /\D/g,
-                    ""
-                  );
-                  field.onChange(e); // כדי לעדכן את React Hook Form
+                  e.currentTarget.value = e.currentTarget.value.replace(/\D/g, "");
+                  field.onChange(e);
                 }}
-                style={styles.input}
               />
             )}
           />
-
-          {errors.phoneNumber && (
-            <p style={{ color: "red" }}>
-              {typeof errors.phoneNumber?.message === "string"
-                ? errors.phoneNumber.message
-                : ""}
-            </p>
+          {errors.phoneNumberBody && (
+            <p className={styles.error}>{errors.phoneNumberBody?.message as string}</p>
           )}
         </div>
       </div>
 
-      {/* שורה 5: אזורים */}
-      <div style={styles.formGroup}>
-        <label style={styles.label} htmlFor="serviceAreas">
+      {/* אזורי שירות */}
+      <div className={styles.formGroup}>
+        <label htmlFor="serviceAreas" className={styles.label}>
           באילו אזורים או מדינות אתה מציע את השירותים שלך?
         </label>
         <Controller
@@ -363,82 +251,15 @@ const Step1: React.FC = () => {
           defaultValue=""
           rules={{ required: "יש למלא את שדה השירותים" }}
           render={({ field }) => (
-            <textarea {...field} id="serviceAreas" style={styles.textarea} />
+            <textarea {...field} id="serviceAreas" className={styles.textarea} />
           )}
         />
         {errors.serviceAreas && (
-          <p style={{ color: "red" }}>
-            {typeof errors.serviceAreas?.message === "string"
-              ? errors.serviceAreas.message
-              : ""}
-          </p>
+          <p className={styles.error}>{errors.serviceAreas?.message as string}</p>
         )}
       </div>
     </div>
   );
 };
-
-const styles = {
-  container: {
-    direction: "rtl",
-    fontFamily: "Assistant, sans-serif",
-    maxWidth: "800px",
-    margin: "0 auto",
-    padding: "10px",
-    backgroundColor: "transparent",
-    display: "inline-block",
-    maxHeight: "400px", // גובה מקסימלי
-    overflowY: "auto", // גלילה אם התוכן חורג
-  },
-  header: {
-    fontSize: "20px", // פונט קטן יותר
-    fontWeight: "bold",
-    marginBottom: "10px",
-    textAlign: "center",
-  },
-  formGroup: {
-    display: "flex",
-    flexDirection: "column",
-    marginBottom: "10px", // מרווח קטן יותר
-  },
-  row: {
-    display: "flex",
-    gap: "10px", // מרווח קטן יותר בין עמודות
-    marginBottom: "10px", // מרווח קטן יותר בין השורות
-  },
-  label: {
-    fontSize: "14px", // פונט קטן יותר
-    color: "#333",
-    marginBottom: "5px", // מרווח קטן בין תווית לשדה
-  },
-  input: {
-    flex: 1,
-    padding: "8px", // ריפוד קטן יותר
-    fontSize: "12px", // פונט קטן יותר
-    border: "1px solid #ccc",
-    borderRadius: "4px",
-    boxSizing: "border-box",
-  },
-  select: {
-    flex: 1,
-    padding: "8px 24px 8px 8px", // ריפוד ימני נוסף כדי למנוע חפיפה עם החץ
-    fontSize: "12px", // פונט קטן יותר
-    border: "1px solid #ccc",
-    borderRadius: "4px",
-    boxSizing: "border-box",
-    appearance: "none", // להסיר את עיצוב הדפדפן של החץ (לא חובה)
-    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23333' d='M0 0L2 2L4 0z'/%3E%3C/svg%3E")`,
-    backgroundRepeat: "no-repeat",
-    backgroundPosition: "right 8px center",
-  },
-  textarea: {
-    width: "100%",
-    padding: "8px", // ריפוד קטן יותר
-    fontSize: "12px", // פונט קטן יותר
-    border: "1px solid #ccc",
-    borderRadius: "4px",
-    boxSizing: "border-box",
-  },
-} as const;
 
 export default Step1;

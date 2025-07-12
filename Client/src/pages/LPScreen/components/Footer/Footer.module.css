@@ -1,0 +1,142 @@
+:root {
+  --bg-gradient: linear-gradient(135deg, #f9fbff 0%, #ffffff 100%);
+  --primary-text: #212529;
+  --muted-text: #6c757d;
+  --link-hover: #000000;
+  --border-light: #e9ecef;
+}
+
+.footer {
+  background: var(--bg-gradient);
+  direction: rtl;                
+  padding: 3rem 4rem;
+  display: grid;
+  grid-template-columns: auto 1fr; 
+  grid-template-areas:
+    "left right";                 
+  align-items: flex-start;
+  column-gap: 4rem;
+  row-gap: 3rem;
+  font-family: "Inter", sans-serif;
+  color: var(--primary-text);
+}
+
+.leftCol {
+  grid-area: left;
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+  max-width: 320px;
+}
+
+.brandRow {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.brandName img {
+  width: 140px;      
+  height: auto;
+}
+
+.tagline {
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--muted-text);
+}
+
+.copyRow {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.8rem;
+  color: var(--muted-text);
+}
+
+.copyRow a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px dashed transparent;
+  transition: border-color 0.2s ease;
+}
+.copyRow a:hover {
+  border-color: currentColor;
+}
+
+.heart {
+  font-size: 0.9rem;
+}
+
+.rightCol {
+  grid-area: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;        
+  gap: 1.8rem;
+}
+
+.nav {
+  display: flex;
+  gap: 3.2rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.nav a {
+  text-decoration: none;
+  color: var(--primary-text);
+  transition: color 0.2s ease;
+}
+.nav a:hover {
+  color: var(--link-hover);
+}
+
+.social {
+  display: flex;
+  gap: 1.2rem;
+}
+
+.social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--border-light);
+  color: var(--primary-text);
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+.social a:hover {
+  background: var(--primary-text);
+  color: #ffffff;
+  transform: translateY(-3px);
+}
+
+@media (max-width: 900px) {
+  .footer {
+    grid-template-columns: 1fr;     
+    grid-template-areas:
+      "right"
+      "left";                     
+    text-align: center;
+    padding: 2.5rem 2rem;
+  }
+
+  .rightCol,
+  .leftCol {
+    align-items: center;
+  }
+
+  .nav {
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: center;
+  }
+
+  .social {
+    justify-content: center;
+  }
+}

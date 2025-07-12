@@ -14,10 +14,9 @@ import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { businessInfoService } from "../../services/besinessInfo.service";
 
-const steps = [<Step1 />, <Step3 />, <Step4 />, <Step5 />]; // מערך של קומפוננטות
+const steps = [<Step1 />, <Step3 />, <Step4 />, <Step5 />];
 const stepsHeader = [
   "מידע כללי",
-  // "קהל יעד",
   "מוצרים ושירותים",
   "מותג וזיהוי ויזואלי",
   "מטרות עסקיות",
