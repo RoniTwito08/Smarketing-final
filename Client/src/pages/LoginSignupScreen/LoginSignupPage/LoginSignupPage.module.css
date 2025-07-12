@@ -10,15 +10,9 @@
   --white: #ffffff;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
-}
-.container.active .formBox {
-  right: 50%;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: "Poppins", sans-serif; }
+.container.active .formBox { right: 50%; }
+
 .formsPageWrapper {
   min-height: 100vh;
   width: 100vw;
@@ -26,6 +20,7 @@
   align-items: center;
   justify-content: center;
   background: linear-gradient(90deg, var(--light-bg), var(--medium-bg));
+  position: relative;          /*   ⇐ חדש: כדי לעגן את התמונה */
 }
 
 .container {
@@ -300,4 +295,43 @@ p {
   .togglePanel h1 {
     font-size: 30px;
   }
+}
+
+.decorLoginImg,
+.decorRegisterImg {
+  transition: opacity 3s ease;  
+}
+
+.decorLoginImg {
+  position: absolute;
+  top: 80px;       
+  left: 40px;      
+  width: 500px;
+  max-width: 40%;
+  transform: rotate(12deg);
+  z-index: 3;       
+  pointer-events: none;
+}
+
+.decorRegisterImg {
+  position: absolute;
+  top: 78px;        
+  right: 50px;     
+  width: 300px;
+  max-width: 40%;
+  z-index: 3;       
+  pointer-events: none;
+}
+
+.fadeIn  { opacity: 1; }
+.fadeOut { opacity: 0; }
+
+@media (max-width: 650px) {
+  .decorLoginImg{
+    display: none;
+  }
+  .decorRegisterImg {
+    display: none;
+  }
+
 }

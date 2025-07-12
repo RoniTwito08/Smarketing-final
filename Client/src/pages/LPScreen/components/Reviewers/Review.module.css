@@ -1,0 +1,92 @@
+:root {
+  --bg:            #f2f6ff;
+  --card-bg:       #ffffff;
+  --radius:        10px;
+  --shadow:        0 6px 18px rgba(0,0,0,.07);
+  --orbit-size:    640px;  
+  --duration:      60s;    
+}
+
+.section {
+  position: relative;
+  background: var(--bg);
+  padding: 6rem 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.staticRow {
+  display: flex;
+  gap: 2.6rem;
+  z-index: 2;
+  direction: rtl;
+}
+
+.card {
+  width: 270px;
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 2rem 1.6rem 2.6rem;
+  text-align: center;
+  animation: fadeSlide .55s ease;          
+}
+@keyframes fadeSlide {
+  from {opacity: 0; transform: translateY(25px);}
+  to   {opacity: 1; transform: translateY(0);}
+}
+
+.card:hover  { transform: translateY(-6px); }
+
+.avatar { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; margin: 0 auto 1rem;}
+h3      { margin: 0 0 .6rem; font-size: 1.28rem; font-weight: 700;}
+.quote  { font-size: .9rem; line-height: 1.55; color: #555d6c; height: 84px; overflow: hidden;}
+.stars  { margin-top: 1rem; color: #ffb703; letter-spacing: 1px; }
+
+.orbitWrap {
+  position: absolute;
+  width: var(--orbit-size);
+  height: var(--orbit-size);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.spinRight { animation: rotateCW  var(--duration) linear infinite; }
+.spinLeft  { animation: rotateCCW var(--duration) linear infinite; }
+
+@keyframes rotateCW  { from {transform: translate(-50%, -50%) rotate(0);}   to {transform: translate(-50%, -50%) rotate(360deg);} }
+@keyframes rotateCCW { from {transform: translate(-50%, -50%) rotate(0);}   to {transform: translate(-50%, -50%) rotate(-360deg);} }
+
+.orbitCard {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform-origin: 0 0;
+}
+
+.cardOrbit {
+  width: 190px;
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1rem .9rem 1.2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .5rem;
+  transition: transform .3s;
+}
+.cardOrbit:hover { transform: scale(1.08); }
+
+.cardOrbit img  { width: 56px; height: 56px; border-radius: 50%; object-fit: cover;}
+.oName          { font-size: .85rem; font-weight: 600; color: #1c253b;}
+.oStars         { color: #ffb703; font-size: .8rem;}
+.oQuote         { font-size: .75rem; line-height: 1.4; color: #555d6c; height: 48px; overflow: hidden; }
+
+@media (max-width: 860px) {
+  .staticRow { flex-direction: column; align-items: center; }
+  .orbitWrap { display: none; }
+}
