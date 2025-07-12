@@ -7,7 +7,6 @@ import MyCampaigns from "../../Campaigns/MyCampaigns";
 import CampaignDetailsPopup from "../../Campaigns/CampaignDetailsPopup";
 import { config } from "../../../config";
 import { ToastContainer } from "react-toastify";
-import CreditCard from "../../../components/CreditCard/CreditCard";
 
 const Feed: React.FC<{ className?: string }> = ({ className }) => {
   const { user } = useAuth();
@@ -16,7 +15,6 @@ const Feed: React.FC<{ className?: string }> = ({ className }) => {
   const [refreshFeed, setRefreshFeed] = useState(false); // State for forcing re-render
   const [selectedCampaign, setSelectedCampaign] = useState<any>(null);
   const [refreshKey, setRefreshKey] = useState(0);
-  const [showCreditCard, setShowCreditCard] = useState(false);
 
   useEffect(() => {
     if (refreshFeed) {

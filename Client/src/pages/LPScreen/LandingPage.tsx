@@ -17,7 +17,7 @@ export default function LP() {
       <TrackProgressSection
         section="About Us"
         mainImgSrc="/src/assets/explainPicture.png"
-        accentImgSrc="/src/assets/explainPicture.png"
+        accentImgSrc="/src/assets/leads.png"
         onCtaClick={() => console.log("CTA clicked")}
         title="אנחנו מחברים חוכמה לשיווק בעולם הדיגיטלי"
         description="עם פלטפורמה חדשנית וידידותית, אנחנו מאפשרים לעסקים ליצור דפי נחיתה מותאמים אישית, לנהל קמפיינים בלחיצת כפתור ולצפות בתוצאות בזמן אמת. קל, חכם, ומדויק – כך ההצלחה שלך הופכת למציאות. גלול למטה וגלו איך להפוך כל רעיון להזדמנות מנצחת!"
@@ -26,7 +26,7 @@ export default function LP() {
       <TrackProgressSection
         section="?Why Us"
         mainImgSrc="/src/assets/explainPicture.png"
-        accentImgSrc="/src/assets/explainPicture.png"
+        accentImgSrc="/src/assets/buildLP.png"
         onCtaClick={() => console.log("CTA clicked")}
         title="בנו דפי נחיתה והפעילו קמפיינים"
         imagePosition="left"
@@ -54,7 +54,7 @@ export default function LP() {
       <TrackProgressSection
         section="?Why Us"
         mainImgSrc="/src/assets/explainPicture.png"
-        accentImgSrc="/src/assets/explainPicture.png"
+        accentImgSrc="/src/assets/graphs.png"
         onCtaClick={() => console.log("CTA clicked")}
         title= "תהליך פשוט בשלושה שלבים בלבד:"
         imagePosition="right"
