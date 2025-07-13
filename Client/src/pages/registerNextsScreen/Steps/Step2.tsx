@@ -1,14 +1,12 @@
 import React from "react";
 import { useFormContext, Controller } from "react-hook-form";
+import styles from "./step2.module.css";
 
 const Step2: React.FC = () => {
   const {
-    handleSubmit,
     control,
     formState: { errors },
   } = useFormContext();
-
-  const onSubmit = () => {};
 
   const ageRanges = [
     "0-3",
@@ -23,179 +21,102 @@ const Step2: React.FC = () => {
     "60-70",
     "70+",
   ];
+
   const genders = ["זכר", "נקבה", "שני המינים"];
 
   return (
-    <div style={styles.container}>
-      <h1 style={styles.header}>קהל יעד</h1>
-      <div onSubmit={handleSubmit(onSubmit)}>
-        {/* שורה 1: גיל + מין */}
-        <div style={styles.row}>
-          <div style={{ flex: 1 }}>
-            <label style={styles.label} htmlFor="ageGroup">
-              גיל
-            </label>
-            <Controller
-              name="ageGroup"
-              control={control}
-              rules={{ required: "יש לבחור גיל" }}
-              render={({ field }) => (
-                <select {...field} id="ageGroup" style={styles.select}>
-                  <option value="">בחר גיל</option>
-                  {ageRanges.map((range) => (
-                    <option key={range} value={range}>
-                      {range}
-                    </option>
-                  ))}
-                </select>
-              )}
-            />
-            {errors.ageGroup && (
-              <p style={{ color: "red" }}>
-                {typeof errors.ageGroup?.message === "string"
-                  ? errors.ageGroup.message
-                  : ""}
-              </p>
-            )}
-          </div>
-          <div style={{ flex: 1 }}>
-            <label style={styles.label} htmlFor="gender">
-              מין
-            </label>
-            <Controller
-              name="gender"
-              control={control}
-              rules={{ required: "יש לבחור מין" }}
-              render={({ field }) => (
-                <select {...field} id="gender" style={styles.select}>
-                  <option value="">בחר מין</option>
-                  {genders.map((gender) => (
-                    <option key={gender} value={gender}>
-                      {gender}
-                    </option>
-                  ))}
-                </select>
-              )}
-            />
-            {errors.gender && (
-              <p style={{ color: "red" }}>
-                {typeof errors.gender?.message === "string"
-                  ? errors.gender.message
-                  : ""}
-              </p>
-            )}
-          </div>
-        </div>
+    <div className={styles.container}>
+      <h1 className={styles.header}>קהל יעד</h1>
 
-        {/* שורה 2: פלח שוק */}
-        <div style={styles.formGroup}>
-          <label style={styles.label} htmlFor="specificMarketSegment">
-            האם יש פלח שוק ספציפי שאתה מעוניין למקד אליו את הקמפיינים?
+      <div className={styles.row}>
+        <div className={styles.col}>
+          <label htmlFor="ageGroup" className={styles.label}>
+            גיל
           </label>
           <Controller
-            name="specificMarketSegment"
+            name="ageGroup"
             control={control}
-            rules={{ required: "שדה חובה" }}
+            rules={{ required: "יש לבחור גיל" }}
             render={({ field }) => (
-              <textarea
-                {...field}
-                id="specificMarketSegment"
-                style={styles.textarea}
-              />
+              <select {...field} id="ageGroup" className={styles.select}>
+                <option value="">בחר גיל</option>
+                {ageRanges.map((range) => (
+                  <option key={range} value={range}>
+                    {range}
+                  </option>
+                ))}
+              </select>
             )}
           />
-          {errors.specificMarketSegment && (
-            <p style={{ color: "red" }}>
-              {typeof errors.specificMarketSegment?.message === "string"
-                ? errors.specificMarketSegment.message
-                : ""}
-            </p>
+          {errors.ageGroup && (
+            <p className={styles.error}>{errors.ageGroup?.message as string}</p>
           )}
         </div>
 
-        {/* שורה 3: לקוחות טיפוסיים */}
-        <div style={styles.formGroup}>
-          <label style={styles.label} htmlFor="typicalCustomers">
-            אילו לקוחות בדרך כלל משתמשים בשירות הזה?
+        <div className={styles.col}>
+          <label htmlFor="gender" className={styles.label}>
+            מין
           </label>
           <Controller
-            name="typicalCustomers"
+            name="gender"
             control={control}
-            rules={{ required: "שדה חובה" }}
+            rules={{ required: "יש לבחור מין" }}
             render={({ field }) => (
-              <textarea
-                {...field}
-                id="typicalCustomers"
-                style={styles.textarea}
-              />
+              <select {...field} id="gender" className={styles.select}>
+                <option value="">בחר מין</option>
+                {genders.map((g) => (
+                  <option key={g} value={g}>
+                    {g}
+                  </option>
+                ))}
+              </select>
             )}
           />
-          {errors.typicalCustomers && (
-            <p style={{ color: "red" }}>
-              {typeof errors.typicalCustomers?.message === "string"
-                ? errors.typicalCustomers.message
-                : ""}
-            </p>
+          {errors.gender && (
+            <p className={styles.error}>{errors.gender?.message as string}</p>
           )}
         </div>
+      </div>
+
+      {/* פלח שוק */}
+      <div className={styles.formGroup}>
+        <label htmlFor="specificMarketSegment" className={styles.label}>
+          האם יש פלח שוק ספציפי שאתה מעוניין למקד אליו את הקמפיינים?
+        </label>
+        <Controller
+          name="specificMarketSegment"
+          control={control}
+          rules={{ required: "שדה חובה" }}
+          render={({ field }) => (
+            <textarea {...field} id="specificMarketSegment" className={styles.textarea} />
+          )}
+        />
+        {errors.specificMarketSegment && (
+          <p className={styles.error}>
+            {errors.specificMarketSegment?.message as string}
+          </p>
+        )}
+      </div>
+
+      {/* לקוחות טיפוסיים */}
+      <div className={styles.formGroup}>
+        <label htmlFor="typicalCustomers" className={styles.label}>
+          אילו לקוחות בדרך כלל משתמשים בשירות הזה?
+        </label>
+        <Controller
+          name="typicalCustomers"
+          control={control}
+          rules={{ required: "שדה חובה" }}
+          render={({ field }) => (
+            <textarea {...field} id="typicalCustomers" className={styles.textarea} />
+          )}
+        />
+        {errors.typicalCustomers && (
+          <p className={styles.error}>{errors.typicalCustomers?.message as string}</p>
+        )}
       </div>
     </div>
   );
 };
-
-const styles = {
-  container: {
-    direction: "rtl",
-    fontFamily: "Assistant, sans-serif",
-    maxWidth: "800px",
-    margin: "0 auto",
-    padding: "10px",
-    backgroundColor: "transparent",
-    display: "inline-block",
-    maxHeight: "400px",
-    overflowY: "auto",
-  },
-  header: {
-    fontSize: "20px",
-    fontWeight: "bold",
-    marginBottom: "10px",
-    textAlign: "center",
-  },
-  formGroup: {
-    display: "flex",
-    flexDirection: "column",
-    marginBottom: "20px",
-  },
-  row: {
-    display: "flex",
-    gap: "20px",
-    marginBottom: "20px",
-  },
-  label: {
-    fontSize: "14px",
-    color: "#333",
-    marginBottom: "8px",
-  },
-  select: {
-    flex: 1,
-    padding: "8px 24px 8px 8px",
-    fontSize: "12px",
-    border: "1px solid #ccc",
-    borderRadius: "4px",
-    boxSizing: "border-box",
-    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23333' d='M0 0L2 2L4 0z'/%3E%3C/svg%3E")`,
-    backgroundRepeat: "no-repeat",
-    backgroundPosition: "right 8px center",
-    appearance: "none",
-  },
-  textarea: {
-    width: "100%",
-    padding: "8px",
-    fontSize: "12px",
-    border: "1px solid #ccc",
-    borderRadius: "4px",
-    boxSizing: "border-box",
-  },
-} as const;
 
 export default Step2;

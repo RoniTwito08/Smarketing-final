@@ -99,6 +99,9 @@ export default function DashboardLayoutBasic(props: any) {
         xl: 1536,
       },
     },
+    typography: {
+      fontFamily: `"Assistant", "Arial", sans-serif`,
+    },
   });
 
   function useDemoRouter(initialPath: string): Router {
@@ -136,12 +139,12 @@ export default function DashboardLayoutBasic(props: any) {
   const routeComponents: { [key: string]: React.ReactNode } = {
     "/analytics": <GoogleAdsAnalytics />,
     "/settings/account": <AccountSettings />,
-    "/settings/business-settings": <BusinessSetting />,  
+
+    "/settings/business-settings": <BusinessSetting />,
+    "/settings": <AccountSettings />,
     "/feed": <MainFeed />,
-    "/chats":
-      user && accessToken ? 
-        <UserLeads /> : 
-        ( <p> asd</p>)}
+    "/chats": user && accessToken ? <UserLeads /> : <p> asd</p>,
+  };
 
   const CurrentComponent = routeComponents[router.pathname];
 
@@ -173,6 +176,8 @@ export default function DashboardLayoutBasic(props: any) {
             </div>
           ),
         }}
+        defaultSidebarCollapsed={true}
+        sidebarExpandedWidth={250}
       >
         <PageContainer sx={{ padding: "0px", margin: "0px", width: "100%" }}>
           {CurrentComponent}

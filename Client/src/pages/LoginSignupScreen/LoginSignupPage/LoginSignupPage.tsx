@@ -5,48 +5,56 @@ import styles from "./LoginSignupPage.module.css";
 import { useNavigate } from "react-router-dom";
 
 const FormsPage: React.FC = () => {
-  const navigate = useNavigate();
-
-  const handleHomeClick = () => {
-    navigate("/");
-  };
-
   const [isRegister, setIsRegister] = useState(false);
-
-  const toggleForm = (registerMode: boolean) => {
-    setIsRegister(registerMode);
-  };
+  const navigate = useNavigate();
 
   return (
     <div className={styles.formsPageWrapper}>
-      <button className={styles.backButton} onClick={handleHomeClick}>
+      {/* ===== שתי התמונות (קבועות) עם מחלקות Fade ===== */}
+      <img
+        src="/src/assets/login.png"
+        alt=""
+        className={`${styles.decorLoginImg} ${
+          isRegister ? styles.fadeOut : styles.fadeIn
+        }`}
+      />
+      <img
+        src="/src/assets/register.png"
+        alt=""
+        className={`${styles.decorRegisterImg} ${
+          isRegister ? styles.fadeIn : styles.fadeOut
+        }`}
+      />
+
+      {/* כפתור חזרה */}
+      <button className={styles.backButton} onClick={() => navigate("/")}>
         &larr; חזרה לדף הבית
       </button>
 
+      {/* קונטיינר הטפסים */}
       <div className={`${styles.container} ${isRegister ? styles.active : ""}`}>
-        {/* The two forms:  Login & Register */}
+        {/* Login */}
         <div className={`${styles.formBox} ${!isRegister ? "" : "hideLogin"}`}>
-          {/* If we are NOT in register mode, show Login */}
           {!isRegister && <LoginForm />}
         </div>
 
+        {/* Register */}
         <div
           className={`${styles.formBox} ${styles.register} ${
             isRegister ? "" : "hideRegister"
           }`}
         >
-          {/* If we are in register mode, show Register */}
           {isRegister && <RegisterForm />}
         </div>
 
-        {/* The big toggler box with panels */}
+        {/* לוח המתגים */}
         <div className={styles.toggleBox}>
           <div className={`${styles.togglePanel} ${styles.toggleLeft}`}>
             <h1>איזה כיף שחזרת!</h1>
             <p>אין עדיין משתמש?</p>
             <button
-              className={`btn ${styles.btn} registerBtn`}
-              onClick={() => toggleForm(true)}
+              className={`btn ${styles.btn}`}
+              onClick={() => setIsRegister(true)}
             >
               הצטרף עכשיו
             </button>
@@ -55,8 +63,8 @@ const FormsPage: React.FC = () => {
             <h1>הצטרף אלינו!</h1>
             <p>יש כבר משתמש?</p>
             <button
-              className={`btn ${styles.btn} loginBtn`}
-              onClick={() => toggleForm(false)}
+              className={`btn ${styles.btn}`}
+              onClick={() => setIsRegister(false)}
             >
               התחבר
             </button>

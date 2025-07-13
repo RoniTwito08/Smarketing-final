@@ -3,7 +3,7 @@ import styles from "./EditProfileModal.module.css";
 import { updateProfile } from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
 import { toast } from "react-toastify";
-
+import { ToastContainer } from "react-toastify";
 interface EditProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -64,6 +64,17 @@ export const EditProfileModal = ({
 
   return (
     <div className={styles.modalOverlay}>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <div className={styles.modal}>
         <h2>עריכת פרטים</h2>
         <form onSubmit={handleSubmit}>

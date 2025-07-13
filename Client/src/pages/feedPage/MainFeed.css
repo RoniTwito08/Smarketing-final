@@ -12,7 +12,7 @@
 h1 {
   text-align: center;
   color: #1e3a8a;
-  font-family: 'Assistant', sans-serif;
+  font-family: "Assistant", sans-serif;
   font-size: 2rem;
   margin-bottom: 20px;
 }
@@ -32,7 +32,9 @@ h1 {
   background: white;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -82,10 +84,12 @@ h1 {
   border: none;
   border-radius: 30px;
   font-size: 1rem;
-  font-family: 'Assistant', sans-serif;
+  font-family: "Assistant", sans-serif;
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(30, 64, 175, 0.2);
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
 }
 
 .load-more-btn:hover {
@@ -94,4 +98,46 @@ h1 {
 }
 .load-more-btn:active {
   transform: translateY(0);
+}
+
+.card-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-in-out forwards;
+}
+
+.card-animated {
+  animation: popInLarge 0.3s ease-in-out forwards;
+}
+
+@keyframes popInLarge {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 600px) {
+  @keyframes popInLarge {
+    0% {
+      transform: scale(0.5);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1.1);
+      opacity: 1;
+    }
+  }
 }
