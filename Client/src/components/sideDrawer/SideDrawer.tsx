@@ -17,8 +17,6 @@ import { useAuth } from "../../context/AuthContext";
 import MainFeed from "../../pages/feedPage/MainFeed";
 //import { User } from "../../types/user";
 import { GoogleAdsAnalytics } from "../GoogleAdsAnalytics/GoogleAdsAnalytics";
-import PlansPage from "../../pages/Plans/PlansPage";
-import Plansicon from "@mui/icons-material/Paid";
 
 export default function DashboardLayoutBasic(props: any) {
   const { window } = props;
@@ -141,6 +139,7 @@ export default function DashboardLayoutBasic(props: any) {
   const routeComponents: { [key: string]: React.ReactNode } = {
     "/analytics": <GoogleAdsAnalytics />,
     "/settings/account": <AccountSettings />,
+
     "/settings/business-settings": <BusinessSetting />,
     "/settings": <AccountSettings />,
     "/feed": <MainFeed />,

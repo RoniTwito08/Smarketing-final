@@ -358,7 +358,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
           <head>
             <meta charset="UTF-8">
             <title>Landing Page</title>
-            <link rel="stylesheet" href="${config.apiUrl}/dist/assets/index-C0_UC-YC.css">
+            <link rel="stylesheet" href="${config.apiUrl}/dist/assets/index-cRtFAP5i.css">
 
             <style>
               :root {
@@ -709,7 +709,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
                 />
 
                 <div className="form-group">
-                  <label>תקציב: {Math.round(form.budget)} ₪</label>
+                  <label>תקציב יומי: {Math.round(form.budget)} ₪</label>
                   <input
                     type="range"
                     name="budget"

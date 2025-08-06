@@ -1,6 +1,6 @@
 import React from "react";
 import { useFormContext, Controller } from "react-hook-form";
-import styles from "./step1.module.css";
+import styles from "./Step1.module.css";
 
 const Step1: React.FC = () => {
   const {

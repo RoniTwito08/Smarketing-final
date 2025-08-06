@@ -2,7 +2,6 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import { ProtectedRoute } from "../components/ProtectedRoute";
 import DashboardLayoutBasic from "../components/sideDrawer/SideDrawer";
-import LandingPage from "../pages/landingPageScreen/LandingPage";
 import LP from "../pages/LPScreen/LandingPage";
 import FormsPage from "../pages/LoginSignupScreen/LoginSignupPage/LoginSignupPage";
 import RegisterBase from "../pages/registerNextsScreen/RegisterBase";
