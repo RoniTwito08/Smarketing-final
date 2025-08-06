@@ -164,14 +164,14 @@ export const GoogleAdsAnalytics: React.FC = () => {
             <Card sx={{ borderRadius: 4, boxShadow: 2, p: 2, background: '#fff', minHeight: 120, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
               <BarChartIcon sx={{ color: '#3b82f6', fontSize: 32, mb: 1 }} />
               <Typography variant="subtitle2" color="text.secondary">לחיצות</Typography>
-              <Typography variant="h5" sx={{ fontWeight: 700 }}>1234</Typography>
+              <Typography variant="h5" sx={{ fontWeight: 700 }}>171</Typography>
             </Card>
           </Grid>
           <Grid item xs={6} md={3}>
             <Card sx={{ borderRadius: 4, boxShadow: 2, p: 2, background: '#fff', minHeight: 120, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
               <TimelineIcon sx={{ color: '#6366f1', fontSize: 32, mb: 1 }} />
               <Typography variant="subtitle2" color="text.secondary">הצגות</Typography>
-              <Typography variant="h5" sx={{ fontWeight: 700 }}>56789</Typography>
+              <Typography variant="h5" sx={{ fontWeight: 700 }}>560</Typography>
             </Card>
           </Grid>
           <Grid item xs={6} md={3}>

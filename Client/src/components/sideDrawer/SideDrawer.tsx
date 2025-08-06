@@ -42,17 +42,17 @@ export default function DashboardLayoutBasic(props: any) {
     },
     {
       segment: "feed",
-      title: "הקמפיינים שלי",
+      title: "",
       icon: <ContactsOutlinedIcon />,
     },
     {
       segment: "analytics",
-      title: "ניתוחים ונתונים",
+      title: "",
       icon: <AnalysisIcon />,
     },
     {
       segment: "chats",
-      title: "לידים",
+      title: "",
       icon: <CalendarTodayOutlinedIcon />,
     },
     {
