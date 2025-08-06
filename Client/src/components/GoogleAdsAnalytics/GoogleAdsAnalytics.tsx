@@ -169,32 +169,44 @@ export const GoogleAdsAnalytics: React.FC = () => {
         <Grid container spacing={3}>
           {/* כרטיסי סטטיסטיקות */}
           <Grid item xs={6} md={3}>
-            <Card sx={{ borderRadius: 4, boxShadow: 2, p: 2, background: '#fff', minHeight: 120, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              <BarChartIcon sx={{ color: '#3b82f6', fontSize: 32, mb: 1 }} />
-              <Typography variant="subtitle2" color="text.secondary">לחיצות</Typography>
-              <Typography variant="h5" sx={{ fontWeight: 700 }}>171</Typography>
-            </Card>
+            <div className="simple-tooltip">
+              <Card sx={{ borderRadius: 4, boxShadow: 2, p: 2, background: '#fff', minHeight: 120, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', transition: 'box-shadow 0.2s, transform 0.2s, border 0.2s, background 0.2s', cursor: 'pointer', '&:hover': { boxShadow: 6, transform: 'scale(1.04)', border: '2px solid #6366f1', background: '#f1f5ff' } }}>
+                <BarChartIcon sx={{ color: '#3b82f6', fontSize: 32, mb: 1 }} />
+                <Typography variant="subtitle2" color="text.secondary">לחיצות</Typography>
+                <Typography variant="h5" sx={{ fontWeight: 700 }}>171</Typography>
+              </Card>
+              <span className="tooltip-text">מספר לחיצות על הקמפיין</span>
+            </div>
           </Grid>
           <Grid item xs={6} md={3}>
-            <Card sx={{ borderRadius: 4, boxShadow: 2, p: 2, background: '#fff', minHeight: 120, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              <TimelineIcon sx={{ color: '#6366f1', fontSize: 32, mb: 1 }} />
-              <Typography variant="subtitle2" color="text.secondary">הצגות</Typography>
-              <Typography variant="h5" sx={{ fontWeight: 700 }}>560</Typography>
-            </Card>
+            <div className="simple-tooltip">
+              <Card sx={{ borderRadius: 4, boxShadow: 2, p: 2, background: '#fff', minHeight: 120, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', transition: 'box-shadow 0.2s, transform 0.2s, border 0.2s, background 0.2s', cursor: 'pointer', '&:hover': { boxShadow: 6, transform: 'scale(1.04)', border: '2px solid #6366f1', background: '#f1f5ff' } }}>
+                <TimelineIcon sx={{ color: '#6366f1', fontSize: 32, mb: 1 }} />
+                <Typography variant="subtitle2" color="text.secondary">הצגות</Typography>
+                <Typography variant="h5" sx={{ fontWeight: 700 }}>482</Typography>
+              </Card>
+              <span className="tooltip-text">כמה פעמים המודעות שלך הוצגו למשתמשים</span>
+            </div>
           </Grid>
           <Grid item xs={6} md={3}>
-            <Card sx={{ borderRadius: 4, boxShadow: 2, p: 2, background: '#fff', minHeight: 120, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              <PieChartIcon sx={{ color: '#06b6d4', fontSize: 32, mb: 1 }} />
-              <Typography variant="subtitle2" color="text.secondary">הוצאה</Typography>
-              <Typography variant="h5" sx={{ fontWeight: 700 }}>$432.10</Typography>
-            </Card>
+            <div className="simple-tooltip">
+              <Card sx={{ borderRadius: 4, boxShadow: 2, p: 2, background: '#fff', minHeight: 120, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', transition: 'box-shadow 0.2s, transform 0.2s, border 0.2s, background 0.2s', cursor: 'pointer', '&:hover': { boxShadow: 6, transform: 'scale(1.04)', border: '2px solid #06b6d4', background: '#e0f7fa' } }}>
+                <PieChartIcon sx={{ color: '#06b6d4', fontSize: 32, mb: 1 }} />
+                <Typography variant="subtitle2" color="text.secondary">הוצאה</Typography>
+                <Typography variant="h5" sx={{ fontWeight: 700 }}>₪432.10</Typography>
+              </Card>
+              <span className="tooltip-text">הסכום הכולל שהוצאת על הקמפיין (בש"ח)</span>
+            </div>
           </Grid>
           <Grid item xs={6} md={3}>
-            <Card sx={{ borderRadius: 4, boxShadow: 2, p: 2, background: '#fff', minHeight: 120, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              <RadarIcon sx={{ color: '#f59e42', fontSize: 32, mb: 1 }} />
-              <Typography variant="subtitle2" color="text.secondary">המרת משתמשים</Typography>
-              <Typography variant="h5" sx={{ fontWeight: 700 }}>56</Typography>
-            </Card>
+            <div className="simple-tooltip">
+              <Card sx={{ borderRadius: 4, boxShadow: 2, p: 2, background: '#fff', minHeight: 120, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', transition: 'box-shadow 0.2s, transform 0.2s, border 0.2s, background 0.2s', cursor: 'pointer', '&:hover': { boxShadow: 6, transform: 'scale(1.04)', border: '2px solid #f59e42', background: '#fff7e6' } }}>
+                <RadarIcon sx={{ color: '#f59e42', fontSize: 32, mb: 1 }} />
+                <Typography variant="subtitle2" color="text.secondary">המרת משתמשים</Typography>
+                <Typography variant="h5" sx={{ fontWeight: 700 }}>56</Typography>
+              </Card>
+              <span className="tooltip-text">כמה משתמשים ביצעו פעולה רצויה (המרה)</span>
+            </div>
           </Grid>
 
           {/* גרפים */}
@@ -265,7 +277,7 @@ export const GoogleAdsAnalytics: React.FC = () => {
           </Grid>
           {/* --- טבלת לידים --- */}
           <Grid item xs={12} md={6}>
-            <Paper sx={{ p: 3, borderRadius: 4, boxShadow: 1, background: '#fff', mb: 4 }}>
+            <Paper sx={{ p: 3, borderRadius: 4, boxShadow: 1, background: '#fff', mb: 4, transition: 'box-shadow 0.2s, transform 0.2s', cursor: 'pointer', '&:hover': { boxShadow: 6, transform: 'scale(1.02)' } }}>
               <Typography variant="h6" fontWeight={700} color="#1e293b" mb={2}>
                 לידים אחרונים
               </Typography>
@@ -301,7 +313,7 @@ export const GoogleAdsAnalytics: React.FC = () => {
           </Grid>
           {/* --- טבלת מילות מפתח --- */}
           <Grid item xs={12} md={6}>
-            <Paper sx={{ p: 3, borderRadius: 4, boxShadow: 1, background: '#fff', mb: 4 }}>
+            <Paper sx={{ p: 3, borderRadius: 4, boxShadow: 1, background: '#fff', mb: 4, transition: 'box-shadow 0.2s, transform 0.2s', cursor: 'pointer', '&:hover': { boxShadow: 6, transform: 'scale(1.02)' } }}>
               <Typography variant="h6" fontWeight={700} color="#1e293b" mb={2}>
                 מילות מפתח - ביצועים
               </Typography>
