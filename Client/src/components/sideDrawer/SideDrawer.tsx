@@ -97,7 +97,7 @@ export default function DashboardLayoutBasic(props: any) {
         xs: 0,
         sm: 600,
         md: 600,
-        lg: 1200,
+        lg: 2500,
         xl: 1536,
       },
     },

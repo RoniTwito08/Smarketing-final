@@ -7,6 +7,7 @@ import {
   Grid,
   Card,
   CardContent,
+  Box,
 } from "@mui/material";
 import GoogleAdsRadarChart from "../charts/GoogleAdsRadarChart";
 import GoogleAdsPieChart from "../charts/GoogleAdsPieChart";
@@ -14,6 +15,10 @@ import GoogleAdsChart from "../charts/GoogleAdsChart";
 import GoogleAdsBarChart from "../charts/GoogleAdsBarChart";
 import { useAuth } from "../../context/AuthContext";
 import { config } from "../../config";
+import BarChartIcon from '@mui/icons-material/BarChart';
+import PieChartIcon from '@mui/icons-material/PieChart';
+import RadarIcon from '@mui/icons-material/TrackChanges';
+import TimelineIcon from '@mui/icons-material/Timeline';
 
 interface DailyStat {
   date: string;
@@ -148,118 +153,108 @@ export const GoogleAdsAnalytics: React.FC = () => {
     })) || [];
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Paper sx={{ p: 3 }}>
-        <Typography variant="h4" gutterBottom>
-          נתוני קמפיינים
+    <Container sx={{ mt: 4, mb: 4 }}>
+      <Paper sx={{ p: { xs: 2, md: 4 }, borderRadius: 5, boxShadow: 3, background: '#f7f8fa' }}>
+        <Typography variant="h4" gutterBottom sx={{ fontWeight: 700, color: '#1e293b', mb: 4, letterSpacing: 0.5 }}>
+          ניתוח ביצועי קמפיינים
         </Typography>
-
         <Grid container spacing={3}>
+          {/* כרטיסי סטטיסטיקות */}
+          <Grid item xs={6} md={3}>
+            <Card sx={{ borderRadius: 4, boxShadow: 2, p: 2, background: '#fff', minHeight: 120, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+              <BarChartIcon sx={{ color: '#3b82f6', fontSize: 32, mb: 1 }} />
+              <Typography variant="subtitle2" color="text.secondary">לחיצות</Typography>
+              <Typography variant="h5" sx={{ fontWeight: 700 }}>1234</Typography>
+            </Card>
+          </Grid>
+          <Grid item xs={6} md={3}>
+            <Card sx={{ borderRadius: 4, boxShadow: 2, p: 2, background: '#fff', minHeight: 120, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+              <TimelineIcon sx={{ color: '#6366f1', fontSize: 32, mb: 1 }} />
+              <Typography variant="subtitle2" color="text.secondary">הצגות</Typography>
+              <Typography variant="h5" sx={{ fontWeight: 700 }}>56789</Typography>
+            </Card>
+          </Grid>
+          <Grid item xs={6} md={3}>
+            <Card sx={{ borderRadius: 4, boxShadow: 2, p: 2, background: '#fff', minHeight: 120, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+              <PieChartIcon sx={{ color: '#06b6d4', fontSize: 32, mb: 1 }} />
+              <Typography variant="subtitle2" color="text.secondary">הוצאה</Typography>
+              <Typography variant="h5" sx={{ fontWeight: 700 }}>$432.10</Typography>
+            </Card>
+          </Grid>
+          <Grid item xs={6} md={3}>
+            <Card sx={{ borderRadius: 4, boxShadow: 2, p: 2, background: '#fff', minHeight: 120, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+              <RadarIcon sx={{ color: '#f59e42', fontSize: 32, mb: 1 }} />
+              <Typography variant="subtitle2" color="text.secondary">המרת משתמשים</Typography>
+              <Typography variant="h5" sx={{ fontWeight: 700 }}>56</Typography>
+            </Card>
+          </Grid>
+
+          {/* גרפים */}
           <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="מספר לקוח"
-              value={customerId}
-              onChange={(e) => setCustomerId(e.target.value)}
-              helperText="פורמט: XXX-XXX-XXXX"
-            />
+            <Typography variant="h5" gutterBottom sx={{ fontWeight: 600, color: '#334155', mt: 4, mb: 2, letterSpacing: 0.2 }}>
+              תצוגה גרפית
+            </Typography>
           </Grid>
 
-          <Grid item xs={12}>
-            <TextField
-              select
-              fullWidth
-              label="בחר קמפיין"
-              value={selectedCampaign}
-              onChange={(e) => setSelectedCampaign(e.target.value)}
-              SelectProps={{ native: true }}
-            >
-              <option value="">בחר קמפיין</option>
-              {Array.isArray(campaigns) &&
-                campaigns.map((campaign) => (
-                  <option key={campaign._id} value={campaign._id}>  
-                    {campaign.campaignName} - {campaign.campaginPurpose} - {campaign.googleCampaignId}
-                  </option>
-                ))}
-            </TextField>
+          <Grid item xs={12} md={6}>
+            <Paper sx={{ p: 3, borderRadius: 4, boxShadow: 1, background: '#fff', height: 350 }}>
+              <Box display="flex" alignItems="center" mb={1} gap={1}>
+                <RadarIcon sx={{ color: '#f59e42' }} />
+                <Typography variant="subtitle1" fontWeight={600}>ביצועי קמפיין (Radar)</Typography>
+              </Box>
+              <GoogleAdsRadarChart data={[
+                { metric: "לחיצות", value: 1234 },
+                { metric: "הצגות", value: 56789 },
+                { metric: "CTR", value: 0.0217 },
+                { metric: "הוצאה", value: 432.10 },
+                { metric: "המרת משתמשים", value: 56 },
+              ]} />
+            </Paper>
           </Grid>
-
-          {/* <Grid item xs={12} sm={6}>
-            <DatePicker
-              label="Start Date"
-              value={startDate}
-              onChange={(date) => setStartDate(date)}
-              slots={{ textField: TextField }}
-              slotProps={{ textField: { fullWidth: true } }}
-            />
+          <Grid item xs={12} md={6}>
+            <Paper sx={{ p: 3, borderRadius: 4, boxShadow: 1, background: '#fff', height: 350 }}>
+              <Box display="flex" alignItems="center" mb={1} gap={1}>
+                <PieChartIcon sx={{ color: '#06b6d4' }} />
+                <Typography variant="subtitle1" fontWeight={600}>פילוח הוצאה/הקלקות/המרות</Typography>
+              </Box>
+              <GoogleAdsPieChart data={[
+                { name: "הוצאה", value: 432.10 },
+                { name: "הקלקות", value: 1234 },
+                { name: "המרות", value: 56 },
+              ]} />
+            </Paper>
           </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <DatePicker
-              label="End Date"
-              value={endDate}
-              onChange={(date) => setEndDate(date)}
-              slots={{ textField: TextField }}
-              slotProps={{ textField: { fullWidth: true } }}
-            />
-          </Grid> */}
-
-          {stats && (
-            <>
-              <Grid item xs={12}>
-                <Card>
-                  <CardContent>
-                    <Typography variant="h6" gutterBottom>
-                      סטטיסטיקות קמפיין
-                    </Typography>
-                    <Grid container spacing={2}>
-                      <Grid item xs={6} md={3}>
-                        <Typography variant="subtitle2">לחיצות</Typography>
-                        <Typography variant="h6">{stats.clicks}</Typography>
-                      </Grid>
-                      <Grid item xs={6} md={3}>
-                        <Typography variant="subtitle2">הצגות</Typography>
-                        <Typography variant="h6">
-                          {stats.impressions}
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={6} md={3}>
-                        <Typography variant="subtitle2">הוצאה</Typography>
-                        <Typography variant="h6">
-                          ${(stats.costMicros / 1_000_000).toFixed(2)}
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={6} md={3}>
-                        <Typography variant="subtitle2">המרת משתמשים</Typography>
-                        <Typography variant="h6">
-                          {stats.conversions}
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                  </CardContent>
-                </Card>
-              </Grid>
-
-              <Grid item xs={12}>
-                <Typography variant="h5" gutterBottom>
-                  תצוגה גרפית
-                </Typography>
-              </Grid>
-
-              <Grid item xs={12}>
-                <GoogleAdsRadarChart data={radarData} />
-              </Grid>
-              <Grid item xs={12}>
-                <GoogleAdsPieChart data={pieData} />
-              </Grid>
-              <Grid item xs={12}>
-                <GoogleAdsChart data={areaData} />
-              </Grid>
-              <Grid item xs={12}>
-                <GoogleAdsBarChart data={barData} />
-              </Grid>
-            </>
-          )}
+          <Grid item xs={12} md={6}>
+            <Paper sx={{ p: 3, borderRadius: 4, boxShadow: 1, background: '#fff', height: 350 }}>
+              <Box display="flex" alignItems="center" mb={1} gap={1}>
+                <TimelineIcon sx={{ color: '#6366f1' }} />
+                <Typography variant="subtitle1" fontWeight={600}>קליקים לאורך זמן</Typography>
+              </Box>
+              <GoogleAdsChart data={[
+                { date: "2024-06-01", value: 100 },
+                { date: "2024-06-02", value: 200 },
+                { date: "2024-06-03", value: 300 },
+                { date: "2024-06-04", value: 250 },
+                { date: "2024-06-05", value: 400 },
+                { date: "2024-06-06", value: 350 },
+                { date: "2024-06-07", value: 500 },
+              ]} />
+            </Paper>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Paper sx={{ p: 3, borderRadius: 4, boxShadow: 1, background: '#fff', height: 350 }}>
+              <Box display="flex" alignItems="center" mb={1} gap={1}>
+                <BarChartIcon sx={{ color: '#3b82f6' }} />
+                <Typography variant="subtitle1" fontWeight={600}>השוואת קליקים/הוצאה לפי יום</Typography>
+              </Box>
+              <GoogleAdsBarChart data={[
+                { campaignId: "1", campaignName: "קמפיין דמה", impressions: 56789, clicks: 1234, cost: 432.10, conversions: 56, date: "2024-06-01" },
+                { campaignId: "1", campaignName: "קמפיין דמה", impressions: 60000, clicks: 1400, cost: 450.00, conversions: 60, date: "2024-06-02" },
+                { campaignId: "1", campaignName: "קמפיין דמה", impressions: 62000, clicks: 1500, cost: 470.00, conversions: 65, date: "2024-06-03" },
+                { campaignId: "1", campaignName: "קמפיין דמה", impressions: 61000, clicks: 1450, cost: 460.00, conversions: 62, date: "2024-06-04" },
+              ]} />
+            </Paper>
+          </Grid>
         </Grid>
       </Paper>
     </Container>
