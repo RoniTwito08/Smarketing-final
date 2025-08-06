@@ -34,6 +34,7 @@ const rtlTheme = createTheme({
       styleOverrides: {
         root: {
           direction: "rtl",
+          
         },
       },
     },
