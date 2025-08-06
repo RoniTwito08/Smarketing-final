@@ -23,7 +23,7 @@ import Plansicon from "@mui/icons-material/Paid";
 export default function DashboardLayoutBasic(props: any) {
   const { window } = props;
   const { user, accessToken } = useAuth();
-  const router = useDemoRouter("/feed");
+  const router = useDemoRouter("/analytics");
   const demoWindow = window ? window() : undefined;
   const { logout } = useAuth();
   // const [selectedChatUser, setSelectedChatUser] = useState<User | null>(null);

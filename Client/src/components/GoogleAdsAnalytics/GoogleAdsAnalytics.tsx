@@ -14,8 +14,8 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  CheckCircleIcon,
-  CancelIcon,
+  CheckCircle,
+  Cancel,
 } from "@mui/material";
 import GoogleAdsRadarChart from "../charts/GoogleAdsRadarChart";
 import GoogleAdsPieChart from "../charts/GoogleAdsPieChart";
@@ -27,8 +27,6 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import PieChartIcon from '@mui/icons-material/PieChart';
 import RadarIcon from '@mui/icons-material/TrackChanges';
 import TimelineIcon from '@mui/icons-material/Timeline';
-import CheckCircle from '@mui/icons-material/CheckCircle';
-import Cancel from '@mui/icons-material/Cancel';
 
 interface DailyStat {
   date: string;
@@ -267,7 +265,7 @@ export const GoogleAdsAnalytics: React.FC = () => {
           </Grid>
           {/* --- טבלת לידים --- */}
           <Grid item xs={12} md={6}>
-            <Paper sx={{ p: 3, borderRadius: 4, boxShadow: 1, background: '#fff', mb: 2 }}>
+            <Paper sx={{ p: 3, borderRadius: 4, boxShadow: 1, background: '#fff', mb: 4 }}>
               <Typography variant="h6" fontWeight={700} color="#1e293b" mb={2}>
                 לידים אחרונים
               </Typography>
@@ -303,7 +301,7 @@ export const GoogleAdsAnalytics: React.FC = () => {
           </Grid>
           {/* --- טבלת מילות מפתח --- */}
           <Grid item xs={12} md={6}>
-            <Paper sx={{ p: 3, borderRadius: 4, boxShadow: 1, background: '#fff', mb: 2 }}>
+            <Paper sx={{ p: 3, borderRadius: 4, boxShadow: 1, background: '#fff', mb: 4 }}>
               <Typography variant="h6" fontWeight={700} color="#1e293b" mb={2}>
                 מילות מפתח - ביצועים
               </Typography>
@@ -314,16 +312,17 @@ export const GoogleAdsAnalytics: React.FC = () => {
                       <TableCell align="right">מילת מפתח</TableCell>
                       <TableCell align="right">מס׳ לחיצות</TableCell>
                       <TableCell align="right">אחוז לחיצות</TableCell>
-                      <TableCell align="right">סטטוס</TableCell>
-                    </TableRow>
+                      <TableCell align="right">עלות</TableCell>
+                      <TableCell align="center">סטטוס</TableCell>
+                    </TableRow> 
                   </TableHead>
                   <TableBody>
                     {[
-                      { keyword: 'קידום אתרים', clicks: 120, ctr: 0.18 },
-                      { keyword: 'פרסום בגוגל', clicks: 90, ctr: 0.09 },
-                      { keyword: 'שיווק דיגיטלי', clicks: 60, ctr: 0.13 },
-                      { keyword: 'קמפיין ממומן', clicks: 30, ctr: 0.05 },
-                      { keyword: 'מודעות חכמות', clicks: 70, ctr: 0.22 },
+                      { keyword: 'קידום אתרים', clicks: 120, ctr: 0.18, cost: 85.50 },
+                      { keyword: 'פרסום בגוגל', clicks: 90, ctr: 0.09, cost: 60.20 },
+                      { keyword: 'שיווק דיגיטלי', clicks: 60, ctr: 0.13, cost: 42.00 },
+                      { keyword: 'קמפיין ממומן', clicks: 30, ctr: 0.05, cost: 19.90 },
+                      { keyword: 'מודעות חכמות', clicks: 70, ctr: 0.22, cost: 55.00 },
                     ].map((row, idx) => {
                       const isGood = row.ctr >= 0.12;
                       return (
@@ -333,14 +332,15 @@ export const GoogleAdsAnalytics: React.FC = () => {
                           <TableCell align="right" style={{ color: isGood ? '#22c55e' : '#ef4444', fontWeight: 700 }}>
                             {(row.ctr * 100).toFixed(1)}%
                           </TableCell>
-                          <TableCell align="right">
+                          <TableCell align="right">₪{row.cost.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</TableCell>
+                          <TableCell align="center">
                             {isGood ? (
-                              <Box display="flex" alignItems="center" gap={0.5} color="#22c55e">
-                                <CheckCircle fontSize="small" /> מעולה
+                              <Box display="flex" alignItems="center" justifyContent="center" gap={0.5} color="#22c55e">
+                                מעולה
                               </Box>
                             ) : (
-                              <Box display="flex" alignItems="center" gap={0.5} color="#ef4444">
-                                <Cancel fontSize="small" /> דרוש שיפור
+                              <Box display="flex" alignItems="center" justifyContent="center" gap={0.5} color="#ef4444">
+                                דרוש שיפור
                               </Box>
                             )}
                           </TableCell>
