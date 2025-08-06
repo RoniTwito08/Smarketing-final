@@ -8,6 +8,14 @@ import {
   Card,
   CardContent,
   Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  CheckCircleIcon,
+  CancelIcon,
 } from "@mui/material";
 import GoogleAdsRadarChart from "../charts/GoogleAdsRadarChart";
 import GoogleAdsPieChart from "../charts/GoogleAdsPieChart";
@@ -19,6 +27,8 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import PieChartIcon from '@mui/icons-material/PieChart';
 import RadarIcon from '@mui/icons-material/TrackChanges';
 import TimelineIcon from '@mui/icons-material/Timeline';
+import CheckCircle from '@mui/icons-material/CheckCircle';
+import Cancel from '@mui/icons-material/Cancel';
 
 interface DailyStat {
   date: string;
@@ -253,6 +263,93 @@ export const GoogleAdsAnalytics: React.FC = () => {
                 { campaignId: "1", campaignName: "קמפיין דמה", impressions: 62000, clicks: 1500, cost: 470.00, conversions: 65, date: "2024-06-03" },
                 { campaignId: "1", campaignName: "קמפיין דמה", impressions: 61000, clicks: 1450, cost: 460.00, conversions: 62, date: "2024-06-04" },
               ]} />
+            </Paper>
+          </Grid>
+          {/* --- טבלת לידים --- */}
+          <Grid item xs={12} md={6}>
+            <Paper sx={{ p: 3, borderRadius: 4, boxShadow: 1, background: '#fff', mb: 2 }}>
+              <Typography variant="h6" fontWeight={700} color="#1e293b" mb={2}>
+                לידים אחרונים
+              </Typography>
+              <TableContainer>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align="right">שם</TableCell>
+                      <TableCell align="right">אימייל</TableCell>
+                      <TableCell align="right">טלפון</TableCell>
+                      <TableCell align="right">תאריך</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {[
+                      { name: 'דנה כהן', email: 'dana@gmail.com', phone: '050-1234567', date: '2024-06-01' },
+                      { name: 'יוסי לוי', email: 'yossi@gmail.com', phone: '052-7654321', date: '2024-06-02' },
+                      { name: 'נועה ישראלי', email: 'noa@gmail.com', phone: '053-1112233', date: '2024-06-03' },
+                      { name: 'רועי ברק', email: 'roi@gmail.com', phone: '054-9988776', date: '2024-06-04' },
+                      { name: 'אורית שמש', email: 'orit@gmail.com', phone: '055-5555555', date: '2024-06-05' },
+                    ].map((row, idx) => (
+                      <TableRow key={idx}>
+                        <TableCell align="right">{row.name}</TableCell>
+                        <TableCell align="right">{row.email}</TableCell>
+                        <TableCell align="right">{row.phone}</TableCell>
+                        <TableCell align="right">{row.date}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Paper>
+          </Grid>
+          {/* --- טבלת מילות מפתח --- */}
+          <Grid item xs={12} md={6}>
+            <Paper sx={{ p: 3, borderRadius: 4, boxShadow: 1, background: '#fff', mb: 2 }}>
+              <Typography variant="h6" fontWeight={700} color="#1e293b" mb={2}>
+                מילות מפתח - ביצועים
+              </Typography>
+              <TableContainer>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align="right">מילת מפתח</TableCell>
+                      <TableCell align="right">מס׳ לחיצות</TableCell>
+                      <TableCell align="right">אחוז לחיצות</TableCell>
+                      <TableCell align="right">סטטוס</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {[
+                      { keyword: 'קידום אתרים', clicks: 120, ctr: 0.18 },
+                      { keyword: 'פרסום בגוגל', clicks: 90, ctr: 0.09 },
+                      { keyword: 'שיווק דיגיטלי', clicks: 60, ctr: 0.13 },
+                      { keyword: 'קמפיין ממומן', clicks: 30, ctr: 0.05 },
+                      { keyword: 'מודעות חכמות', clicks: 70, ctr: 0.22 },
+                    ].map((row, idx) => {
+                      const isGood = row.ctr >= 0.12;
+                      return (
+                        <TableRow key={idx}>
+                          <TableCell align="right">{row.keyword}</TableCell>
+                          <TableCell align="right">{row.clicks}</TableCell>
+                          <TableCell align="right" style={{ color: isGood ? '#22c55e' : '#ef4444', fontWeight: 700 }}>
+                            {(row.ctr * 100).toFixed(1)}%
+                          </TableCell>
+                          <TableCell align="right">
+                            {isGood ? (
+                              <Box display="flex" alignItems="center" gap={0.5} color="#22c55e">
+                                <CheckCircle fontSize="small" /> מעולה
+                              </Box>
+                            ) : (
+                              <Box display="flex" alignItems="center" gap={0.5} color="#ef4444">
+                                <Cancel fontSize="small" /> דרוש שיפור
+                              </Box>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </TableContainer>
             </Paper>
           </Grid>
         </Grid>
