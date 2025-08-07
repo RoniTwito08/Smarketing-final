@@ -48,6 +48,36 @@ const MyCampaigns:React.FC=()=>{
     }catch(e){ toast.error("שגיאה בטעינת הקמפיינים"); }
   };
 
+    const handleDeleteCampaign = async (campaign: Campaign) => {
+      const confirm = window.confirm("האם אתה בטוח שברצונך למחוק את הקמפיין?");
+      if (!confirm) return;
+
+      try {
+        const response = await fetch(`${config.apiUrl}/campaigns/${campaign._id}`, {
+          method: "DELETE",
+        });
+
+        if (!response.ok) {
+          throw new Error("שגיאה במחיקת הקמפיין");
+        }
+
+        // הסרה מה־state
+        setCampaigns(prev => prev.filter(c => c._id !== campaign._id));
+        toast.success("🗑️ הקמפיין נמחק בהצלחה");
+
+        // מעבר לקמפיין הבא אם זה היה הנבחר
+        if (selectedCampaign?._id === campaign._id) {
+          const next = campaigns.find(c => c._id !== campaign._id) ?? null;
+          setSelectedCampaign(next);
+        }
+      } catch (error) {
+        console.error("שגיאה במחיקה:", error);
+        toast.error("אירעה שגיאה בעת מחיקת הקמפיין");
+      }
+    };
+
+
+
   /* --- actions --- */
   const launchCampaign =(_id:string)=>toast.info("🚀 שולח קמפיין...");
   const pauseCampaign  =(_id:string)=>toast("⏸️ הקמפיין הושהה");
@@ -91,7 +121,7 @@ const MyCampaigns:React.FC=()=>{
               <button className={styles.actBtn} data-type="preview" onClick={()=>setShowFullPreview(true)}><FaRegEye/></button>
               <button className={styles.actBtn} data-type="send"    onClick={()=>launchCampaign(selectedCampaign._id)}><IoIosSend/></button>
               <button className={styles.actBtn} data-type="pause"   onClick={()=>pauseCampaign(selectedCampaign._id)}><FaRegCirclePause/></button>
-              <button className={styles.actBtn} data-type="delete"  onClick={()=>deleteCampaign(selectedCampaign._id)}><MdDeleteOutline/></button>
+              <button className={styles.actBtn} data-type="delete"  onClick={()=>handleDeleteCampaign(selectedCampaign)}><MdDeleteOutline/></button>
             </div>
           </Box>
 
