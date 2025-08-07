@@ -1,198 +1,1003 @@
+
 :root {
   --primary-color: #ffffff;
   --secondary-color: #ffffff;
   --tertiary-color: #1e90ff;
   --text-color: #000000;
+
   --primary-gradient: none;
   --secondary-gradient: none;
   --tertiary-gradient: none;
+
+  --hero-image: none;          
+  --overlay-alpha: .35;
+  --overlay-tint: var(--primary-color);
+
+  --hero-radius: 0px;         
+  --panel-blur: 6px;           
+  --pad-y: 120px;              
+  --pad-x: 32px;               
+  --text-align: right;          
+}
+.ctaRow{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  margin-top:28px;
 }
 
-.wrapper {
-  position: relative;
+.ctaWrap{ position:relative; display:inline-flex; }
+
+.cta,
+.ctaAlt{
+  position:relative;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+
+  border:1px solid color-mix(in oklab, var(--secondary-color) 45%, transparent);
+  border-radius:12px;
+  padding:14px 32px;
+  font-size:15px;
+  font-weight:700;
+  line-height:1;
+  cursor:pointer;
+  overflow:visible;
+
+  background:var(--secondary-color);
+  color:var(--text-color);
+
+  box-shadow:0 10px 28px -14px
+    color-mix(in oklab, var(--tertiary-color) 55%, transparent);
+  transition:transform .15s ease, box-shadow .18s ease, background .18s ease;
+}
+.ctaAlt{                      
+  background:var(--primary-color);
+  color:var(--text-color);
+}
+.cta:hover,
+.ctaAlt:hover{
+  transform:translateY(-2px);
+  box-shadow:0 16px 40px -14px
+    color-mix(in oklab, var(--tertiary-color) 55%, transparent);
+}
+.cta:active,
+.ctaAlt:active{ transform:none; }
+
+.ctaGlow{
+  content:"";
+  position:absolute; inset:-2px;
+  border-radius:inherit;
+  z-index:-1;
+  background:radial-gradient(60% 60% at 50% 0%,
+              color-mix(in oklab, var(--tertiary-color) 30%, transparent) 0%,
+              transparent 70%);
+  filter:blur(14px);
+  opacity:.6;
+  transition:opacity .25s ease;
+}
+.cta:hover .ctaGlow,
+.ctaAlt:hover .ctaGlow{ opacity:.85; }
+
+.ctaRemoveIn{
+  position:absolute;
+  top:-8px;
+  inset-inline-end:-8px;
+  width:22px; height:22px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:14px; line-height:1;
+  border-radius:50%;
+
+  background:var(--primary-color);
+  color:var(--tertiary-color);
+  border:1px solid color-mix(in oklab, var(--tertiary-color) 40%, transparent);
+  box-shadow:0 6px 18px -8px
+    color-mix(in oklab, var(--tertiary-color) 45%, transparent);
+  cursor:pointer;
+
+  opacity:0; transform:scale(.9);
+  pointer-events:none;
+  transition:opacity .18s ease, transform .18s ease;
+}
+.cta:hover .ctaRemoveIn,
+.cta:focus-within .ctaRemoveIn,
+.ctaAlt:hover .ctaRemoveIn,
+.ctaAlt:focus-within .ctaRemoveIn{
+  opacity:1;
+  transform:scale(1);
+  pointer-events:auto;
 }
 
+.ctaActions{
+  margin-top:14px;
+  display:flex;
+  gap:12px;
+}
 
-.heroContainer {
-  display: flex;
-  justify-content: center;
+.ctaAddGlobal{
+  width:38px; height:38px;
+  display:inline-flex; align-items:center; justify-content:center;
+  border-radius:10px;
+  background:transparent;
+  color:var(--tertiary-color);
+  border:1.5px dashed color-mix(in oklab, var(--tertiary-color) 55%, transparent);
+  cursor:pointer;
+
+  transition:transform .15s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.ctaAddGlobal:hover{
+  transform:translateY(-2px);
+  border-color:color-mix(in oklab, var(--tertiary-color) 70%, transparent);
+  box-shadow:0 8px 24px -12px
+    color-mix(in oklab, var(--tertiary-color) 45%, transparent);
+}
+.ctaAddGlobal:active{ transform:none; }
+
+.ctaClearAll{
+  padding:10px 16px;
+  border-radius:10px;
+  background:transparent;
+  color:color-mix(in oklab, var(--text-color) 90%, transparent);
+  border:1px solid color-mix(in oklab, var(--text-color) 35%, transparent);
+  cursor:pointer;
+}
+.ctaClearAll:disabled{ opacity:.5; cursor:not-allowed; }
+
+.wrap          { position: relative; isolation: isolate; }
+
+.hero1 {
+  display: grid;
+  grid-template-columns: 1fr 520px;
   align-items: center;
-  padding: 60px 20px;
-  text-align: center;
-}
-
-.heroContent {
-  max-width: 800px;
-}
-
-.heroTitle {
-  font-size: 48px;
-  font-weight: bold;
-  margin-bottom: 20px;
-  color: var(--text-color);
-}
-
-.heroTitle:focus {
-  outline: 2px solid rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.6);
-}
-
-.heroText {
-  font-size: 18px;
-  margin-bottom: 25px;
-  color: var(--text-color);
-}
-
-
-.heroText:focus {
-  outline: 2px solid rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.6);
-}
-
-.heroButton {
-  background-color: var(--tertiary-color);
-  color: var(--text-color);
-  padding: 12px 24px;
-  font-size: 16px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.heroButton:hover {
-  opacity: 0.9;
-}
-
-.splitLayout {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 40px;
-  padding: 60px;
-  flex-wrap: wrap;
-  
-}
-
-.splitLeft {
-  flex: 1;
-  min-width: 300px;
-  
-}
-
-.splitRight {
-  flex: 1;
-  min-height: 300px;
-  border-radius: 16px;
-  background: linear-gradient(to right, #ddd, var(--tertiary-color));
-  
-}
-
-.overlayHero {
-  background: url('/your-image.jpg') center/cover no-repeat;
-  padding: 100px 20px;
-  position: relative;
-  text-align: center;
-  border-radius: 12px;
-  color: var(--text-color);
-}
-
-.overlayContent {
-  padding: 40px;
-  border-radius: 12px;
-  max-width: 800px;
-  margin: auto;
-}
-
-.overlayTitle {
-  font-size: 48px;
-  margin-bottom: 20px;
-}
-
-.overlayText {
-  font-size: 18px;
-  margin-bottom: 25px;
-}
-
-.overlayButton {
-  background-color: var(--tertiary-color);
-  color: white;
-  padding: 12px 24px;
-  border: none;
-  font-size: 16px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.overlayButton:hover {
-  opacity: 0.9;
-}
-
-@media (max-width: 768px) {
-  .heroTitle,
-  .overlayTitle {
-    font-size: 32px;
-  }
-
-  .heroText,
-  .overlayText {
-    font-size: 16px;
-  }
-
-  .splitLayout {
-    flex-direction: column;
-  }
-
-  .splitRight {
-    min-height: 200px;
-  }
-
-  .overlayHero {
-    padding: 60px 20px;
-  }
-}
-
-/* חצים – עיצוב אחיד כמו בגלריה */
-.arrowButtons {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: space-between;
-  transform: translateY(-50%);
-  padding: 0 12px;
-  pointer-events: none;
-  z-index: 4;
-}
-
-.arrowButtons button {
-  pointer-events: auto;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  background: black;
-  border: 2px solid var(--primary-color);
-  color: var(--primary-color);
-  border-radius: 50%;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  opacity: 0;
-  transform: scale(0.9);
-  transition: opacity 0.25s ease, transform 0.25s ease;
-  cursor: pointer;
-}
-
-.wrapper:hover .arrowButtons button {
-  opacity: 1;
-  transform: scale(1);
-}
-
-.arrowButtons button:hover {
+  gap: clamp(32px, 6vw, 80px);
+  padding: var(--pad-y) var(--pad-x);
   background: var(--primary-color);
-  color: #ffffff;
-  transform: scale(1.1);
+  border-radius: var(--hero-radius);
+  position: relative;
+  overflow: hidden;
+  transition: background 0.6s ease, transform 0.4s ease;
+  
+  isolation: isolate;
+}
+
+.hero1:hover {
+  transform: scale(1.01);
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+}
+
+.hero1::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(110% 90% at 0% 100%, rgba(0, 0, 0, 0.03) 20%, transparent 60%),
+    radial-gradient(120% 100% at 80% -20%, rgba(0, 0, 0, 0.02) 20%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+  animation: fade-in 2s ease-out;
+}
+
+.hero1::before {
+  content: "";
+  position: absolute;
+  top: 8%;
+  right: 22%;
+  width: 160px;
+  height: 160px;
+  background-image: repeating-radial-gradient(#000 0 1px, transparent 0 11px);
+  opacity: 0.12;
+  filter: blur(1px);
+  pointer-events: none;
+  transform: translate(50%, -50%) rotate(45deg);
+  z-index: 0;
+  animation: rotate-fade 20s linear infinite;
+}
+
+.hero1Img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  transform: translateX(22px);
+  pointer-events: none;
+  transition: transform 0.4s ease;
+  z-index: 1;
+}
+
+.hero1Img:hover {
+  transform: translateX(28px) scale(1.02);
+}
+
+.hero1 .title {
+  font-size: clamp(20px, 6vw, 35px);
+  line-height: 1.05;
+  font-weight: 900;
+  letter-spacing: -0.015em;
+  background: linear-gradient(
+    90deg,
+    var(--text-color) 0%,
+    var(--tertiary-color) 40%,
+    color-mix(in oklab, var(--tertiary-color) 40%, var(--secondary-color)) 85%
+  );
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-shadow: 0 4px 24px color-mix(in oklab, var(--tertiary-color) 50%, transparent);
+  transition: text-shadow 0.3s ease;
+}
+
+.hero1 .title:hover {
+  text-shadow: 0 6px 30px var(--tertiary-color);
+}
+
+.hero1 .text {
+  margin-top: 20px;
+  font-size: clamp(16px, 1.6vw, 20px);
+  line-height: 1.7;
+  max-width: 540px;
+  color: color-mix(in oklab, var(--text-color) 78%, transparent);
+  position: relative;
+  padding-inline-start: 26px;
+  transition: color 0.3s ease;
+}
+
+.hero1 .text::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  top: 2px;
+  width: 8px;
+  height: calc(100% - 4px);
+  border-radius: 4px;
+  background: var(--tertiary-color);
+  opacity: 0.85;
+  transition: height 0.3s ease;
+}
+
+.hero1 .text:hover::before {
+  height: 100%;
+}
+
+.hero1 > div {
+  align-self: start;
+  text-align: var(--text-align, inherit);
+  z-index: 1;
+  animation: slide-up-fade 1s ease-out;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes rotate-fade {
+  0% { transform: translate(50%, -50%) rotate(0deg); }
+  100% { transform: translate(50%, -50%) rotate(360deg); }
+}
+
+@keyframes slide-up-fade {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.hero2 {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--pad-y) var(--pad-x);
+  min-height: 560px;
+  border-radius: var(--hero-radius);
+  overflow: hidden;
+  text-align: center;
+  color: #fff;
+  isolation: isolate;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+}
+
+.hero2:hover {
+  transform: scale(1.01);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.hero2::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--hero-image);
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.5) saturate(1.1);
+  z-index: 0;
+  transform: scale(1.05);
+  transition: transform 5s ease;
+  animation: zoomSlow 25s ease-in-out infinite alternate;
+}
+
+.hero2::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom right, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.2));
+  backdrop-filter: blur(3px);
+  z-index: 0;
+}
+
+/* כותרת */
+.hero2Title {
+  font-size: clamp(34px, 6vw, 68px);
+  line-height: 1.1;
+  font-weight: 900;
+  margin: 0 0 36px;
+  color: var(--primary-color);
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  animation: fadeUp 1s ease-out;
+}
+
+/* פסקה */
+.hero2 .text {
+  font-size: clamp(16px, 1.6vw, 20px);
+  line-height: 1.7;
+  max-width: 760px;
+  margin: 0 0 36px;
+  color: color-mix(in oklab, var(--primary-color) 85%, transparent);
+  position: relative;
+  z-index: 1;
+  animation: fadeUp 1.3s ease-out;
+}
+
+/* כפתור */
+.hero2Btn {
+  position: relative;
+  z-index: 1;
+  padding: 16px 42px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--tertiary-color);
+  color: #fff;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.hero2Btn:hover {
+  background: color-mix(in oklab, var(--tertiary-color) 85%, #ffffff);
+  transform: translateY(-4px);
+}
+
+.hero2Btn:active {
+  transform: translateY(-1px);
+}
+
+/* שורה של כפתורים */
+.hero2 .ctaRow {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  animation: fadeUp 1.5s ease-out;
+}
+
+.hero2 .cta,
+.hero2 .ctaAlt {
+  position: relative;
+  z-index: 1;
+}
+
+/* אנימציות */
+@keyframes fadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes zoomSlow {
+  0% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1.15);
+  }
+}
+
+.hero3 {
+  display: grid;
+  grid-template-columns: 1fr 460px;
+  align-items: center;
+  gap: clamp(32px, 6vw, 80px);
+  padding: var(--pad-y) var(--pad-x);
+  background: var(--primary-color);
+  border-radius: var(--hero-radius);
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition: transform 0.4s ease;
+}
+
+.hero3:hover {
+  transform: scale(1.01);
+}
+
+/* רקע פסי אלכסון */
+.hero3::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      -25deg,
+      color-mix(in oklab, var(--text-color) 6%, transparent) 0 8px,
+      transparent 8px 32px
+    );
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 0;
+  animation: diagonalFade 20s linear infinite alternate;
+}
+
+/* רקע עיגולים */
+.hero3::after {
+  content: "";
+  position: absolute;
+  top: 8%;
+  right: 19%;
+  width: 140px;
+  height: 140px;
+  background-image: repeating-radial-gradient(
+    color-mix(in oklab, var(--text-color) 12%, transparent) 0 1px,
+    transparent 0 11px
+  );
+  opacity: 0.35;
+  filter: blur(0.5px);
+  transform: translate(50%, -50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* כותרת */
+.hero3Title {
+  font-size: clamp(32px, 6vw, 56px);
+  font-weight: 900;
+  line-height: 1.1;
+  margin: 0 0 20px;
+  color: var(--text-color);
+  z-index: 1;
+  position: relative;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  animation: fadeSlideUp 0.8s ease-out;
+}
+
+/* טקסט */
+.hero3Text {
+  font-size: clamp(16px, 1.6vw, 18px);
+  line-height: 1.7;
+  max-width: 520px;
+  margin: 0 0 32px;
+  color: color-mix(in oklab, var(--text-color) 78%, transparent);
+  position: relative;
+  z-index: 1;
+  animation: fadeSlideUp 1s ease-out;
+}
+
+/* תמונה עגולה */
+.hero3Fig {
+  width: min(360px, 100%);
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-inline: auto;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.2);
+  transform: translateY(0px);
+  transition: transform 0.3s ease;
+  animation: zoomIn 1.2s ease-out;
+}
+
+.hero3Fig:hover {
+  transform: translateY(-6px) scale(1.02);
+}
+
+.hero3Fig img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: brightness(1) contrast(1.05);
+}
+
+/* כפתורים */
+.hero3 .ctaRow {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  animation: fadeSlideUp 1.2s ease-out;
+}
+
+/* אנימציות */
+@keyframes fadeSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes diagonalFade {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 80px 80px;
+  }
+}
+
+@keyframes zoomIn {
+  0% {
+    transform: scale(0.92);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.hero4 {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--pad-y) var(--pad-x);
+  min-height: 540px;
+  border-radius: var(--hero-radius);
+  overflow: hidden;
+  text-align: center;
+  color: #fff;
+  isolation: isolate;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+.hero4:hover {
+  transform: scale(1.005);
+}
+
+/* רקע תנועה קלילה */
+.hero4::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--hero-image);
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.55) saturate(1.05);
+  z-index: 0;
+  transform: scale(1.05);
+  animation: bgZoom 22s ease-in-out infinite alternate;
+}
+
+/* שכבת בלאר */
+.hero4::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(3px);
+  z-index: 0;
+}
+
+/* טקסט */
+.hero4Text {
+  font-size: clamp(16px, 1.6vw, 20px);
+  line-height: 1.8;
+  max-width: 680px;
+  margin: 0 0 36px;
+  color: color-mix(in oklab, var(--primary-color) 85%, transparent);
+  position: relative;
+  z-index: 1;
+  animation: slideUp 1s ease-out;
+}
+
+/* כותרת */
+.hero4Title {
+  font-size: clamp(30px, 6vw, 60px);
+  line-height: 1.15;
+  font-weight: 900;
+  margin: 0 0 24px;
+  color: var(--primary-color);
+  position: relative;
+  z-index: 1;
+  width: 60%;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  animation: slideUp 1.2s ease-out;
+}
+
+/* שורת כפתורים */
+.hero4 .ctaRow {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  animation: fadeIn 1.6s ease-out;
+}
+
+/* אנימציות */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bgZoom {
+  0%   { transform: scale(1.05); }
+  100% { transform: scale(1.12); }
+}
+
+/* ========= טמפלט 5 – Minimal Interior (תמונה-רקע) ========= */
+/* ========= טמפלט 5 – Full BG + left text ========= */
+.hero5 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: var(--pad-y) var(--pad-x);
+  min-height: 520px;
+  border-radius: var(--hero-radius);
+  overflow: hidden;
+  isolation: isolate;
+  color: #fff;
+  animation: fadeIn 0.8s ease-in-out;
+  transition: transform 0.3s ease;
+}
+
+.hero5:hover {
+  transform: scale(1.005);
+}
+
+/* תמונת רקע */
+.hero5::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--hero-image);
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.7) saturate(1.05);
+  z-index: 0;
+  transform: scale(1.05);
+  animation: bgZoom 25s ease-in-out infinite alternate;
+}
+
+/* שכבת גרדיאנט כהה מצד שמאל */
+.hero5::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.6) 0%,
+    rgba(0, 0, 0, 0.4) 35%,
+    rgba(0, 0, 0, 0.2) 60%,
+    transparent 85%
+  );
+  z-index: 0;
+}
+
+/* עטיפת טקסט */
+.hero5Inner {
+  position: relative;
+  z-index: 1;
+  max-width: 580px;
+  color: #fff;
+  text-align: left;
+  animation: slideRight 0.8s ease-out;
+}
+
+/* כותרת */
+.hero5Title {
+  font-size: clamp(32px, 6vw, 58px);
+  line-height: 1.15;
+  font-weight: 900;
+  margin: 0 0 24px;
+  color: #fff;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* טקסט */
+.hero5Text {
+  font-size: clamp(16px, 1.6vw, 20px);
+  line-height: 1.8;
+  margin: 0 0 32px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* שורת כפתורים */
+.hero5 .ctaRow {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  animation: fadeIn 1.2s ease-out;
+}
+
+/* אנימציות */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideRight {
+  from { opacity: 0; transform: translateX(-24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes bgZoom {
+  0%   { transform: scale(1.05); }
+  100% { transform: scale(1.12); }
+}
+
+.hero6 {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--pad-y) var(--pad-x);
+  background: var(--primary-color);
+  border-radius: var(--hero-radius);
+  text-align: center;
+  overflow: hidden;
+  isolation: isolate;
+  animation: fadeIn 0.8s ease-out;
+}
+
+/* תמונה */
+.hero6Img {
+  width: min(260px, 40vw);
+  height: auto;
+  margin-bottom: 48px;
+  z-index: 1;
+  animation: floatIn 1s ease-out;
+  filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.2));
+  transition: transform 0.3s ease;
+}
+.hero6Img:hover {
+  transform: scale(1.04);
+}
+
+/* תגית עליונה */
+.hero6Tag {
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--tertiary-color);
+  margin-bottom: 14px;
+  z-index: 1;
+  animation: fadeIn 1.2s ease-out;
+}
+
+/* כותרת */
+.hero6Title {
+  font-size: clamp(28px, 6vw, 46px);
+  line-height: 1.15;
+  font-weight: 900;
+  margin: 0 0 20px;
+  color: var(--text-color);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  z-index: 1;
+  animation: slideUp 1.3s ease-out;
+}
+
+/* טקסט */
+.hero6Text {
+  font-size: clamp(15px, 1.6vw, 18px);
+  line-height: 1.7;
+  max-width: 540px;
+  margin: 0 0 36px;
+  color: color-mix(in oklab, var(--text-color) 75%, transparent);
+  z-index: 1;
+  animation: slideUp 1.5s ease-out;
+}
+
+/* שורת כפתורים */
+.hero6 .ctaRow {
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 16px;
+  animation: fadeIn 1.7s ease-out;
+}
+
+/* אנימציות */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes floatIn {
+  from { opacity: 0; transform: translateY(-20px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.hero7{
+  position:relative;
+  display:grid;
+  grid-template-columns:60% 40%;
+  align-items:center;
+  min-height:560px;
+  background:var(--primary-color);         
+  overflow:hidden;
+  border-radius:var(--hero-radius);
+  isolation:isolate;
+}
+
+.hero7ImgWrap      { grid-column: 1 / 2; }   
+.hero7ContentWrap  { grid-column: 2 / 3; }  
+
+.hero7Img{
+  position: absolute;
+  inset: 0;                
+  width: 70%;             
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  filter: brightness(.78);
+  transform: scale(1);
+  transition: transform 6s ease;
+}
+
+
+.hero7:hover .hero7Img{ transform:scale(1.08); }
+
+.hero7Panel{
+  margin-right: 30%;
+  grid-column: 1 / -1;        
+  position:relative;
+  z-index:2;
+  background:var(--primary-color);
+  backdrop-filter:blur(4px);
+  padding:clamp(32px,4vw,20px);
+  width:100%;
+  height: 390px;
+  max-width:800px;         
+  transform:translateX(-10%);
+  animation: panelInLeft 0.9s ease-out forwards;
+}
+
+.hero7Line{
+  width:64px; height:4px;
+  background:#99a24b;
+  margin-bottom:24px;
+}
+.hero7Title{
+  font-size:clamp(32px,5vw,56px);
+  line-height:1.15;
+  font-weight:900;
+  margin:0 0 24px;
+  color:#1c1c1c;
+}
+.hero7Text{
+  font-size:clamp(16px,1.5vw,19px);
+  line-height:1.8;
+  color:#4c4c4c;
+  margin:0 0 32px;
+}
+
+.hero7Features{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px 32px;
+  font-size:15px;
+  color:#d2d2d2;
+  margin-top:clamp(20px,4vw,36px);
+}
+.hero7Features span{
+  position:relative; padding-inline-start:26px;
+}
+.hero7Features span::before{
+  content:"✓";
+  position:absolute; inset-inline-start:0; top:0;
+  color:#99a24b; font-weight:700;
+}
+
+@keyframes panelInLeft {
+  0%   { opacity: 0; transform: translate(-40%, 0); }  
+  100% { opacity: 1; transform: translateX(-10%); }    
+}
+@media(max-width:900px){
+  .hero7{ grid-template-columns:1fr; }
+  .hero7Panel{ transform:none; border-radius:0; }
+}
+
+.toolbar {
+  position: absolute;
+  inset-inline-end: 8px;
+  top: 8px;
+
+  display: flex;
+  gap: 8px;
+  z-index: 5;
+
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity .18s ease, transform .18s ease;
+  pointer-events: none;
+}
+.wrap:hover .toolbar,
+.wrap:focus-within .toolbar {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.editBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in oklab, var(--primary-color) 92%, transparent);
+  color:var(--text-color);
+
+  border: 2px solid color-mix(in oklab, var(--tertiary-color) 60%, transparent);
+  box-shadow: 0 6px 18px -8px
+    color-mix(in oklab, var(--tertiary-color) 45%, transparent);
+
+  cursor: pointer;
+  transition: background .15s ease, transform .15s ease, box-shadow .15s ease;
+}
+
+.editBtn:hover {
+  background: color-mix(in oklab, var(--tertiary-color) 100%, transparent);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px -10px
+    color-mix(in oklab, var(--tertiary-color) 50%, transparent);
+}
+
+.editBtn:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 900px) {
+  .hero1,
+  .hero2,
+  .hero4,
+  .hero6 { grid-template-columns: 1fr; }
+  .hero1Img,
+  .hero2ImgWrap,
+  .hero4Fig,
+  .hero6 img { order: -1; }
 }

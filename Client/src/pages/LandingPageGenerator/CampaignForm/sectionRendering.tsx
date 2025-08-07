@@ -1,5 +1,4 @@
 // SectionRenderer.tsx
-import Header from "../LandingPageSections/Header/Header";
 import Footer from "../LandingPageSections/Footer/Footer";
 import Hero from "../LandingPageSections/Hero/Hero";
 import Features from "../LandingPageSections/Features/Features";
@@ -36,14 +35,6 @@ const SectionRenderer = ({ section, onDeleteSection, refMap }: SectionRendererPr
 
   const renderSection = () => {
     switch (section.sectionName) {
-      case "header":
-        return (
-          <Header
-            businessName={section.businessName || ""}
-            title={section.title || ""}
-            buttonText={section.buttonText || ""}
-          />
-        );
       case "hero":
         return (
           <Hero

@@ -15,10 +15,10 @@ import { BusinessSetting } from "../../pages/businessProfileScreen/BusinessSetti
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useAuth } from "../../context/AuthContext";
 import MainFeed from "../../pages/feedPage/MainFeed";
+import CampaignPopup from "../../pages/LandingPageGenerator/CampaignForm/CampaignForm";
 //import { User } from "../../types/user";
 import { GoogleAdsAnalytics } from "../GoogleAdsAnalytics/GoogleAdsAnalytics";
-import PlansPage from "../../pages/Plans/PlansPage";
-import Plansicon from "@mui/icons-material/Paid";
+import AddToQueueIcon from '@mui/icons-material/AddToQueue';
 
 export default function DashboardLayoutBasic(props: any) {
   const { window } = props;
@@ -44,6 +44,11 @@ export default function DashboardLayoutBasic(props: any) {
       segment: "feed",
       title: "הקמפיינים שלי",
       icon: <ContactsOutlinedIcon />,
+    },
+    {
+      segment: "new-campaign",
+      title: "",
+      icon: <AddToQueueIcon />,
     },
     {
       segment: "analytics",
@@ -145,6 +150,7 @@ export default function DashboardLayoutBasic(props: any) {
     "/settings": <AccountSettings />,
     "/feed": <MainFeed />,
     "/chats": user && accessToken ? <UserLeads /> : <p> asd</p>,
+    "/new-campaign": <CampaignPopup open={true} onClose={() => {}} onSubmit={() => {}} />,
   };
 
   const CurrentComponent = routeComponents[router.pathname];

@@ -73,20 +73,30 @@ export const generateLandingPageContext = async (
 
     const featuresSection = {
       sectionName: "features",
-      content:
-        await generateContent(`כתוב מערך JSON של 4 יתרונות בולטים של העסק "${business.businessName}".
-                כל יתרון יתחיל ב־✔️, יהיה שיווקי, קצר (עד 6 מילים), ולא מועתק מהקלט.
-                פורמט:
-                [
-                "✔️ שירות אישי ומהיר",
-                "✔️ מחירים תחרותיים"
-                ]
-                עברית בלבד.`),
+
+      content: await generateContent(`
+        החזר מערך JSON שמכיל **בדיוק** 4 מחרוזות, כל אחת מתארת יתרון שיווקי של
+        העסק "${business.businessName}" (עד 6 מילים). 
+
+        דרישות:
+        • אל תתחיל את המשפט ב-✔️, אל תוסיף תווי קישוט.  
+        • עברית בלבד, ללא תעתיק אנגלי.  
+        • אין להעתיק משפטים מהקלט.  
+        • החזר אך ורק את המערך, למשל:
+          [
+            "שירות אישי ומהיר",
+            "מחירים תחרותיים",
+            "ניסיון של 10 שנים",
+            "תמיכה 24/7"
+          ]
+      `),
+
       image: await fetchPexelsImage(
         businessFieldKeyword,
         imageFeatureGeneratePath
       ),
     };
+
 
     const reviewsSection = {
       sectionName: "reviews",
@@ -128,47 +138,68 @@ export const generateLandingPageContext = async (
     };
 
     const colorAndFontPrompt = {
-      primaryColor: await generateContent(`
-            בחר צבע ראשי אחד בלבד בפורמט hex (למשל #AABBCC) עבור עסק בשם "${business.businessName}" בתחום "${fieldToTranslate}". 
-            הצבע חייב להיות:
-            - בהיר, מודרני ונעים לעין
-            - מתאים למיתוג דיגיטלי
-            - שונה בכל פעם
-            - **לא** צהוב, כתום, אדום, שחור, לבן או אפור
+  /* ───────── 1. PRIMARY COLOR ───────── */
+  primaryColor: await generateContent(`
+    Choose ONE primary background color for a landing-page of the company
+    “${business.businessName}”, operating in the field “${fieldToTranslate}”.
 
-            התוצאה צריכה להיות רק קוד צבע תקני (hex), ללא תיאור נוסף.
-            `),
+    Requirements:
+    • Return a single valid HEX code (e.g. #AABBCC).
+    • The hue must be light-to-mid, modern, pleasant to the eye.
+    • Do NOT use yellow, orange, red, black, white, or pure gray.
+    • Output NOTHING except the HEX code.
+  `),
 
-      secondaryColor: await generateContent(`
-            בהתחשב בצבע הראשי שנבחר לעסק "${business.businessName}", בחר צבע משלים שמתאים בהרמוניה אליו אך שונה ממנו בצורה עדינה.
-            הצבע צריך להיות מודרני, אסתטי, ולא צהוב, כתום, שחור, לבן או אפור.
-            החזר קוד hex בלבד. בלי טקסט נוסף. כל פעם צבע שונה.
-            `),
+  /* ───────── 2. SECONDARY COLOR (CTA / HEADINGS) ───────── */
+  secondaryColor: await generateContent(`
+    Pick ONE complementary accent color for CTA buttons / headings
+    that works harmoniously with the primary color ${"${primaryColor}"}.
 
-      tertiaryColor: await generateContent(`
-            בחר צבע שלישי שישלים את הצבע הראשי והצבע המשלים שכבר נבחרו לעסק "${business.businessName}".
-            הצבע צריך להיות שונה מהשניים הקודמים אך בהרמוניה איתם. אל תשתמש בשחור, לבן, אפור, צהוב או כתום.
-            חפש צבע שמתאים לעולם הדיגיטל והמובייל. החזר hex בלבד.
-            `),
+    Rules:
+    • Must be clearly different from ${"${primaryColor}"} (hue shift ≥ 15°).
+    • Modern and aesthetic; NOT yellow, orange, black, white, or pure gray.
+    • Output ONLY a valid HEX code (no text, no prefix).
+  `),
 
-      textColor: await generateContent(`
-            בחר צבע טקסט ברור ונעים לעין שמתאים על רקע הצבע הראשי של העסק "${business.businessName}". הקפד שהצבע יהיה קריא ונוח לגולשים.
-            החזר hex בלבד. בלי טקסט נוסף.
-            `),
+  /* ───────── 3. TERTIARY COLOR (ICONS / HOVER) ───────── */
+  tertiaryColor: await generateContent(`
+    Choose ONE tertiary color that completes the palette of
+    1) ${"${primaryColor}"} and 2) ${"${secondaryColor}"}.
 
-      font: await generateContent(`
-            בחר שם פונט אחד בלבד שמתאים לעסק "${business.businessName}" במראה מודרני ונקי. 
-            הפונט צריך להיות זמין ב-Google Fonts. דוגמה: "Rubik", "Inter", "Assistant", "Open Sans".
-            החזר רק את שם הפונט ללא טקסט נוסף.
-            `),
-    };
+    Rules:
+    • Distinct from both previous colors (hue shift ≥ 15° from each).
+    • Avoid black, white, gray, yellow, orange.
+    • Output ONLY a single HEX code.
+  `),
+
+  /* ───────── 4. TEXT COLOR ───────── */
+  textColor: await generateContent(`
+    Select ONE body-text color that is easily readable on
+    the primary background ${"${primaryColor}"}.
+
+    Requirements:
+    • Must meet WCAG contrast ratio ≥ 4.5:1 against ${"${primaryColor}"}.
+    • Must differ significantly: hue shift ≥ 30° OR value/brightness shift ≥ 40%.
+    • Output ONLY one HEX code.
+  `),
+
+  /* ───────── 5. FONT ───────── */
+  font: await generateContent(`
+    Provide ONE Google-Fonts family name (e.g. "Inter", "Rubik")
+    that gives a modern, clean, mobile-friendly look for the company
+    “${business.businessName}”.
+
+    Return ONLY the font name and nothing else.
+  `),
+};
 
     const context = {
       headerSection,
       heroSection,
-      featuresSection,
-      reviewsSection,
       aboutUsSection,
+      reviewsSection,
+      featuresSection,
+      
       gallerySection,
       contactUsSection,
       footerSection,

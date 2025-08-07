@@ -5,7 +5,7 @@ import { businessInfoService } from "../../../../services/besinessInfo.service";
 import { config } from "../../../../config";
 
 interface HeaderProps {
-  businessName: string;
+  businessName?: string;
   title: string;
   buttonText: string;
 }
@@ -37,21 +37,14 @@ function Header({ title, buttonText }: HeaderProps) {
     const el =
       document.getElementById("contactUs") ||
       document.getElementById("contact-us-root");
-    console.log("el:", el);
     if (el) {
-      // מוצאים את ההורה הגליל
       let parent: HTMLElement | null = el.parentElement;
       while (parent && getComputedStyle(parent).overflowY === "visible") {
         parent = parent.parentElement;
       }
-      // אם מצאנו אלמנט עם overflow, מגלגלים בו
       if (parent) {
-        parent.scrollTo({
-          top: el.offsetTop,
-          behavior: "smooth",
-        });
+        parent.scrollTo({ top: el.offsetTop, behavior: "smooth" });
       } else {
-        // ברירת מחדל ל־window
         document.documentElement.style.scrollBehavior = "smooth";
         el.scrollIntoView({ block: "start" });
         setTimeout(() => {
@@ -60,11 +53,10 @@ function Header({ title, buttonText }: HeaderProps) {
       }
     }
   };
-  
-  
+
   return (
     <div className={headerStyles.headerWrapper}>
-      <section className={headerStyles.headerSectionContainer}>
+      <section className={headerStyles.headerSectionContainer} aria-label="Header">
         <div className={headerStyles.logoContainer}>
           {logoPreview ? (
             <img
@@ -76,12 +68,15 @@ function Header({ title, buttonText }: HeaderProps) {
             <span className={headerStyles.uploadText}>אין לוגו להציג</span>
           )}
         </div>
-        <h2 className={headerStyles.sectionTitle} >{title}</h2>
+
+        <h2 className={headerStyles.sectionTitle}>{title}</h2>
+
         <div className={headerStyles.headerButtonContainer}>
           <button
             className={headerStyles.headerSectionButton}
             id="headerButtonContainer"
             onClick={handleScroll}
+            aria-label={buttonText}
           >
             {buttonText}
           </button>
