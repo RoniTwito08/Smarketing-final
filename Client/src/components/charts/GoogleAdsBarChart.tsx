@@ -34,13 +34,13 @@ const GoogleAdsBarChart: React.FC<Props> = ({ data }) => {
     <div style={{ width: "100%", height: 300 }}>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={chartData}>
-          <XAxis dataKey="date" />
-          <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
-          <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
+          <XAxis dataKey="date" tick={{ dy: 12 }} label={{ value: '', dy: 16 }} />
+          <YAxis yAxisId="left" orientation="left" stroke="#8884d8" tick={{ dx: -6, dy: 6 }} label={{ value: '', dy: 16 }} />
+          <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" tick={{ dx: 6, dy: 6 }} label={{ value: '', dy: 16 }} />
           <Tooltip />
           <Legend />
-          <Bar yAxisId="left" dataKey="clicks" fill="#8884d8" name="Clicks" />
-          <Bar yAxisId="right" dataKey="cost" fill="#82ca9d" name="Cost ($)" />
+          <Bar yAxisId="left" dataKey="clicks" fill="#8884d8" name="קליקים" barSize={24} radius={[8, 8, 0, 0]} style={{ marginBottom: 12 }} />
+          <Bar yAxisId="right" dataKey="cost" fill="#82ca9d" name="עלות לקליק" barSize={24} radius={[8, 8, 0, 0]} style={{ marginBottom: 12 }} />
         </BarChart>
       </ResponsiveContainer>
     </div>

@@ -23,7 +23,7 @@ import AddToQueueIcon from '@mui/icons-material/AddToQueue';
 export default function DashboardLayoutBasic(props: any) {
   const { window } = props;
   const { user, accessToken } = useAuth();
-  const router = useDemoRouter("/feed");
+  const router = useDemoRouter("/analytics");
   const demoWindow = window ? window() : undefined;
   const { logout } = useAuth();
   // const [selectedChatUser, setSelectedChatUser] = useState<User | null>(null);
@@ -42,7 +42,7 @@ export default function DashboardLayoutBasic(props: any) {
     },
     {
       segment: "feed",
-      title: "הקמפיינים שלי",
+      title: "",
       icon: <ContactsOutlinedIcon />,
     },
     {
@@ -52,12 +52,12 @@ export default function DashboardLayoutBasic(props: any) {
     },
     {
       segment: "analytics",
-      title: "ניתוחים ונתונים",
+      title: "",
       icon: <AnalysisIcon />,
     },
     {
       segment: "chats",
-      title: "לידים",
+      title: "",
       icon: <CalendarTodayOutlinedIcon />,
     },
     {
@@ -102,7 +102,7 @@ export default function DashboardLayoutBasic(props: any) {
         xs: 0,
         sm: 600,
         md: 600,
-        lg: 1200,
+        lg: 2500,
         xl: 1536,
       },
     },
@@ -146,6 +146,7 @@ export default function DashboardLayoutBasic(props: any) {
   const routeComponents: { [key: string]: React.ReactNode } = {
     "/analytics": <GoogleAdsAnalytics />,
     "/settings/account": <AccountSettings />,
+
     "/settings/business-settings": <BusinessSetting />,
     "/settings": <AccountSettings />,
     "/feed": <MainFeed />,
