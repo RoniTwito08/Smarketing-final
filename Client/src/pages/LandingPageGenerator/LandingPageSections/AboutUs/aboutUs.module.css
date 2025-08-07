@@ -1,105 +1,207 @@
-.aboutUsSection {
-  position: relative;
-  padding: 60px 20px;
-  max-width: 100vw;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  border-radius: 12px;
-  transition: all 0.3s ease-in-out;
-  font-family: var(--font-family, "Segoe UI", sans-serif);
-  color: var(--text-color, #333);
+/* ====== ROOT VARIABLES ====== */
+:root{
+  --primary-color:#ffffff;
+  --secondary-color:#ffffff;
+  --tertiary-color:#1e90ff;
+  --text-color:#000000;
 }
 
-.aboutUsText {
-  max-width: 800px;
-  margin: 0 auto;
-  cursor: text;
-  outline: none;
-  color: var(--text-color, #333);
+/* ====== SECTION WRAPPER ====== */
+.aboutUsSection{
+  position:relative;
+  padding:60px 20px;
+  max-width:100vw;
+  margin:0 auto;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  border-radius:12px;
+  transition:.3s ease;
+  font-family:var(--font-family,"Segoe UI",sans-serif);
+  color:var(--text-color,#333);
 }
 
-.aboutUsText:focus {
-  outline: 2px solid rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.6);
+/* --- VARIANT: text-left / stats-right --- */
+.aboutUsSection.sideStats{
+  flex-direction:row;               /* טקסט משמאל, כרטיסים מימין */
+  justify-content:center;
+  gap:40px;
+  text-align:start;                 /* שומר יישור טבעי בתוך הטקסט */
 }
-
-.arrowButtons {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  transform: translateY(-50%);
-  padding: 0 12px;
-  pointer-events: none; 
+.aboutUsSection.sideStats .aboutUsText{flex:1 1 0;}
+.aboutUsSection.sideStats .statsRow{
+  flex-direction:column;
+  flex:0 0 240px;                   /* רוחב קבוע לעמודת כרטיסים */
+  align-items:stretch;
 }
-
-.arrowButtons button {
-  pointer-events: auto;
-  background-color: black;
-  border: 2px solid var(--primary-color, #007bff);
-  color: var(--primary-color, #007bff);
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-}
-
-.arrowButtons button:hover {
-  background-color: var(--primary-color, #007bff);
-  color: white;
-}
-
-.actionBar {
-  position: absolute;
-  top: 12px;
-  right: 0px;
-}
-
-.template1 {
-  font-size: 20px;
-  line-height: 1.6;
-  padding: 0 10px;
-}
-
-.template2 {
-  padding: 20px;
-  border-radius: 12px;
-  font-size: 18px;
-  font-style: italic;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  line-height: 1.7;
-}
-
-.template3 {
-  padding: 24px;
-  border-left: 5px solid var(--primary-color, #007bff);
-  font-size: 19px;
-  font-weight: 500;
-  text-align: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  line-height: 1.8;
-}
-
-@media (max-width: 768px) {
-  .aboutUsTitle {
-    font-size: 28px;
-  }
-  .aboutUsText {
-    font-size: 16px;
+.aboutUsSection.sideStats .statCard{width:100%;}
+@media (max-width:768px){
+  .aboutUsSection.sideStats{flex-direction:column;text-align:center;}
+  .aboutUsSection.sideStats .statsRow{
+    flex-direction:row;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:24px;
   }
 }
 
+/* ---------- TOOLBAR ---------- */
+.toolbar{
+  position:absolute;
+  top:12px;
+  inset-inline-end:12px;
+  display:flex;
+  gap:8px;
+  z-index:6;
+}
+.iconBtn{
+  width:36px;height:36px;border-radius:999px;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:color-mix(in oklab,var(--text-color) 28%,transparent);
+  color:#fff;
+  border:1px solid color-mix(in oklab,var(--text-color) 24%,transparent);
+  box-shadow:0 6px 18px -8px color-mix(in oklab,var(--text-color) 32%,transparent);
+  cursor:pointer;
+}
+.iconBtn:hover{background:color-mix(in oklab,var(--text-color) 38%,transparent);}
+.trashBtn{
+  background:color-mix(in oklab,#d90429 45%,transparent);
+  border-color:color-mix(in oklab,#d90429 35%,transparent);
+}
+.trashBtn:hover{background:color-mix(in oklab,#d90429 60%,transparent);}
+
+/* ---------- ARROWS ---------- */
+.arrowButtons{
+  position:absolute;top:50%;left:0;right:0;display:flex;
+  justify-content:space-between;transform:translateY(-50%);
+  padding:0 12px;pointer-events:none;z-index:5;
+}
+.arrowButtons button{
+  pointer-events:auto;width:40px;height:40px;display:flex;
+  align-items:center;justify-content:center;background:black;
+  border:2px solid var(--primary-color,#007bff);
+  color:var(--primary-color,#007bff);
+  border-radius:50%;font-size:16px;cursor:pointer;
+  box-shadow:0 2px 6px rgba(0,0,0,.1);
+  opacity:0;transform:scale(.9);transition:.25s ease;
+}
+.aboutUsSection:hover .arrowButtons button{opacity:1;transform:scale(1);}
+.arrowButtons button:hover{
+  background:var(--primary-color,#007bff);color:#fff;transform:scale(1.1);
+}
+
+/* ---------- TEXT TEMPLATES ---------- */
+.aboutUsText{max-width:800px;margin:0 auto;cursor:text;outline:none;}
+
+.template1{font-size:20px;line-height:1.6;padding:0 10px;}
+.template2{
+  padding:20px;border-radius:12px;font-size:18px;font-style:italic;
+  box-shadow:0 4px 12px rgba(0,0,0,.05);line-height:1.7;
+}
+.template3{
+  padding:24px;border-left:5px solid var(--primary-color,#007bff);
+  font-size:19px;font-weight:500;text-align:center;
+  box-shadow:0 2px 8px rgba(0,0,0,.05);line-height:1.8;
+}
+
+/* focus highlight */
+.aboutUsText:focus{
+  outline:2px solid rgba(0,0,0,.1);border-radius:4px;
+  background:rgba(255,255,255,.6);
+}
+@media (max-width:768px){.aboutUsText{font-size:16px;}}
+
+/* --- STAT CARDS --- */
+.statsRow{
+  display:flex;
+  gap:24px;
+  margin-top:32px;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+.statCard{
+  background:#fff;
+  border:1px solid rgba(0,0,0,.08);
+  border-radius:12px;
+  padding:28px 36px;
+  box-shadow:0 4px 12px rgba(0,0,0,.06);
+  text-align:center;
+}
+.statCard h3{margin:0;font-size:32px;font-weight:800;color:#1e293b;}
+.statCard span{font-size:14px;color:#64748b;}
+
+/* ========== TEMPLATE-1 — “Neon Card” ========== */
+.template1{
+  position:relative;
+  padding:34px 32px;
+  border-radius:18px;
+  color:var(--text-color);
+  font-size:22px;
+  line-height:1.8;
+  overflow:hidden;
+  text-shadow:0 0 6px var(--tertiary-color);
+}
+.template1::before{
+  content:"";
+  position:absolute;inset:-4px;border-radius:inherit;
+  background:conic-gradient(
+     from 180deg at 50% 50%,
+     var(--tertiary-color) 0deg,
+     color-mix(in oklab,var(--primary-color) 75%,var(--tertiary-color)) 120deg,
+     var(--secondary-color) 240deg,
+     var(--tertiary-color) 360deg);
+  filter:blur(16px);
+  z-index:-1;
+}
+
+/* ========== TEMPLATE-2 — “Paper Tilt” ========== */
+.template2{
+  position:relative;
+  padding:26px 26px 26px 36px;
+  max-width:680px;
+  background:var(--primary-color);
+  font-size:20px;
+  line-height:1.7;
+  font-style:italic;
+  color:color-mix(in oklab,var(--text-color) 70%,#000);
+  border-radius:12px;
+  box-shadow:
+    0 18px 35px color-mix(in oklab,#000 15%,transparent),
+    0 4px 12px color-mix(in oklab,#000 8%,transparent);
+  transform:skewX(-2deg) rotate(-1deg);
+  border-left:10px solid var(--tertiary-color);
+}
+.template2::after{
+  content:"";
+  position:absolute;inset:0;border-radius:inherit;
+  box-shadow:0 35px 45px color-mix(in oklab,#000 20%,transparent);
+  opacity:.25;z-index:-1;pointer-events:none;
+}
+
+/* ========== TEMPLATE-3 — “Glass Highlight” ========== */
+.template3{
+  position:relative;
+  padding:38px 24px;
+  text-align:center;
+  font-size:24px;
+  font-weight:800;
+  line-height:1.9;
+  color:var(--text-color);
+  backdrop-filter:blur(14px);
+  background:color-mix(in oklab,var(--tertiary-color) 12%,transparent);
+  border:1px solid color-mix(in oklab,var(--primary-color) 25%,transparent);
+  border-radius:22px;
+  box-shadow:inset 0 0 18px color-mix(in oklab,var(--primary-color) 35%,transparent);
+  text-shadow:
+    0 2px 4px color-mix(in oklab,#000 25%,transparent),
+    0 8px 16px color-mix(in oklab,#000 15%,transparent);
+}
+.template3::before{
+  content:"";
+  position:absolute;inset:-8px;border-radius:inherit;
+  background:radial-gradient(circle at 50% 0%,
+              color-mix(in oklab,var(--primary-color) 50%,transparent) 0%,
+              transparent 70%);
+  z-index:-1;
+}

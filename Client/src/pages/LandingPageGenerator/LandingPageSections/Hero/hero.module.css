@@ -162,7 +162,6 @@
 
 .hero1:hover {
   transform: scale(1.01);
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
 }
 
 .hero1::after {
