@@ -2,6 +2,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import axios from "axios";
 import fs from "fs";
 import path from "path";
+import type { NextApiRequest, NextApiResponse } from "next";
 
 const MARKETING_GEMINI_API_KEY = process.env.MARKETING_GEMINI_API_KEY;
 if (!MARKETING_GEMINI_API_KEY) {
@@ -11,7 +12,7 @@ if (!MARKETING_GEMINI_API_KEY) {
 const genAI = new GoogleGenerativeAI(MARKETING_GEMINI_API_KEY);
 
 export const generateContent = async (prompt: string): Promise<string> => {
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
   const result = await model.generateContent(prompt);
   const response = result.response;
   return response.text();
@@ -90,3 +91,5 @@ export const fetchPexelsImage = async (
     return null;
   }
 };
+
+

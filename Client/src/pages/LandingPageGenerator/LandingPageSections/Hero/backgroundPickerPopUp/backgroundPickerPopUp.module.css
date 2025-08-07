@@ -1,0 +1,52 @@
+.portalRoot { position: fixed; inset: 0; z-index: 50; pointer-events: none; }
+.bubble{
+  position: absolute; pointer-events: auto;
+  width: 80vw; max-width: calc(100vw - 16px);
+  max-height: min(80vh, 820px);
+  overflow: hidden; border-radius: 14px; background: #fff;
+  box-shadow: 0 20px 60px rgba(0,0,0,.18), 0 1px 0 rgba(0,0,0,.06);
+  border: 1px solid rgba(0,0,0,.06);
+  margin-left: 2%;
+}
+.bubbleCaret{
+  position: absolute; top: -8px; left: var(--caret-x, 24px); width: 0; height: 0;
+  border-left: 8px solid transparent; border-right: 8px solid transparent; border-bottom: 8px solid #fff;
+  filter: drop-shadow(0 -1px 0 rgba(0,0,0,.06));
+}
+
+.header{
+  display: flex; gap: 8px; align-items: center; padding: 10px; border-bottom: 1px solid rgba(0,0,0,.06);
+}
+.input{
+  flex: 1; min-width: 0; padding: 8px 10px; border-radius: 10px; border: 1px solid rgba(0,0,0,.15);
+}
+.searchBtn, .linkBtn{
+  padding: 8px 10px; border-radius: 10px; border: 1px solid rgba(0,0,0,.15); background: #f7f7f7; cursor: pointer;
+}
+
+.suggestions{
+  display: flex; flex-wrap: wrap; gap: 8px; padding: 8px 10px; border-bottom: 1px solid rgba(0,0,0,.06);
+}
+.suggestion{
+  padding: 6px 10px; border-radius: 999px; border: 1px solid rgba(0,0,0,.12); background: #fafafa; cursor: pointer;
+}
+
+.loading, .error{ padding: 24px; text-align: center; }
+
+.grid{
+  padding: 10px;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr); /* 4 columns */
+  gap: 10px;
+  overflow: auto;
+  max-height: calc(min(80vh, 820px) - 140px);
+}
+.cell{
+  position: relative; padding: 0; border: none; cursor: pointer; border-radius: 10px; overflow: hidden;
+  outline: 1px solid rgba(0,0,0,.06);
+  background: #f4f4f4;
+}
+.cell img{
+  display: block; width: 100%; height: 100%; object-fit: cover; aspect-ratio: 4/3;
+}
+.cell:hover{ outline-color: rgba(0,0,0,.18); }

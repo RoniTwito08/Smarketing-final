@@ -61,7 +61,24 @@ const defaultTheme = {
   font: "sans-serif",
 };
 
-const CampaignPopup: React.FC<CampaignPopupProps> = ({
+const initialForm: CampaignForm = {
+  creatorId: "1234567890",
+  campaignName: "קמפיין אביב 2025",
+  campaignContent:
+    "קמפיין מיוחד לעונת האביב עם הנחות בלעדיות למוצרים נבחרים!",
+  budget: 100,
+  marketingLevel: "גבוה",
+  campaginPurpose: "הגברת מודעות למותג",
+  actionToCall: "הצטרפו עכשיו",
+  targetAudience: "לקוחות חדשים ומתעניינים",
+  targetGender: "שני המינים",
+  language: "עברית",
+  targetLocation: "ישראל",
+  targetAge: "25-45",
+  campaignImage: null,
+};
+
+export const CampaignPopup: React.FC<CampaignPopupProps> = ({
   open,
   onClose,
   onSubmit,
@@ -71,23 +88,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
     throw new Error("User is not authenticated or userId is missing");
   }
 
-  const [form, setForm] = useState<CampaignForm>({
-    creatorId: "1234567890",
-    campaignName: "קמפיין אביב 2025",
-    campaignContent:
-      "קמפיין מיוחד לעונת האביב עם הנחות בלעדיות למוצרים נבחרים!",
-    budget: 100,
-    marketingLevel: "גבוה",
-    campaginPurpose: "הגברת מודעות למותג",
-    actionToCall: "הצטרפו עכשיו",
-    targetAudience: "לקוחות חדשים ומתעניינים",
-    targetGender: "שני המינים",
-    language: "עברית",
-    targetLocation: "ישראל",
-    targetAge: "25-45",
-    campaignImage: null,
-  });
-
+  const [form, setForm] = useState<CampaignForm>(initialForm);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [submitted, setSubmitted] = useState(false);
@@ -118,6 +119,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
     contactUs: useRef<HTMLDivElement>(null),
     gallery: useRef<HTMLDivElement>(null),
   };
+
   const tourSteps = [
     {
       ref: sectionRefs.hero,
@@ -142,7 +144,8 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
     {
       ref: sectionRefs.gallery,
       title: "סקשן גלריה",
-      description: "כאן תוכל להוסיף תמונות נוספות מהגלריה שלך ולשנות את מיקומם",
+      description:
+        "כאן תוכל להוסיף תמונות נוספות מהגלריה שלך ולשנות את מיקומם",
     },
     {
       ref: sectionRefs.contactUs,
@@ -156,6 +159,18 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
       description: "מכאן הלקחות ישלחו את הפרטים אליך",
     },
   ];
+
+  // מסך מלא: נעילת גלילת body כשפתוח
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
 
   useEffect(() => {
     if (landingPageRef.current) {
@@ -176,39 +191,27 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
     e.preventDefault();
     setLoading(true);
     setError("");
-    const businessInfo = await fetch(
-      `${config.apiUrl}/business-info/${user._id}`,
-      {
+
+    try {
+      const businessInfo = await fetch(
+        `${config.apiUrl}/business-info/${user._id}`,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      if (!businessInfo.ok) throw new Error("שגיאה בהבאת מידע עסקי");
+      const BusinessData = await businessInfo.json();
+      if (!BusinessData) throw new Error("שגיאה בהבאת מידע עסקי");
+
+      const userEmail = await fetch(`${config.apiUrl}/users/${user._id}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
-      }
-    );
-    if (!businessInfo.ok) {
-      setError("שגיאה בהבאת מידע עסקי");
-      return;
-    }
-    const BusinessData = await businessInfo.json();
-    if (!BusinessData) {
-      setError("שגיאה בהבאת מידע עסקי");
-      return;
-    }
-    console.log("Business Data:", BusinessData);
-    const userEmail = await fetch(`${config.apiUrl}/users/${user._id}`, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    });
-    if (!userEmail.ok) {
-      setError("שגיאה בהבאת מידע עסקי");
-      return;
-    }
-    const userEmailData = await userEmail.json();
-    if (!userEmailData) {
-      setError("שגיאה בהבאת מידע עסקי");
-      return;
-    }
-    document.body.style.overflow = "auto";
-    console.log("User Email Data:", userEmailData.email);
-    try {
+      });
+      if (!userEmail.ok) throw new Error("שגיאה בהבאת מידע עסקי");
+      const userEmailData = await userEmail.json();
+      if (!userEmailData) throw new Error("שגיאה בהבאת מידע עסקי");
+
       const response = await fetch(
         `${config.apiUrl}/landing-page-generator/generateLandingPageContext`,
         {
@@ -222,17 +225,15 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
         }
       );
       if (!response.ok) throw new Error("שגיאה ביצירת דף הנחיתה");
-      const data = await response.json();
-      console.log("Landing Page Data:", data);
 
+      const data = await response.json();
       if (data) {
         const sectionsArray = Object.keys(data).map((key) => data[key]);
         setLandingPageData(sectionsArray);
         setSubmitted(true);
       }
-    } catch (err) {
-      if (err instanceof Error) setError(err.message || "שגיאה בלתי צפויה");
-      else setError("שגיאה בלתי צפויה");
+    } catch (err: any) {
+      setError(err?.message || "שגיאה בלתי צפויה");
     } finally {
       setLoading(false);
     }
@@ -240,14 +241,14 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
 
   useEffect(() => {
     if (!landingPageData) return;
-    const theme = landingPageData[8]; // Make sure this index exists and contains a valid theme
+    const theme = landingPageData[8]; // ודא שהאינדקס הזה קיים
 
     if (theme && theme.primaryColor) {
       setColors({
         primaryColor: theme.primaryColor.trim(),
         secondaryColor: theme.secondaryColor.trim(),
         tertiaryColor: theme.tertiaryColor.trim(),
-        textColor: "#333333", // or any other color you prefer
+        textColor: "#333333",
         font: theme.font.trim(),
       });
       setUserFont(theme.font.trim());
@@ -357,9 +358,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
         <html style="background-color: ${colors.primaryColor};">
           <head>
             <meta charset="UTF-8">
-            <title>Landing Page</title>
-            <link rel="stylesheet" href="${config.apiUrl}/dist/assets/index-cRtFAP5i.css">
-
+            <title>Landing Page</title><link rel="stylesheet" href="${config.apiUrl}/dist/assets/index-BXT3K-2_.css">
             <style>
               :root {
                 --primary-color: ${colors.primaryColor};
@@ -385,10 +384,10 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
           </head>
           <body style="background-color: ${colors.primaryColor};">
             ${landingPageHTML}
-
             <script>
               document.addEventListener("DOMContentLoaded", function () {
                 const form = document.querySelector("form");
+                if (!form) return;
                 const fullNameInput = form.querySelector("input[name='fullName']");
                 const emailInput = form.querySelector("input[name='email']");
                 const phoneInput = form.querySelector("input[name='phone']");
@@ -403,34 +402,30 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
                 form.addEventListener("submit", async function (e) {
                   e.preventDefault();
                   statusBox.textContent = "שולח...";
-
                   try {
                     const response = await fetch("${config.apiUrl}/leads/createLead", {
                       method: "POST",
                       headers: { "Content-Type": "application/json" },
                       body: JSON.stringify({
-                        name: fullNameInput.value,
-                        email: emailInput.value,
-                        phone: phoneInput.value,
-                        message: messageInput.value,
-                        userId: userIdInput.value
+                        name: fullNameInput?.value || "",
+                        email: emailInput?.value || "",
+                        phone: phoneInput?.value || "",
+                        message: messageInput?.value || "",
+                        userId: userIdInput?.value || "",
                       }),
                     });
-
                     if (!response.ok) throw new Error("שליחה נכשלה");
-                    setTimeout(() => {
-                      statusBox.textContent = "";
-                    }, 3000); // Clear status after 3 seconds
+                    setTimeout(() => { statusBox.textContent = ""; }, 3000);
                     statusBox.textContent = "✅ הפרטים נשלחו בהצלחה!";
-                    form.reset();
+                    (form as HTMLFormElement).reset();
                   } catch (error) {
                     console.error("שגיאה בשליחה:", error);
                     statusBox.textContent = "❌ שגיאה בשליחת הפרטים";
                   }
                 });
+
                 const scrollButton = document.getElementById("headerButtonContainer");
                 const contactTarget = document.getElementById("contact-us-root") || document.querySelector(".contactUs");
-
                 if (scrollButton && contactTarget) {
                   scrollButton.addEventListener("click", () => {
                     contactTarget.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -440,7 +435,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
             </script>
           </body>
         </html>
-        `;
+      `;
 
       try {
         const saveResponse = await fetch(
@@ -459,7 +454,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
           }
         );
         if (!saveResponse.ok) {
-          toast.success("בעיה בשמירת דף הנחיתה!");
+          toast.error("בעיה בשמירת דף הנחיתה!");
           return;
         }
 
@@ -487,14 +482,8 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
         toast.success("קמפיין ודף נחיתה נשמרו בהצלחה!");
 
         setTimeout(() => {
-          if (onSubmit) {
-            onSubmit(form);
-          }
-
-          if (onClose) {
-            onClose();
-          }
-
+          onSubmit?.(form);
+          onClose?.();
           handleClose();
         }, 2000);
       } catch (error) {
@@ -508,7 +497,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
     setRemovedSections((prev) => [...prev, { section, index }]);
     setLandingPageData((prev) => {
       if (!prev) return [];
-      return prev.filter((_, i) => i !== index); // Ensure that you remove the section correctly
+      return prev.filter((_, i) => i !== index);
     });
   };
 
@@ -529,14 +518,18 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
   };
 
   const handleClose = () => {
-    setForm({ ...form, campaignName: "", campaignContent: "" });
+    setForm(initialForm);
     setLandingPageData(null);
     setSubmitted(false);
     setShowMobilePopup(false);
     setShowTabletPopup(false);
     setShowDesktopPopup(false);
-    window.location.reload();
-    onClose();
+    setRemovedSections([]);
+    setIsSidebarOpen(false);
+    setResponsiveView("");
+    setTourStep(0);
+    setShowTour(true);
+    onClose?.();
   };
 
   if (!open) return null;
@@ -549,7 +542,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
   } as any;
 
   return (
-    <div>
+    <div className="campaign-page" dir="rtl">
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -561,54 +554,47 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
         draggable
         pauseOnHover
       />
-      {error && <p className="text-red-500">❌ {error}</p>}
 
       {submitted && landingPageData ? (
-        <div className="popup-overlay">
-          <div
-            className="popup popup-landing"
-            dir="rtl"
-            style={{
-              maxHeight: "90vh",
-              overflowY: "auto",
-              width: "95%",
-            }}
-          >
-            {showTour && (
-              <TourPopup
-                step={tourStep}
-                totalSteps={tourSteps.length}
-                title={tourSteps[tourStep].title}
-                description={tourSteps[tourStep].description}
-                targetRef={tourSteps[tourStep].ref}
-                onNext={() => setTourStep((prev) => prev + 1)}
-                onBack={() => setTourStep((prev) => prev - 1)}
-                onSkip={() => setShowTour(false)}
-              />
-            )}
-
-            <div className="popup-header">
-              <p className="promptText">האם אתה מעוניין לשגר את דף הנחיתה?</p>
-              <div className="buttonGroup">
-                <button className="cancelBtn" onClick={handleClose}>
-                  <MdCancel className="icon" />
-                  <span>ביטול</span>
-                </button>
-                <button className="launchBtn" onClick={handleSaveLandingPage}>
-                  <IoRocketOutline className="icon" />
-                  <span>שגר קמפיין</span>
-                </button>
-              </div>
+        <div className="builder-shell">
+          {/* כותרת דביקה בראש המקטע */}
+          <div className="page-header">
+            <p className="promptText">האם אתה מעוניין לשגר את דף הנחיתה?</p>
+            <div className="buttonGroup">
+              <button className="cancelBtn" onClick={handleClose}>
+                <MdCancel className="icon" />
+                <span>ביטול</span>
+              </button>
+              <button className="launchBtn" onClick={handleSaveLandingPage}>
+                <IoRocketOutline className="icon" />
+                <span>שגר קמפיין</span>
+              </button>
             </div>
+          </div>
 
+          {showTour && (
+            <TourPopup
+              step={tourStep}
+              totalSteps={tourSteps.length}
+              title={tourSteps[tourStep].title}
+              description={tourSteps[tourStep].description}
+              targetRef={tourSteps[tourStep].ref}
+              onNext={() => setTourStep((prev) => prev + 1)}
+              onBack={() => setTourStep((prev) => prev - 1)}
+              onSkip={() => setShowTour(false)}
+            />
+          )}
+
+          {/* תוכן הבילדר עם גלילה פנימית */}
+          <div className="builder-content">
             <div className={styles.landingPageLayout}>
               <DragDropContext onDragEnd={onDragEnd}>
                 <Droppable droppableId="sections">
                   {(provided) => (
                     <div
-                      className={`${styles.sectionsContainer} ${isSidebarOpen ? styles.withSidebar : ""} ${
-                        responsiveView ? styles[responsiveView] : ""
-                      }`}
+                      className={`${styles.sectionsContainer} ${
+                        isSidebarOpen ? styles.withSidebar : ""
+                      } ${responsiveView ? styles[responsiveView] : ""}`}
                       ref={(node) => {
                         if (node) {
                           landingPageRef.current = node;
@@ -620,6 +606,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
                     >
                       {landingPageData.map((section, index) => (
                         <Draggable
+                          key={section.sectionName + index}
                           draggableId={section.sectionName + index}
                           index={index}
                           isDragDisabled={["header", "hero", "footer"].includes(
@@ -696,153 +683,240 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
           </div>
         </div>
       ) : (
-        <div className="popup-overlay-form">
-          <div className="popup-form" dir="rtl">
-            <h2>צור קמפיין חדש</h2>
-            <form onSubmit={handleSubmit}>
-              <div className="form-grid">
+        <div className="form-shell">
+          <div className="form-hero">
+            <h2 className="form-hero__title">צור קמפיין חדש</h2>
+            <p className="form-hero__subtitle">
+              בחר פרטים, הגדר מטרות ושגר דף נחיתה מעוצב בלחיצה אחת.
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="form-card" noValidate>
+            <div className="form-grid">
+              {/* שם הקמפיין */}
+              <div className="field">
                 <input
+                  id="campaignName"
                   name="campaignName"
                   placeholder="שם הקמפיין"
                   value={form.campaignName}
                   onChange={handleChange}
+                  className="control"
+                  type="text"
+                  autoComplete="off"
                 />
-
-                <div className="form-group">
-                  <label>תקציב יומי: {Math.round(form.budget)} ₪</label>
-                  <input
-                    type="range"
-                    name="budget"
-                    min="1"
-                    max="100"
-                    step="10"
-                    value={Math.round(form.budget)}
-                    onChange={handleChange}
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label>רמת שיווק</label>
-                  <select
-                    name="marketingLevel"
-                    value={form.marketingLevel}
-                    onChange={handleChange}
-                  >
-                    <option value="">בחר רמה</option>
-                    <option value="נמוכה">נמוכה</option>
-                    <option value="בינונית">בינונית</option>
-                    <option value="גבוהה">גבוהה</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label>מטרת הקמפיין</label>
-                  <select
-                    name="campaginPurpose"
-                    value={form.campaginPurpose}
-                    onChange={handleChange}
-                  >
-                    <option value="">בחר מטרה</option>
-                    <option value="הגברת מודעות למותג">
-                      הגברת מודעות למותג
-                    </option>
-                    <option value="השגת לידים">השגת לידים</option>
-                    <option value="קידום מכירות">קידום מכירות</option>
-                  </select>
-                </div>
-
+                <label htmlFor="campaignName" className="fl-label">
+                  שם הקמפיין
+                </label>
+              </div>
+              {/* קריאה לפעולה */}
+              <div className="field">
                 <input
+                  id="actionToCall"
                   name="actionToCall"
                   placeholder="קריאה לפעולה"
                   value={form.actionToCall}
                   onChange={handleChange}
+                  className="control"
+                  type="text"
+                  autoComplete="off"
                 />
+                <label htmlFor="actionToCall" className="fl-label">
+                  קריאה לפעולה
+                </label>
+              </div>
 
-                <div className="form-group">
-                  <label>קהל יעד</label>
-                  <select
-                    name="targetAudience"
-                    value={form.targetAudience}
-                    onChange={handleChange}
-                  >
-                    <option value="">בחר קהל</option>
-                    <option value="לקוחות חדשים">לקוחות חדשים</option>
-                    <option value="לקוחות קיימים">לקוחות קיימים</option>
-                    <option value="עסקים">עסקים</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label>מין קהל היעד</label>
-                  <select
-                    name="targetGender"
-                    value={form.targetGender}
-                    onChange={handleChange}
-                  >
-                    <option value="">בחר מין</option>
-                    <option value="גברים">גברים</option>
-                    <option value="נשים">נשים</option>
-                    <option value="שני המינים">שני המינים</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label>שפה</label>
-                  <select
-                    name="language"
-                    value={form.language}
-                    onChange={handleChange}
-                  >
-                    <option value="">בחר שפה</option>
-                    <option value="עברית">עברית</option>
-                    <option value="אנגלית">אנגלית</option>
-                    <option value="ערבית">ערבית</option>
-                  </select>
-                </div>
-
+              {/* מיקום יעד */}
+              <div className="field">
                 <input
+                  id="targetLocation"
                   name="targetLocation"
                   placeholder="מיקום יעד"
                   value={form.targetLocation}
                   onChange={handleChange}
+                  className="control"
+                  type="text"
+                  autoComplete="off"
                 />
+                <label htmlFor="targetLocation" className="fl-label">
+                  מיקום יעד
+                </label>
+              </div>
 
+              {/* גיל יעד */}
+              <div className="field">
                 <input
+                  id="targetAge"
                   name="targetAge"
-                  placeholder="גיל יעד (למשל 25-45)"
+                  placeholder="למשל 25-45"
                   value={form.targetAge}
                   onChange={handleChange}
+                  className="control"
+                  type="text"
+                  autoComplete="off"
                 />
+                <label htmlFor="targetAge" className="fl-label">
+                  גיל יעד
+                </label>
+              </div>
 
+              {/* רמת שיווק */}
+              <div className="field select-field">
+                <select
+                  id="marketingLevel"
+                  name="marketingLevel"
+                  value={form.marketingLevel}
+                  onChange={handleChange}
+                  className="control"
+                >
+                  <option value="">בחר רמה</option>
+                  <option value="נמוכה">נמוכה</option>
+                  <option value="בינונית">בינונית</option>
+                  <option value="גבוהה">גבוהה</option>
+                </select>
+                <label htmlFor="marketingLevel" className="fl-label">
+                  רמת שיווק
+                </label>
+              </div>
+
+              {/* מטרת הקמפיין */}
+              <div className="field select-field">
+                <select
+                  id="campaginPurpose"
+                  name="campaginPurpose"
+                  value={form.campaginPurpose}
+                  onChange={handleChange}
+                  className="control"
+                >
+                  <option value="">בחר מטרה</option>
+                  <option value="הגברת מודעות למותג">הגברת מודעות למותג</option>
+                  <option value="השגת לידים">השגת לידים</option>
+                  <option value="קידום מכירות">קידום מכירות</option>
+                </select>
+                <label htmlFor="campaginPurpose" className="fl-label">
+                  מטרת הקמפיין
+                </label>
+              </div>
+
+              {/* קהל יעד */}
+              <div className="field select-field">
+                <select
+                  id="targetAudience"
+                  name="targetAudience"
+                  value={form.targetAudience}
+                  onChange={handleChange}
+                  className="control"
+                >
+                  <option value="">בחר קהל</option>
+                  <option value="לקוחות חדשים">לקוחות חדשים</option>
+                  <option value="לקוחות קיימים">לקוחות קיימים</option>
+                  <option value="עסקים">עסקים</option>
+                </select>
+                <label htmlFor="targetAudience" className="fl-label">
+                  קהל יעד
+                </label>
+              </div>
+
+              {/* מין קהל יעד */}
+              <div className="field select-field">
+                <select
+                  id="targetGender"
+                  name="targetGender"
+                  value={form.targetGender}
+                  onChange={handleChange}
+                  className="control"
+                >
+                  <option value="">בחר מין</option>
+                  <option value="גברים">גברים</option>
+                  <option value="נשים">נשים</option>
+                  <option value="שני המינים">שני המינים</option>
+                </select>
+                <label htmlFor="targetGender" className="fl-label">
+                  מין קהל היעד
+                </label>
+              </div>
+
+              {/* שפה */}
+              <div className="field select-field">
+                <select
+                  id="language"
+                  name="language"
+                  value={form.language}
+                  onChange={handleChange}
+                  className="control"
+                >
+                  <option value="">בחר שפה</option>
+                  <option value="עברית">עברית</option>
+                  <option value="אנגלית">אנגלית</option>
+                  <option value="ערבית">ערבית</option>
+                </select>
+                <label htmlFor="language" className="fl-label">
+                  שפה
+                </label>
+              </div>
+
+              {/* תקציב (Range) */}
+              <div className="field range-field">
+                <label htmlFor="budget" className="range-label">
+                  תקציב: <b>{Math.round(form.budget)} ₪</b>
+                </label>
+                <input
+                  id="budget"
+                  type="range"
+                  name="budget"
+                  min="1"
+                  max="100"
+                  step="10"
+                  value={Math.round(form.budget)}
+                  onChange={handleChange}
+                  className="range-control"
+                />
+                <div className="range-scale" aria-hidden="true">
+                  <span>1</span>
+                  <span>25</span>
+                  <span>50</span>
+                  <span>75</span>
+                  <span>100</span>
+                </div>
+              </div>
+
+              {/* תיאור הקמפיין */}
+              <div className="field field--textarea">
                 <textarea
+                  id="campaignContent"
                   name="campaignContent"
-                  placeholder="תיאור הקמפיין"
+                  placeholder="תיאור קצר על הקמפיין, מבצעים, USP וכד׳…"
                   value={form.campaignContent}
                   onChange={handleChange}
+                  className="control"
+                  rows={5}
                 />
+                <label htmlFor="campaignContent" className="fl-label">
+                  תיאור הקמפיין
+                </label>
               </div>
+            </div>
 
-              <div className="popup-actions">
-                <button
-                  className="cancel-btn"
-                  type="button"
-                  onClick={handleClose}
-                >
-                  ביטול
-                </button>
-                <button className="submit-btn" type="submit" disabled={loading}>
-                  {loading ? (
-                    <div className="btn-loader-wrapper">
-                      <span className="loader loader-in-btn"></span>
-                      טוען...
-                    </div>
-                  ) : (
-                    "צור קמפיין"
-                  )}
-                </button>
-              </div>
-            </form>
-          </div>
+            <div className="page-actions">
+              <button className="cancel-btn" type="button" onClick={handleClose}>
+                ❌ ביטול
+              </button>
+
+              <button className="submit-btn btn-gradient" type="submit" disabled={loading}>
+                {loading ? (
+                  <div className="btn-loader-wrapper">
+                    <span className="loader loader-in-btn" />
+                    טוען...
+                  </div>
+                ) : (
+                  <>🚀 צור קמפיין</>
+                )}
+              </button>
+              
+            </div>
+            {error && <p className="text-red-500">❌ {error}</p>}
+
+          </form>
         </div>
       )}
     </div>
