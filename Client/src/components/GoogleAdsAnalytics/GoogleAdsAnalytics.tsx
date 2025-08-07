@@ -3,10 +3,10 @@ import {
   Container,
   Paper,
   Typography,
-  TextField,
+  // TextField,
   Grid,
   Card,
-  CardContent,
+  // CardContent,
   Box,
   Table,
   TableBody,
@@ -14,8 +14,8 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  CheckCircle,
-  Cancel,
+  // CheckCircle,
+  // Cancel,
 } from "@mui/material";
 import GoogleAdsRadarChart from "../charts/GoogleAdsRadarChart";
 import GoogleAdsPieChart from "../charts/GoogleAdsPieChart";
@@ -73,8 +73,8 @@ interface Campaign {
 
 export const GoogleAdsAnalytics: React.FC = () => {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
-  const [customerId, setCustomerId] = useState("517-512-4700");
-  const [selectedCampaign, setSelectedCampaign] = useState<string>("");
+  const [customerId] = useState("517-512-4700");
+  const [selectedCampaign] = useState<string>("");
   // const [startDate, setStartDate] = useState<Date | null>(null);
   // const [endDate, setEndDate] = useState<Date | null>(null);
   const [stats, setStats] = useState<CampaignStats | null>(null);
@@ -133,32 +133,34 @@ export const GoogleAdsAnalytics: React.FC = () => {
       ]
     : [];
 
-  const pieData = stats
-    ? [
-        {
-          name: "הוצאה",
-          value: parseFloat((stats.costMicros / 1_000_000).toFixed(2)),
-        },
-      ]
-    : [];
+    radarData.sort((a, b) => a.metric.localeCompare(b.metric));
 
-  const areaData =
-    stats?.dailyBreakdown?.map((day) => ({
-      date: day.date,
-      value: day.clicks,
-    })) || [];
+  // const pieData = stats
+  //   ? [
+  //       {
+  //         name: "הוצאה",
+  //         value: parseFloat((stats.costMicros / 1_000_000).toFixed(2)),
+  //       },
+  //     ]
+  //   : [];
 
-  const barData =
-    stats?.dailyBreakdown?.map((day) => ({
-      campaignId: selectedCampaign,
-      campaignName:
-        campaigns.find((c) => c._id === selectedCampaign)?.campaignName || "",
-      impressions: day.impressions,
-      clicks: day.clicks,
-      cost: day.costMicros / 1_000_000,
-      conversions: day.conversions,
-      date: day.date,
-    })) || [];
+  // const areaData =
+  //   stats?.dailyBreakdown?.map((day) => ({
+  //     date: day.date,
+  //     value: day.clicks,
+  //   })) || [];
+
+  // const barData =
+  //   stats?.dailyBreakdown?.map((day) => ({
+  //     campaignId: selectedCampaign,
+  //     campaignName:
+  //       campaigns.find((c) => c._id === selectedCampaign)?.campaignName || "",
+  //     impressions: day.impressions,
+  //     clicks: day.clicks,
+  //     cost: day.costMicros / 1_000_000,
+  //     conversions: day.conversions,
+  //     date: day.date,
+  //   })) || [];
 
   return (
     <Container sx={{ mt: 4, mb: 4 }}>

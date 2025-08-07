@@ -165,26 +165,73 @@
   z-index:6;
 }
 
+/* === TOOLBAR – נשאר כמו שהוא === */
+.toolbar{
+  position:absolute;
+  top:12px;
+  inset-inline-end:12px;
+  display:flex;
+  gap:8px;
+  z-index:6;
+}
+
+/* === ICON BUTTONS – גרסה משולבת === */
 .iconBtn{
   width:36px; height:36px; border-radius:999px;
   display:inline-flex; align-items:center; justify-content:center;
-  background: color-mix(in oklab, var(--text-color) 28%, transparent);
-  color:#fff;
-  border: 1px solid color-mix(in oklab, var(--text-color) 24%, transparent);
-  box-shadow: 0 6px 18px -8px color-mix(in oklab, var(--text-color) 32%, transparent);
+  background:color-mix(in oklab,var(--text-color) 28%,transparent);
+  color:#fff;                                                  /* אייקון לבן */
+  border:1px solid color-mix(in oklab,var(--text-color) 24%,transparent);
+
+  /* זוהר + מעבר חלק */
+  box-shadow:
+    0 0 4px color-mix(in oklab,var(--text-color) 35%,transparent),
+    0 6px 18px -8px color-mix(in oklab,var(--text-color) 32%,transparent);
+  transition:background .2s ease, transform .2s ease, box-shadow .2s ease;
   cursor:pointer;
 }
 .iconBtn:hover{
-  background: color-mix(in oklab, var(--text-color) 38%, transparent);
+  background:color-mix(in oklab,var(--text-color) 44%,transparent);
+  transform:translateY(-2px) scale(1.06);
+  box-shadow:
+    0 0 6px color-mix(in oklab,var(--text-color) 45%,transparent),
+    0 10px 20px -8px color-mix(in oklab,var(--text-color) 32%,transparent);
+}
+.iconBtn:active{
+  transform:translateY(0) scale(0.94);
+  box-shadow:0 4px 10px -6px color-mix(in oklab,var(--text-color) 35%,transparent);
 }
 
+/* מצב Disabled (לבחירה) */
+.iconBtnDisabled,
+.iconBtn[disabled]{
+  opacity:.45;
+  cursor:not-allowed;
+  transform:none !important;
+  box-shadow:none !important;
+}
+
+/* === VARIANT – TRASH BUTTON (אדום) === */
 .trashBtn{
-  background: color-mix(in oklab, #d90429 45%, transparent);
-  border-color: color-mix(in oklab, #d90429 35%, transparent);
+  background:color-mix(in oklab,#d90429 58%,transparent);
+  border-color:color-mix(in oklab,#d90429 42%,transparent);
+  color:#fff;
+  box-shadow:
+    0 0 4px color-mix(in oklab,#d90429 45%,transparent),
+    0 6px 18px -8px color-mix(in oklab,#d90429 38%,transparent);
 }
 .trashBtn:hover{
-  background: color-mix(in oklab, #d90429 60%, transparent);
+  background:color-mix(in oklab,#d90429 80%,transparent);
+  transform:translateY(-2px) scale(1.06);
+  box-shadow:
+    0 0 6px color-mix(in oklab,#d90429 60%,transparent),
+    0 10px 20px -8px color-mix(in oklab,#d90429 38%,transparent);
 }
+.trashBtn:active{
+  transform:translateY(0) scale(0.94);
+  box-shadow:0 4px 10px -6px color-mix(in oklab,#d90429 45%,transparent);
+}
+
 
 @media (max-width: 768px){
   .twoColLayout{ flex-direction: column; text-align:center; }
