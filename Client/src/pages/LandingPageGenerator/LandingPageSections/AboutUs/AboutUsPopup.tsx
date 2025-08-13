@@ -1,50 +1,40 @@
+// src/components/LandingPageSections/AboutUs/AboutUsPopup.tsx
 "use client";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import styles from "../Hero/LayoutPopUp/LayoutPopUp.module.css";   // אותו קובץ CSS
+import styles from "../Hero/LayoutPopUp/LayoutPopUp.module.css";
 
 type FontSize = "S" | "M" | "L";
-type Cols     = "single" | "double";
+type Cols = "single" | "double";
 
 export interface AboutUsOptions {
-  template : number;   // 0-3
-  fontSize : FontSize;
-  columns  : Cols;
+  template: number; // 0..3
+  fontSize: FontSize;
+  columns: Cols;
   showStats: boolean;
 }
 
 interface Props {
-  open      : boolean;
-  options   : AboutUsOptions;
-  onChange  : (n: AboutUsOptions) => void;
-  onClose   : () => void;
-  anchorRef : React.RefObject<HTMLElement>;
-  dir?      : "rtl" | "ltr";
+  open: boolean;
+  options: AboutUsOptions;
+  onChange: (n: AboutUsOptions) => void;
+  onClose: () => void;
+  anchorRef: React.RefObject<HTMLElement>;
+  dir?: "rtl" | "ltr";
 }
 
-export default function AboutUsPopup({
-  open,
-  options,
-  onChange,
-  onClose,
-  anchorRef,
-  dir = "rtl",
-}: Props) {
-
-  const popRef      = useRef<HTMLDivElement>(null);
+export default function AboutUsPopup({ open, options, onChange, onClose, anchorRef, dir = "rtl" }: Props) {
+  const popRef = useRef<HTMLDivElement>(null);
   const [local, setLocal] = useState(options);
-  const [pos,  setPos ]   = useState({ top: 0, left: 0, caretX: 24 });
+  const [pos, setPos] = useState({ top: 0, left: 0, caretX: 24 });
 
-  /* === sync props→state === */
   useEffect(() => setLocal(options), [options]);
-  useEffect(() => onChange(local),   [local, onChange]);
+  useEffect(() => onChange(local), [local, onChange]);
 
-  /* === esc / outside click === */
   useEffect(() => {
     if (!open) return;
-    const key   = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    const click = (e: MouseEvent) =>
-      popRef.current && !popRef.current.contains(e.target as Node) && onClose();
+    const key = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    const click = (e: MouseEvent) => popRef.current && !popRef.current.contains(e.target as Node) && onClose();
     document.addEventListener("keydown", key);
     document.addEventListener("mousedown", click);
     return () => {
@@ -53,7 +43,6 @@ export default function AboutUsPopup({
     };
   }, [open, onClose]);
 
-  /* === placement === */
   useLayoutEffect(() => {
     if (!open) return;
     const place = () => {
@@ -61,13 +50,13 @@ export default function AboutUsPopup({
       const b = popRef.current;
       if (!a || !b) return;
       const ar = a.getBoundingClientRect();
-      const bw = b.offsetWidth  || 340;
+      const bw = b.offsetWidth || 340;
       const bh = b.offsetHeight || 260;
       const gap = 8;
       let left = ar.left + ar.width / 2 - bw / 2;
-      let top  = ar.bottom + gap;
-      left = Math.max(8, Math.min(left, innerWidth  - bw - 8));
-      top  = Math.max(8, Math.min(top , innerHeight - bh - 8));
+      let top = ar.bottom + gap;
+      left = Math.max(8, Math.min(left, innerWidth - bw - 8));
+      top = Math.max(8, Math.min(top, innerHeight - bh - 8));
       const caretX = Math.max(14, Math.min(bw - 14, ar.left + ar.width / 2 - left));
       setPos({ top, left, caretX });
     };
@@ -93,15 +82,15 @@ export default function AboutUsPopup({
       >
         <div className={styles.bubbleCaret} />
 
-        {/* תבניות */}
+        {/* Template */}
         <div className={styles.section}>
           <div className={styles.rowLabel}>טמפלייט</div>
           <div className={styles.layoutsRow}>
-            {[0,1,2].map((i) => (
+            {[0, 1, 2, 3].map((i) => (
               <button
                 key={i}
                 className={`${styles.layoutBox} ${local.template === i ? styles.layoutBoxActive : ""}`}
-                onClick={() => setLocal(p => ({ ...p, template: i }))}
+                onClick={() => setLocal((p) => ({ ...p, template: i }))}
                 aria-pressed={local.template === i}
               >
                 {String.fromCharCode(65 + i)}
@@ -110,34 +99,52 @@ export default function AboutUsPopup({
           </div>
         </div>
 
-        {/* טקסט + עמודות + סטטיסטיקה */}
+        {/* Font + stats */}
         <div className={styles.section}>
           <div className={styles.rowBetween}>
             <span className={styles.label}>גודל כתב</span>
             <div className={styles.segment}>
-              {(["S","M","L"] as const).map(k => (
+              {(["S", "M", "L"] as const).map((k) => (
                 <button
                   key={k}
                   className={`${styles.segmentBtn} ${local.fontSize === k ? styles.active : ""}`}
-                  onClick={() => setLocal(p => ({ ...p, fontSize: k }))}
+                  onClick={() => setLocal((p) => ({ ...p, fontSize: k }))}
                 >
                   {k}
                 </button>
               ))}
             </div>
           </div>
+
+          <div className={styles.rowBetween}>
+            <span className={styles.label}>שתי עמודות</span>
+            <div className={styles.segment}>
+              {(["single", "double"] as const).map((k) => (
+                <button
+                  key={k}
+                  className={`${styles.segmentBtn} ${local.columns === k ? styles.active : ""}`}
+                  onClick={() => setLocal((p) => ({ ...p, columns: k }))}
+                >
+                  {k === "single" ? "1" : "2"}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <label className={styles.rowCheck}>
             <input
               type="checkbox"
               checked={local.showStats}
-              onChange={e => setLocal(p => ({ ...p, showStats: e.target.checked }))}
+              onChange={(e) => setLocal((p) => ({ ...p, showStats: e.target.checked }))}
             />
             <span>הצג כרטיסי סטטיסטיקה</span>
           </label>
         </div>
 
         <div className={styles.footer}>
-          <button className={styles.linkBtn} onClick={onClose}>סגור</button>
+          <button className={styles.linkBtn} onClick={onClose}>
+            סגור
+          </button>
         </div>
       </div>
     </div>,

@@ -1,12 +1,16 @@
+"use client";
 import { useState, useEffect, useMemo, useRef } from "react";
-import { FaCheckCircle, FaPalette, FaTrash, FaImage, FaPlus } from "react-icons/fa";
-import featuresStyles from "./features.module.css";
-import FeaturesLayoutPopUp, {
-  FeaturesLayoutOptions,
-} from "./FeaturesLayoutPopUp";
+import { FaPalette, FaTrash, FaImage, FaPlus } from "react-icons/fa";
+import s from "./features.module.css";
+import FeaturesLayoutPopUp, { FeaturesLayoutOptions } from "./FeaturesLayoutPopUp";
 import FeaturesBackgroundChoosen from "./FeaturesBackgroundChoosen";
 import { businessInfoService } from "../../../../services/besinessInfo.service";
 import { useAuth } from "../../../../context/AuthContext";
+
+// Variants
+import V1 from "./Variants/V1";
+import V2 from "./Variants/V2";
+import V3 from "./Variants/V3";
 
 interface FeaturesProps {
   content: string[];
@@ -14,27 +18,29 @@ interface FeaturesProps {
   onDelete?: () => void;
 }
 
+const VARIANTS = [V1, V2, V3];
+
 export default function Features({ content, image, onDelete }: FeaturesProps) {
   const [services, setServices] = useState<string[]>([]);
   const [isHovered, setIsHovered] = useState(false);
   const [templateIndex, setTemplateIndex] = useState(0);
+
   const { user, accessToken } = useAuth();
   const userId = user?._id;
-  // Only fetch businessType if userId and accessToken are defined
   const [businessField, setBusinessField] = useState<string>("business");
-  
+
   useEffect(() => {
     if (!userId || !accessToken) return;
-    businessInfoService.getBusinessInfo(userId, accessToken)
-      .then((data) => {
-        setBusinessField(data.data.businessField || "business");
-      })
+    businessInfoService
+      .getBusinessInfo(userId, accessToken)
+      .then((data) => setBusinessField(data.data.businessField || "business"))
       .catch(() => setBusinessField("business"));
   }, [userId, accessToken]);
-  // תמונה שנבחרה מהפופ־אפ (ברירת מחדל: מה־props)
+
+  // תמונה שנבחרה (ברירת מחדל: מ־props)
   const [pickedImage, setPickedImage] = useState<string>(image);
 
-  // אפשרויות עיצוב לסקשן
+  // אפשרויות עיצוב
   const [opts, setOpts] = useState<FeaturesLayoutOptions>({
     imageSide: "left",
     textAlign: "right",
@@ -49,19 +55,54 @@ export default function Features({ content, image, onDelete }: FeaturesProps) {
   const [openEditor, setOpenEditor] = useState(false);
   const editBtnRef = useRef<HTMLButtonElement>(null);
 
-  // פופ־אפ לבחירת תמונת פיצ'רים
   const [openImgPicker, setOpenImgPicker] = useState(false);
   const imgBtnRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => {
-    const cleaned = content
-      .slice(2, content.length - 3)
-      .map((s) => s.replace(/['",]/g, "").trim())
-      .slice(0, 6); // ⬅️ לא יותר מ-5 כבר מהקלט
-    setServices(cleaned);
+  // ניקוי הטקסט שהגיע כ־JSON מ־LLM (אותו קטע מהקוד שלך)
+ useEffect(() => {
+  // אם אין כלום
+    if (!content) {
+      setServices([]);
+      return;
+    }
+
+    // כבר מגיע כ-array? מעולה — רק ננקה/נגביל לאורך
+    if (Array.isArray(content)) {
+      setServices(
+        content
+          .map((s) => (s ?? "").toString().trim())
+          .filter(Boolean)
+          .slice(0, 6)
+      );
+      return;
+    }
+
+    // אחרת, נסה לפרש כמחרוזת JSON (לשמירת תאימות אחורה)
+    try {
+      const parsed = JSON.parse(content as unknown as string);
+      if (Array.isArray(parsed)) {
+        setServices(
+          parsed
+            .map((s) => (s ?? "").toString().replace(/['",]/g, "").trim())
+            .filter(Boolean)
+            .slice(0, 6)
+        );
+        return;
+      }
+    } catch {
+      // fallback: פיצול לפי שורות/פסיקים
+      const fallback = (content as unknown as string)
+        .split(/\r?\n|,/)
+        .map((s) => s.replace(/['",\[\]]/g, "").trim())
+        .filter(Boolean)
+        .slice(0, 6);
+
+      setServices(fallback);
+    }
   }, [content]);
 
-  // אם התמונה מהשרת השתנתה מבחוץ — נעדכן גם אצלנו
+
+  // סנכרון שינוי חיצוני של תמונה
   useEffect(() => {
     setPickedImage(image);
   }, [image]);
@@ -75,15 +116,14 @@ export default function Features({ content, image, onDelete }: FeaturesProps) {
     });
   };
 
-  // ⬅️ הוספה של שורה חדשה (מוגבל ל-5)
   const addService = () => {
     setServices((prev) => {
       if (prev.length >= 6) return prev;
-      return [...prev, "✔️ יתרון חדש"];
+      return [...prev, " יתרון חדש"];
     });
   };
 
-  // CSS Variables דינמיים
+  // CSS variables דינמיים (הקוד המקורי שלך)
   const featuresVars = useMemo<React.CSSProperties>(() => {
     const shadow =
       opts.cardShadow === "none"
@@ -102,109 +142,28 @@ export default function Features({ content, image, onDelete }: FeaturesProps) {
     };
   }, [opts]);
 
-  // עזר ל־class side
-  const sideClass =
-    opts.imageSide === "right"
-      ? featuresStyles.rowReverse
-      : opts.imageSide === "top"
-      ? featuresStyles.column
-      : "";
-
-  const maybeIcon = opts.showIcons ? <FaCheckCircle /> : null;
-
-  // נשתמש תמיד ב־pickedImage (אם לא נבחרה—זו שב־props)
+  const atLimit = services.length >= 6;
   const currentImage = pickedImage || image;
 
-  const template0 = (
-    <div className={`${featuresStyles.twoColLayout} ${sideClass}`}>
-      <img src={currentImage} className={featuresStyles.featuresImage} />
-      <ul className={featuresStyles.featuresList} style={{ textAlign: opts.textAlign as any }}>
-        {services.map((s, i) => (
-          <li key={i} className={featuresStyles.featureItem}>
-            {maybeIcon}
-            <span
-              contentEditable
-              suppressContentEditableWarning
-              onBlur={(e) => handleBlur(i, e)}
-              className={featuresStyles.featureText}
-            >
-              {s}
-            </span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+  const ActiveVariant = VARIANTS[Math.max(0, Math.min(VARIANTS.length - 1, templateIndex))];
 
-  const template1 = (
-    <div className={featuresStyles.glassWrapper}>
-      <img src={currentImage} className={featuresStyles.glassImage} />
-      <div
-        className={featuresStyles.glassGrid}
-        style={{ gridTemplateColumns: `repeat(var(--feat-grid-cols), 1fr)`, textAlign: opts.textAlign as any }}
-      >
-        {services.map((s, i) => (
-          <div key={i} className={featuresStyles.glassCard}>
-            {maybeIcon}
-            <span
-              contentEditable
-              suppressContentEditableWarning
-              onBlur={(e) => handleBlur(i, e)}
-              className={featuresStyles.featureText}
-            >
-              {s}
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
-  const template2 = (
-    <div className={featuresStyles.fancyWrapper}>
-      <div className={featuresStyles.fancyHero}>
-        <img src={currentImage} className={featuresStyles.fancyImage} />
-      </div>
-      <div className={featuresStyles.fancyCards}>
-        {services.map((s, i) => (
-          <div
-            key={i}
-            className={featuresStyles.fancyCard}
-            style={{ ["--tilt" as any]: `${i % 2 === 0 ? -6 : 6}deg` }}
-          >
-            {maybeIcon}
-            <span
-              contentEditable
-              suppressContentEditableWarning
-              onBlur={(e) => handleBlur(i, e)}
-              className={featuresStyles.featureText}
-            >
-              {s}
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
-  const templates = [template0, template1, template2];
-
-  const atLimit = services.length >= 6;
+  // handlers לעריכה inline
+  const handlers = (i: number) => ({ onBlur: (e: React.FocusEvent<HTMLSpanElement>) => handleBlur(i, e) });
 
   return (
     <section
-      className={featuresStyles.featuresSection}
+      className={s.featuresSection}
       style={featuresVars}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* טולבר: התאמה + בחירת תמונה + הוסף שורה + מחיקה */}
+      {/* טולבר */}
       {isHovered && (
-        <div className={featuresStyles.toolbar}>
+        <div className={s.toolbar}>
           <button
             ref={editBtnRef}
             type="button"
-            className={featuresStyles.iconBtn}
+            className={s.iconBtn}
             onClick={() => setOpenEditor(true)}
             title="התאמה"
             aria-haspopup="dialog"
@@ -216,7 +175,7 @@ export default function Features({ content, image, onDelete }: FeaturesProps) {
           <button
             ref={imgBtnRef}
             type="button"
-            className={featuresStyles.iconBtn}
+            className={s.iconBtn}
             onClick={() => setOpenImgPicker(true)}
             title="בחר תמונת פיצ'רים"
             aria-haspopup="dialog"
@@ -227,7 +186,7 @@ export default function Features({ content, image, onDelete }: FeaturesProps) {
 
           <button
             type="button"
-            className={`${featuresStyles.iconBtn} ${atLimit ? featuresStyles.iconBtnDisabled : ""}`}
+            className={`${s.iconBtn} ${atLimit ? s.iconBtnDisabled : ""}`}
             onClick={addService}
             title={atLimit ? "מקסימום 6 שורות" : "הוסף שורה"}
             aria-disabled={atLimit}
@@ -239,7 +198,7 @@ export default function Features({ content, image, onDelete }: FeaturesProps) {
           {onDelete && (
             <button
               type="button"
-              className={`${featuresStyles.iconBtn} ${featuresStyles.trashBtn}`}
+              className={`${s.iconBtn} ${s.trashBtn}`}
               onClick={onDelete}
               title="מחק סקשן"
               aria-label="מחק סקשן"
@@ -250,9 +209,16 @@ export default function Features({ content, image, onDelete }: FeaturesProps) {
         </div>
       )}
 
-      {templates[templateIndex]}
+      {/* וריאנט פעיל */}
+      <ActiveVariant
+        services={services}
+        currentImage={currentImage}
+        opts={{ textAlign: opts.textAlign, imageSide: opts.imageSide, gridCols: opts.gridCols }}
+        handlers={handlers}
+        withIcons={!!opts.showIcons}
+      />
 
-      {/* פופ־אפ ההתאמה */}
+      {/* פופ־אפים */}
       <FeaturesLayoutPopUp
         open={openEditor}
         options={opts}
@@ -268,7 +234,7 @@ export default function Features({ content, image, onDelete }: FeaturesProps) {
         open={openImgPicker}
         onClose={() => setOpenImgPicker(false)}
         anchorRef={imgBtnRef}
-        initialQuery= {businessField}
+        initialQuery={businessField}
         onPick={(url) => {
           setPickedImage(url);
           setOpenImgPicker(false);

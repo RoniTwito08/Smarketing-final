@@ -1,133 +1,88 @@
+// src/components/LandingPageSections/AboutUs/AboutUs.tsx
 "use client";
-import { useState, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 import { FaPalette, FaTrash } from "react-icons/fa";
-import aboutUsStyles from "./aboutUs.module.css";
+import s from "./aboutUs.module.css";
 import AboutUsPopup, { AboutUsOptions } from "./AboutUsPopup";
+import V1 from "./Variants/V1";
+import V2 from "./Variants/V2";
+import V3 from "./Variants/V3";
+import V4 from "./Variants/V4";
 
-interface Props {
-  content: string;
+export interface AboutUsProps {
+  content: string | string[];
+  title?: string;
+  mission?: string;
+  image?: string;
+  phone?: string;
+  whatsappNumber?: string;
+  bullets?: string[];
+  stats?: { icon?: "clock"|"users"|"star"|"done"; label: string; value: string }[];
+  tagline?: string;
   onDelete?: () => void;
 }
 
-export default function AboutUs({ content, onDelete }: Props) {
-  const [text, setText] = useState(content);
-  const [hovered, setHover] = useState(false);
+const VARIANTS = [V1, V2, V3, V4];
 
-  /* אפשרויות שמגיעות מה-Popup */
+export default function AboutUs(props: AboutUsProps) {
+  const { content, title, mission, image, phone, whatsappNumber, bullets, stats, tagline, onDelete } = props;
+
+  const [hovered, setHovered] = useState(false);
+  const [openPop, setOpenPop] = useState(false);
+  const editBtnRef = useRef<HTMLButtonElement>(null);
+
   const [opts, setOpts] = useState<AboutUsOptions>({
-    template: 0,
+    template: 3,
     fontSize: "M",
     columns: "single",
     showStats: true,
   });
 
-  const [openPop, setOpenPop] = useState(false);
-  const editBtnRef = useRef<HTMLButtonElement>(null);
+  const lines = useMemo<string[]>(() => {
+    if (!content) return [];
+    if (Array.isArray(content)) return content.map((l) => `${l}`.trim()).filter(Boolean);
+    return (content as string).split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+  }, [content]);
 
-  /* מפות עזר */
-  const fontMap = { S: "16px", M: "20px", L: "24px" } as const;
-  const columnStyle =
-    opts.columns === "double"
-      ? { columnCount: 2 as const, columnGap: "32px" }
-      : {};
+  const paragraph = useMemo(() => (Array.isArray(content) ? "" : (content || "").toString().trim()), [content]);
 
-  /* שינוי טקסט */
-  const onBlur = (e: React.FocusEvent<HTMLParagraphElement>) =>
-    setText(e.currentTarget.innerText);
-
-  /* === תבניות === */
-  const T1 = (
-    <p
-      contentEditable
-      suppressContentEditableWarning
-      onBlur={onBlur}
-      style={{ fontSize: fontMap[opts.fontSize], ...columnStyle }}
-      className={`${aboutUsStyles.aboutUsText} ${aboutUsStyles.template1}`}
-    >
-      {text}
-    </p>
-  );
-
-  const T2 = (
-    <p
-      contentEditable
-      suppressContentEditableWarning
-      onBlur={onBlur}
-      style={{ fontSize: fontMap[opts.fontSize], ...columnStyle }}
-      className={`${aboutUsStyles.aboutUsText} ${aboutUsStyles.template2}`}
-    >
-      <strong>על הצוות שלנו:</strong>
-      <br />
-      {text}
-    </p>
-  );
-
-  const T3 = (
-    <p
-      contentEditable
-      suppressContentEditableWarning
-      onBlur={onBlur}
-      style={{ fontSize: fontMap[opts.fontSize], ...columnStyle }}
-      className={`${aboutUsStyles.aboutUsText} ${aboutUsStyles.template3}`}
-    >
-      ✨ {text} ✨
-    </p>
-  );
-
-  const templates = [T1, T2, T3];
+  const ActiveVariant = VARIANTS[Math.max(0, Math.min(VARIANTS.length - 1, opts.template))] as any;
 
   return (
     <section
-      className={aboutUsStyles.aboutUsSection}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
+      className={s.aboutUsSection}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      dir="rtl"
     >
-      {/* TOOLBAR */}
       {hovered && (
-        <div className={aboutUsStyles.toolbar}>
-          <button
-            ref={editBtnRef}
-            className={aboutUsStyles.iconBtn}
-            onClick={() => setOpenPop(true)}
-            title="ערוך סקשן"
-          >
+        <div className={s.toolbar}>
+          <button ref={editBtnRef} className={s.iconBtn} onClick={() => setOpenPop(true)} title="ערוך">
             <FaPalette size={14} />
           </button>
-
           {onDelete && (
-            <button
-              className={`${aboutUsStyles.iconBtn} ${aboutUsStyles.trashBtn}`}
-              onClick={onDelete}
-              title="מחק סקשן"
-            >
+            <button className={`${s.iconBtn} ${s.trashBtn}`} onClick={onDelete} title="מחק">
               <FaTrash size={13} />
             </button>
           )}
         </div>
       )}
 
-      {/* === תבנית נוכחית === */}
-      {templates[opts.template]}
+      {title && <h2 className={s.heading}>{title}</h2>}
+      {mission && <p className={s.mission}>{mission}</p>}
 
-      {/* === כרטיסי סטטיסטיקה (אם נבחר) === */}
-      {opts.showStats && (
-        <div className={aboutUsStyles.statsRow}>
-          <div className={aboutUsStyles.statCard}>
-            <h3>1000+</h3>
-            <span>פרויקטים</span>
-          </div>
-          <div className={aboutUsStyles.statCard}>
-            <h3>250+</h3>
-            <span>פעילים</span>
-          </div>
-          <div className={aboutUsStyles.statCard}>
-            <h3>500+</h3>
-            <span>לקוחות</span>
-          </div>
-        </div>
-      )}
+      <ActiveVariant
+        lines={lines}
+        paragraph={paragraph}
+        heading={title}
+        tagline={tagline}
+        bullets={bullets}
+        stats={stats}
+        imageUrl={image}
+        phone={phone}
+        whatsappNumber={whatsappNumber}
+      />
 
-      {/* POP-UP */}
       <AboutUsPopup
         open={openPop}
         options={opts}

@@ -59,6 +59,12 @@ const defaultTheme = {
   tertiaryColor: "#ffffff",
   textColor: "#000000",
   font: "sans-serif",
+  overlayAlpha: 0.3,
+  gradients: {
+    primary: "none",
+    secondary: "none",
+    tertiary: "none",
+  },
 };
 
 const initialForm: CampaignForm = {
@@ -67,7 +73,7 @@ const initialForm: CampaignForm = {
   campaignContent:
     "קמפיין מיוחד לעונת האביב עם הנחות בלעדיות למוצרים נבחרים!",
   budget: 100,
-  marketingLevel: "גבוה",
+  marketingLevel: "גבוהה",
   campaginPurpose: "הגברת מודעות למותג",
   actionToCall: "הצטרפו עכשיו",
   targetAudience: "לקוחות חדשים ומתעניינים",
@@ -93,15 +99,19 @@ export const CampaignPopup: React.FC<CampaignPopupProps> = ({
   const [error, setError] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [landingPageData, setLandingPageData] = useState<any[] | null>(null);
+
   const [colors, setColors] = useState(defaultTheme);
   const [userFont, setUserFont] = useState(defaultTheme.font);
+
   const [removedSections, setRemovedSections] = useState<RemovedSection[]>([]);
   const [responsiveView, setResponsiveView] = useState<
     "desktop" | "tablet" | "mobile" | ""
   >("");
+
   const landingPageRef = useRef<HTMLDivElement>(
     null
   ) as MutableRefObject<HTMLDivElement | null>;
+
   const [showMobilePopup, setShowMobilePopup] = useState(false);
   const [showTabletPopup, setShowTabletPopup] = useState(false);
   const [showDesktopPopup, setShowDesktopPopup] = useState(false);
@@ -109,67 +119,39 @@ export const CampaignPopup: React.FC<CampaignPopupProps> = ({
   const [tourStep, setTourStep] = useState(0);
   const [showTour, setShowTour] = useState(true);
 
+  // הכנתי רפרנסים גם לסקשנים עתידיים
   const sectionRefs = {
+    header: useRef<HTMLDivElement>(null),
     hero: useRef<HTMLDivElement>(null),
     features: useRef<HTMLDivElement>(null),
-    reviews: useRef<HTMLDivElement>(null),
-    aboutUs: useRef<HTMLDivElement>(null),
-    footer: useRef<HTMLDivElement>(null),
-    header: useRef<HTMLDivElement>(null),
-    contactUs: useRef<HTMLDivElement>(null),
+    services: useRef<HTMLDivElement>(null),
+    howItWorks: useRef<HTMLDivElement>(null),
+    pricing: useRef<HTMLDivElement>(null),
+    trust: useRef<HTMLDivElement>(null),
+    faq: useRef<HTMLDivElement>(null),
+    socialProof: useRef<HTMLDivElement>(null),
+    ctaVariants: useRef<HTMLDivElement>(null),
     gallery: useRef<HTMLDivElement>(null),
-  };
+    contactUs: useRef<HTMLDivElement>(null),
+    footer: useRef<HTMLDivElement>(null),
+    seo: useRef<HTMLDivElement>(null),
+  } as const;
 
   const tourSteps = [
-    {
-      ref: sectionRefs.hero,
-      title: "סקשן כותרת ראשית",
-      description: "כאן תוכל לערוך את הכותרת הראשית והכותרת המשנית.",
-    },
-    {
-      ref: sectionRefs.features,
-      title: "סקשן פיצ'רים",
-      description: "כאן אפשר לשנות את היתרונות והשירותים שלך.",
-    },
-    {
-      ref: sectionRefs.reviews,
-      title: "סקשן ביקורות",
-      description: "כאן תוכל לשנות ביקורות מלקוחות מרוצים.",
-    },
-    {
-      ref: sectionRefs.aboutUs,
-      title: "סקשן אודותינו",
-      description: "כאן תוכל לשנות מידע על העסק שלך.",
-    },
-    {
-      ref: sectionRefs.gallery,
-      title: "סקשן גלריה",
-      description:
-        "כאן תוכל להוסיף תמונות נוספות מהגלריה שלך ולשנות את מיקומם",
-    },
-    {
-      ref: sectionRefs.contactUs,
-      title: "סקשן צור קשר",
-      description: "כאן הלקוחות יכולים להשאיר פרטים ליצירת קשר.",
-    },
-
-    {
-      ref: sectionRefs.footer,
-      title: "סקשן תחתון",
-      description: "מכאן הלקחות ישלחו את הפרטים אליך",
-    },
+    { ref: sectionRefs.hero, title: "סקשן כותרת ראשית", description: "כאן תוכל לערוך את הכותרת הראשית והכותרת המשנית." },
+    { ref: sectionRefs.features, title: "סקשן פיצ'רים", description: "כאן אפשר לשנות את היתרונות והשירותים שלך." },
+    // { ref: sectionRefs.reviews, title: "סקשן ביקורות", description: "כאן תוכל לשנות ביקורות מלקוחות מרוצים." },
+    // { ref: sectionRefs.aboutUs, title: "סקשן אודותינו", description: "כאן תוכל לשנות מידע על העסק שלך." },
+    { ref: sectionRefs.gallery, title: "סקשן גלריה", description: "כאן תוכל להוסיף תמונות נוספות מהגלריה שלך ולשנות את מיקומן." },
+    { ref: sectionRefs.contactUs, title: "סקשן צור קשר", description: "כאן הלקוחות יכולים להשאיר פרטים ליצירת קשר." },
+    { ref: sectionRefs.footer, title: "סקשן תחתון", description: "מכאן הלקוחות ישלחו את הפרטים אליך." },
   ];
 
-  // מסך מלא: נעילת גלילת body כשפתוח
+  // נעילת גלילה במסך מלא
   useEffect(() => {
-    if (open) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
+    if (open) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "";
+    return () => { document.body.style.overflow = ""; };
   }, [open]);
 
   useEffect(() => {
@@ -179,12 +161,16 @@ export const CampaignPopup: React.FC<CampaignPopupProps> = ({
   }, [userFont]);
 
   const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    setForm((prev) => {
+      if (name === "budget") {
+        const num = Number(value);
+        return { ...prev, [name]: isNaN(num) ? prev.budget : num };
+      }
+      return { ...prev, [name]: value };
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -193,25 +179,25 @@ export const CampaignPopup: React.FC<CampaignPopupProps> = ({
     setError("");
 
     try {
-      const businessInfo = await fetch(
-        `${config.apiUrl}/business-info/${user._id}`,
-        {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      if (!businessInfo.ok) throw new Error("שגיאה בהבאת מידע עסקי");
-      const BusinessData = await businessInfo.json();
-      if (!BusinessData) throw new Error("שגיאה בהבאת מידע עסקי");
-
-      const userEmail = await fetch(`${config.apiUrl}/users/${user._id}`, {
+      // מידע עסקי
+      const businessInfoRes = await fetch(`${config.apiUrl}/business-info/${user._id}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
-      if (!userEmail.ok) throw new Error("שגיאה בהבאת מידע עסקי");
-      const userEmailData = await userEmail.json();
-      if (!userEmailData) throw new Error("שגיאה בהבאת מידע עסקי");
+      if (!businessInfoRes.ok) throw new Error("שגיאה בהבאת מידע עסקי");
+      const businessData = await businessInfoRes.json();
+      if (!businessData) throw new Error("שגיאה בהבאת מידע עסקי");
 
+      // מייל משתמש
+      const userRes = await fetch(`${config.apiUrl}/users/${user._id}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!userRes.ok) throw new Error("שגיאה בהבאת מידע משתמש");
+      const userJson = await userRes.json();
+      if (!userJson?.email) throw new Error("לא נמצא אימייל משתמש");
+
+      // בקשת יצירת הקשר לדף הנחיתה
       const response = await fetch(
         `${config.apiUrl}/landing-page-generator/generateLandingPageContext`,
         {
@@ -219,18 +205,53 @@ export const CampaignPopup: React.FC<CampaignPopupProps> = ({
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             campaignInfo: form,
-            BusinessData: BusinessData,
-            UserEmailData: userEmailData.email,
+            BusinessData: businessData,
+            UserEmailData: { email: userJson.email }, // ✅ תיקון: אובייקט ולא מחרוזת
           }),
         }
       );
       if (!response.ok) throw new Error("שגיאה ביצירת דף הנחיתה");
 
       const data = await response.json();
-      if (data) {
-        const sectionsArray = Object.keys(data).map((key) => data[key]);
-        setLandingPageData(sectionsArray);
-        setSubmitted(true);
+
+      // הפיכת האובייקט למערך סקשנים—רק מה שיש לו sectionName נשמר לסדר
+      const sectionsArray = Object.values(data)
+        .filter((v: any) => v && typeof v === "object" && "sectionName" in v)
+        .map((s: any) => ({ id: s.id ?? crypto.randomUUID(), ...s }));
+      setLandingPageData(sectionsArray);
+
+      setLandingPageData(sectionsArray);
+      setSubmitted(true);
+
+      // צבעים/פונטים מתוך colorAndFont או colorAndFontPrompt
+      const palette = (data.colorAndFont || data.colorAndFontPrompt || {}) as any;
+      if (palette?.primary || palette?.primaryColor) {
+        const primary = (palette.primary || palette.primaryColor || defaultTheme.primaryColor).trim?.() || defaultTheme.primaryColor;
+        const secondary = (palette.secondary || palette.secondaryColor || defaultTheme.secondaryColor).trim?.() || defaultTheme.secondaryColor;
+        const tertiary = (palette.tertiary || palette.tertiaryColor || defaultTheme.tertiaryColor).trim?.() || defaultTheme.tertiaryColor;
+        const text = (palette.text || palette.textColor || defaultTheme.textColor).trim?.() || defaultTheme.textColor;
+        const font = (palette.font || defaultTheme.font).trim?.() || defaultTheme.font;
+        const overlayAlpha = typeof palette.overlayAlpha === "number" ? palette.overlayAlpha : defaultTheme.overlayAlpha;
+        const gradients = {
+          primary: palette.gradients?.primary || "none",
+          secondary: palette.gradients?.secondary || "none",
+          tertiary: palette.gradients?.tertiary || "none",
+        };
+
+        setColors({
+          primaryColor: primary,
+          secondaryColor: secondary,
+          tertiaryColor: tertiary,
+          textColor: text,
+          font,
+          overlayAlpha,
+          gradients,
+        });
+        setUserFont(font);
+      } else {
+        // ברירת מחדל
+        setColors(defaultTheme);
+        setUserFont(defaultTheme.font);
       }
     } catch (err: any) {
       setError(err?.message || "שגיאה בלתי צפויה");
@@ -239,24 +260,7 @@ export const CampaignPopup: React.FC<CampaignPopupProps> = ({
     }
   };
 
-  useEffect(() => {
-    if (!landingPageData) return;
-    const theme = landingPageData[8]; // ודא שהאינדקס הזה קיים
-
-    if (theme && theme.primaryColor) {
-      setColors({
-        primaryColor: theme.primaryColor.trim(),
-        secondaryColor: theme.secondaryColor.trim(),
-        tertiaryColor: theme.tertiaryColor.trim(),
-        textColor: "#333333",
-        font: theme.font.trim(),
-      });
-      setUserFont(theme.font.trim());
-    } else {
-      console.error("Invalid theme data");
-    }
-  }, [landingPageData]);
-
+  // לוג דיבוג
   useEffect(() => {
     if (landingPageData) {
       console.log("Landing Page Data:", landingPageData);
@@ -264,8 +268,8 @@ export const CampaignPopup: React.FC<CampaignPopupProps> = ({
   }, [landingPageData]);
 
   const onDragEnd = (result: DropResult) => {
-    if (!result.destination) return;
-    const newSections = Array.from(landingPageData || []);
+    if (!result.destination || !landingPageData) return;
+    const newSections = Array.from(landingPageData);
     const [removed] = newSections.splice(result.source.index, 1);
     newSections.splice(result.destination.index, 0, removed);
     setLandingPageData(newSections);
@@ -277,38 +281,35 @@ export const CampaignPopup: React.FC<CampaignPopupProps> = ({
     tertiaryColor: string,
     textColor: string
   ) => {
-    setColors({
+    setColors((prev: any) => ({
+      ...prev,
       primaryColor,
       secondaryColor,
       tertiaryColor,
       textColor,
-      font: userFont,
-    });
+    }));
   };
 
   useEffect(() => {
-    document.documentElement.style.setProperty(
-      "--primary-color",
-      colors.primaryColor
-    );
-    document.documentElement.style.setProperty(
-      "--secondary-color",
-      colors.secondaryColor
-    );
-    document.documentElement.style.setProperty(
-      "--tertiary-color",
-      colors.tertiaryColor
-    );
-    document.documentElement.style.setProperty(
-      "--text-color",
-      colors.textColor
-    );
-    document.documentElement.style.setProperty("--font", userFont);
-  }, [colors, userFont]);
+      const root = document.documentElement;
+
+      root.style.setProperty("--primary-color", colors.primaryColor);
+      root.style.setProperty("--secondary-color", colors.secondaryColor);
+      root.style.setProperty("--tertiary-color", colors.tertiaryColor);
+      root.style.setProperty("--text-color", colors.textColor);
+      root.style.setProperty("--font", userFont);
+      root.style.setProperty("--overlay-alpha", String(colors.overlayAlpha ?? 0.3));
+
+      // ❌ אל תיגע כאן בגרדיאנטים יותר
+      // root.style.setProperty("--primary-gradient",  ... );
+      // root.style.setProperty("--secondary-gradient", ... );
+      // root.style.setProperty("--tertiary-gradient",  ... );
+    }, [colors, userFont]);
 
   const handleFontChange = (font: string) => {
     document.documentElement.style.setProperty("--font", font);
     setUserFont(font);
+    setColors((prev: any) => ({ ...prev, font }));
   };
 
   const cleanForProduction = (root: HTMLElement) => {
@@ -348,9 +349,7 @@ export const CampaignPopup: React.FC<CampaignPopupProps> = ({
 
       const clone = landingPageRef.current.cloneNode(true) as HTMLElement;
       cleanForProduction(clone);
-      clone
-        .querySelectorAll("[data-resize-handle]")
-        .forEach((el) => el.remove());
+      clone.querySelectorAll("[data-resize-handle]").forEach((el) => el.remove());
       const landingPageHTML = clone.innerHTML;
 
       const completeHTML = `
@@ -358,7 +357,8 @@ export const CampaignPopup: React.FC<CampaignPopupProps> = ({
         <html style="background-color: ${colors.primaryColor};">
           <head>
             <meta charset="UTF-8">
-            <title>Landing Page</title><link rel="stylesheet" href="${config.apiUrl}/dist/assets/index-CJRU873A.css">
+            <title>Landing Page</title>
+            <link rel="stylesheet" href="${config.apiUrl}/dist/assets/index-CJRU873A.css">
             <style>
               :root {
                 --primary-color: ${colors.primaryColor};
@@ -369,6 +369,7 @@ export const CampaignPopup: React.FC<CampaignPopupProps> = ({
                 --primary-gradient: ${getComputedStyle(document.documentElement).getPropertyValue("--primary-gradient")};
                 --secondary-gradient: ${getComputedStyle(document.documentElement).getPropertyValue("--secondary-gradient")};
                 --tertiary-gradient: ${getComputedStyle(document.documentElement).getPropertyValue("--tertiary-gradient")};
+                --overlay-alpha: ${getComputedStyle(document.documentElement).getPropertyValue("--overlay-alpha")};
               }
               html, body {
                 height: 100%;
@@ -438,21 +439,18 @@ export const CampaignPopup: React.FC<CampaignPopupProps> = ({
       `;
 
       try {
-        const saveResponse = await fetch(
-          `${config.apiUrl}/api/saveLandingPage`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              html: completeHTML,
-              userPrimaryColor: colors.primaryColor,
-              userSecondaryColor: colors.secondaryColor,
-              userTertiaryColor: colors.tertiaryColor,
-              userTextColor: colors.textColor,
-              userFont: userFont,
-            }),
-          }
-        );
+        const saveResponse = await fetch(`${config.apiUrl}/api/saveLandingPage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            html: completeHTML,
+            userPrimaryColor: colors.primaryColor,
+            userSecondaryColor: colors.secondaryColor,
+            userTertiaryColor: colors.tertiaryColor,
+            userTextColor: colors.textColor,
+            userFont: userFont,
+          }),
+        });
         if (!saveResponse.ok) {
           toast.error("בעיה בשמירת דף הנחיתה!");
           return;
@@ -511,9 +509,7 @@ export const CampaignPopup: React.FC<CampaignPopupProps> = ({
     setRemovedSections((prev) => prev.filter((rs) => rs !== item));
   };
 
-  const handleResponsiveChange = (
-    view: "desktop" | "tablet" | "mobile" | ""
-  ) => {
+  const handleResponsiveChange = (view: "desktop" | "tablet" | "mobile" | "") => {
     setResponsiveView(view);
   };
 
@@ -604,10 +600,10 @@ export const CampaignPopup: React.FC<CampaignPopupProps> = ({
                       {...provided.droppableProps}
                       style={containerStyle}
                     >
-                      {landingPageData.map((section, index) => (
+                      {landingPageData.map((section: any, index: number) => (
                         <Draggable
-                          key={section.sectionName + index}
-                          draggableId={section.sectionName + index}
+                          key={section.id || `${section.sectionName}-${index}`}
+                          draggableId={section.id || `${section.sectionName}-${index}`}
                           index={index}
                           isDragDisabled={["header", "hero", "footer"].includes(
                             section.sectionName || ""
@@ -621,10 +617,8 @@ export const CampaignPopup: React.FC<CampaignPopupProps> = ({
                             >
                               <SectionRenderer
                                 section={section}
-                                onDeleteSection={() =>
-                                  handleDelete(index, section)
-                                }
-                                refMap={sectionRefs}
+                                onDeleteSection={() => handleDelete(index, section)}
+                                refMap={sectionRefs as any}
                               />
                             </div>
                           )}
@@ -709,6 +703,7 @@ export const CampaignPopup: React.FC<CampaignPopupProps> = ({
                   שם הקמפיין
                 </label>
               </div>
+
               {/* קריאה לפעולה */}
               <div className="field">
                 <input
@@ -872,11 +867,7 @@ export const CampaignPopup: React.FC<CampaignPopupProps> = ({
                   className="range-control"
                 />
                 <div className="range-scale" aria-hidden="true">
-                  <span>1</span>
-                  <span>25</span>
-                  <span>50</span>
-                  <span>75</span>
-                  <span>100</span>
+                  <span>1</span><span>25</span><span>50</span><span>75</span><span>100</span>
                 </div>
               </div>
 
@@ -912,10 +903,9 @@ export const CampaignPopup: React.FC<CampaignPopupProps> = ({
                   <>🚀 צור קמפיין</>
                 )}
               </button>
-              
             </div>
-            {error && <p className="text-red-500">❌ {error}</p>}
 
+            {error && <p className="text-red-500">❌ {error}</p>}
           </form>
         </div>
       )}
