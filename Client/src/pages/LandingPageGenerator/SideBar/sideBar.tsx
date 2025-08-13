@@ -124,38 +124,62 @@ const sidebarTourSteps = [
     }
   };
 
+  // Sidebar.tsx
+
+  const clearGradients = () => {
+    document.documentElement.style.removeProperty("--primary-gradient");
+    document.documentElement.style.removeProperty("--secondary-gradient");
+    document.documentElement.style.removeProperty("--tertiary-gradient");
+  };
+
   const handleClickColorChange = (
     primaryColor: string,
     secondaryColor: string,
     tertiaryColor: string,
     textColor: string
-  ) => {
+  ): void => {
     setOriginalColors({ primaryColor, secondaryColor, tertiaryColor, textColor });
-    document.documentElement.style.setProperty("--primary-color", primaryColor);
-    document.documentElement.style.setProperty("--secondary-color", secondaryColor);
-    document.documentElement.style.setProperty("--tertiary-color", tertiaryColor);
-    document.documentElement.style.setProperty("--text-color", textColor);
-    document.documentElement.style.setProperty("--primary-gradient", "none");
     setIsLinearColors(false);
     onColorChange(primaryColor, secondaryColor, tertiaryColor, textColor);
   };
 
+
   const handleLinearToggle = () => {
+  // אם עוד לא נשמרו צבעים ב-originalColors (מקרה שהיוזר לוחץ על הטוגל לפני שבחר קומבו)
+    if (!originalColors.primaryColor) {
+      const cs = getComputedStyle(document.documentElement);
+      setOriginalColors({
+        primaryColor: cs.getPropertyValue("--primary-color").trim() || "#ffffff",
+        secondaryColor: cs.getPropertyValue("--secondary-color").trim() || "#ffffff",
+        tertiaryColor: cs.getPropertyValue("--tertiary-color").trim() || "#ffffff",
+        textColor: cs.getPropertyValue("--text-color").trim() || "#000000",
+      });
+      
+    }
+    
     setIsLinearColors(prev => !prev);
   };
 
+  // טוגל ליניארי
   useEffect(() => {
     if (isLinearColors) {
-      document.documentElement.style.setProperty("--primary-gradient", `linear-gradient(135deg, ${originalColors.primaryColor}, ${originalColors.secondaryColor})`);
-      document.documentElement.style.setProperty("--secondary-gradient", `linear-gradient(135deg, ${originalColors.secondaryColor}, ${originalColors.tertiaryColor})`);
-      document.documentElement.style.setProperty("--tertiary-gradient", `linear-gradient(135deg, ${originalColors.tertiaryColor}, ${originalColors.primaryColor})`);
+      document.documentElement.style.setProperty(
+        "--primary-gradient",
+        `linear-gradient(135deg, ${originalColors.primaryColor}, ${originalColors.secondaryColor})`
+      );
+      document.documentElement.style.setProperty(
+        "--secondary-gradient",
+        `linear-gradient(135deg, ${originalColors.secondaryColor}, ${originalColors.tertiaryColor})`
+      );
+      document.documentElement.style.setProperty(
+        "--tertiary-gradient",
+        `linear-gradient(135deg, ${originalColors.tertiaryColor}, ${originalColors.primaryColor})`
+      );
     } else {
-      document.documentElement.style.setProperty("--primary-gradient", "none");
-      document.documentElement.style.setProperty("--secondary-gradient", "none");
-      document.documentElement.style.setProperty("--tertiary-gradient", "none");
+      clearGradients();
     }
-  }, [isLinearColors, originalColors]);  
-  
+  }, [isLinearColors, originalColors]);
+
 
   const handleClickFontChange = (font: string) => {
     document.documentElement.style.setProperty("--font", font);

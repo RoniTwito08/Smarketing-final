@@ -437,6 +437,10 @@ input[type="range"] {
   font-size: 18px;
 }
 
+.sectionsContainer {
+  background-color: var(--primary-color);
+  background-image: var(--primary-gradient, none);
+}
 
 
 .sidebarGradient {
