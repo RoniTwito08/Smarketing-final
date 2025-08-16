@@ -305,3 +305,22 @@
   .v4Ctas{ justify-content: center; }
   .v4StatsGrid{ grid-template-columns: repeat(2, minmax(0,1fr)); }
 }
+
+/* ===== Inline editing helpers ===== */
+.editable {
+  cursor: text;
+  outline: 2px dashed transparent;
+  transition: background .15s ease, outline-color .15s ease;
+  border-radius: 8px;
+  min-height: 1.2em;
+}
+.editable:focus,
+.editable:hover {
+  background: color-mix(in oklab, var(--secondary-color, #f8fafc) 92%, transparent);
+  outline-color: color-mix(in oklab, var(--text-color, #0f172a) 22%, transparent);
+}
+.editable[data-ph]:empty:before {
+  content: attr(data-ph);
+  color: color-mix(in oklab, var(--text-color, #0f172a) 52%, transparent);
+  opacity: .6;
+}

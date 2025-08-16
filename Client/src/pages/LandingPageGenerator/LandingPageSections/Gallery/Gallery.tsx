@@ -1,88 +1,318 @@
-import { useState, useEffect } from "react";
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
-import galleryStyle from "./gallery.module.css";
-import { useAuth } from "../../../../context/AuthContext";
-import { businessInfoService } from "../../../../services/besinessInfo.service";
+"use client";
+import { useMemo, useRef, useState } from "react";
+import { FaPalette, FaTrash, FaPlus } from "react-icons/fa";
+import s from "./gallery.module.css";
+import GalleryPopup, { GalleryOptions } from "./GalleryPopup";
+
+import V1 from "./Variants/V1";
+import V2 from "./Variants/V2";
+import V3 from "./Variants/V3";
+import BackgroundPickerPopUp from "../Hero/backgroundPickerPopUp/backgroundPickerPopUp";
 import { config } from "../../../../config";
 
-export default function Gallery() {
-  const [images, setImages] = useState<string[]>([]);
-  const [templateIndex, setTemplateIndex] = useState(0);
-  const { user, accessToken } = useAuth();
-  const userId = user?._id;
+export interface GalleryProps {
+  title?: string;
+  subtitle?: string;
+  cover?: string;
+  images?: string[];
+  onDelete?: () => void;
+  showHeader?: boolean;
+  /** אם תרצה *כן* לטעון תמונות מ־props על ההרצה הראשונה, הפוך ל-true */
+  prefillFromProps?: boolean;
+}
 
-  useEffect(() => {
-    if (!userId || !accessToken) return;
-    businessInfoService
-      .getBusinessInfo(userId, accessToken)
-      .then((data) => {
-        const urls = data.data.businessImages.map((path: string) => `${config.apiUrl}/${path}`);
-        setImages(urls);
-      })
-      .catch(console.error);
-  }, [userId, accessToken]);
+// טמפלטים זמינים
+const VARIANTS = [V1, V2, V3] as const;
 
-  const templates = [
+// BASE URL: קונפיג > NEXT_PUBLIC_API_URL / VITE_API_URL > ריק
+const API_BASE =
+  (config as any)?.apiUrl ||
+  (typeof process !== "undefined" && (process.env.NEXT_PUBLIC_API_URL as string)) ||
+  // @ts-ignore - Vite environments
+  (typeof import.meta !== "undefined" && (import.meta as any)?.env?.VITE_API_URL) ||
+  "";
 
-    images.length && (
-      <div className={galleryStyle.mainSideTemplate} key="side">
-        <div className={galleryStyle.largeImage}>
-          <img src={images[0]} className={galleryStyle.image} />
-        </div>
-        <div className={galleryStyle.sideImages}>
-          {images.slice(1, 5).map((url) => (
-            <div className={galleryStyle.smallImageBox} key={url}>
-              <img src={url} className={galleryStyle.image} />
-            </div>
-          ))}
-        </div>
-      </div>
-    ),
+const UPLOAD_ENDPOINT = "/api/upload-image"; // עדכן אם ה־endpoint שלך שונה
 
+export default function Gallery({
+  title = "מהעבודות שלנו",
+  subtitle,
+  cover,
+  images,
+  onDelete,
+  showHeader = true,
+  prefillFromProps = false, // ⟵ ברירת מחדל: לא לטעון שום דבר מה־props
+}: GalleryProps) {
+  const [openPop, setOpenPop] = useState(false);
+  const editBtnRef = useRef<HTMLButtonElement>(null);
 
-    images.length && (
-      <div className={galleryStyle.featuredWithThumbs} key="featured">
-        <div className={galleryStyle.largeTopImage}>
-          <img src={images[0]} className={galleryStyle.image} />
-        </div>
-        <div className={galleryStyle.thumbnailRow}>
-          {images.slice(1, 4).map((url) => (
-            <div className={galleryStyle.thumbnailBox} key={url}>
-              <img src={url} className={galleryStyle.image} />
-            </div>
-          ))}
-        </div>
-      </div>
-    ),
+  // בורר תמונות (Pexels/רקע)
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [pickerIndex, setPickerIndex] = useState<number | null>(null);
+  const [pickerAnchor, setPickerAnchor] = useState<HTMLElement | null>(null);
+  const pickerAnchorRef = useMemo(
+    () => ({ current: pickerAnchor }) as React.RefObject<HTMLElement>,
+    [pickerAnchor]
+  );
 
-    images.length && (
-      <div className={galleryStyle.collageTemplate} key="collage">
-        {images.slice(0, 10).map((url, i) => (
-          <div
-            className={galleryStyle.collageItem}
-            key={url}
-            style={{ "--r": i % 2 ? 3 : -3 } as React.CSSProperties}
-          >
-            <img src={url} className={galleryStyle.image} />
-          </div>
-        ))}
-      </div>
-    ),
-  ].filter(Boolean);
+  // מצבי העלאה/שגיאה פר־אריח
+  const [uploading, setUploading] = useState<Record<number, boolean>>({});
+  const [errorAt, setErrorAt] = useState<Record<number, string | null>>({});
 
-  if (!userId || !accessToken || !templates.length) return null;
+  // אפשרויות תצוגה ועריכת טמפלט
+  const [opts, setOpts] = useState<GalleryOptions>({
+    template: 0,          // 0: Grid, 1: Masonry, 2: Rows
+    columns: "auto",      // grid בלבד
+    ratio: "auto",        // grid בלבד
+    gap: "normal",
+    showCaptions: false,
+    rounded: true,
+  });
+
+  // ⟵ הכי חשוב: מתחילים ריק לגמרי, בלי seed ובלי useEffect שמסנכרן עם props
+  const initialFromProps = useMemo<string[]>(() => {
+    if (!prefillFromProps) return []; // לא נטען מה־props בהרצה הראשונה
+    const fromProps = [
+      ...(cover ? [cover] : []),
+      ...(Array.isArray(images) ? images.filter(Boolean) : []),
+    ];
+    return fromProps.slice(0, 24);
+  }, [prefillFromProps, cover, images]);
+
+  const [localImages, setLocalImages] = useState<string[]>(initialFromProps);
+
+  // הוספת סלוט (כפתור פלוס בטולבר)
+  const addSlot = () =>
+    setLocalImages((prev) => (prev.length >= 24 ? prev : [...prev, ""]));
+
+  // מחיקה של סלוט ספציפי
+  const removeAt = (index: number) =>
+    setLocalImages((prev) => prev.filter((_, i) => i !== index));
+
+  // החלפה/עדכון URL בסלוט
+  const setImageAt = (index: number, url: string) => {
+    setLocalImages((prev) => {
+      const next = [...prev];
+      while (next.length <= index) next.push("");
+      next[index] = url;
+      return next;
+    });
+  };
+
+  // העלאה לשרת — מחזיר URL מוחלט
+  async function uploadFileToServer(file: File): Promise<string> {
+    const fd = new FormData();
+    fd.append("file", file);
+    const res = await fetch(`${API_BASE}${UPLOAD_ENDPOINT}`, {
+      method: "POST",
+      body: fd,
+    });
+    const ct = res.headers.get("content-type") || "";
+    if (!res.ok) {
+      const t = await res.text().catch(() => "");
+      throw new Error(t || `HTTP ${res.status}`);
+    }
+    if (ct.includes("application/json")) {
+      const data = await res.json();
+      const url = data.url || data.path || data.fileUrl || "";
+      if (!url) throw new Error("No URL returned from server");
+      return /^https?:\/\//i.test(url)
+        ? url
+        : `${API_BASE}/${String(url).replace(/^\/+/, "")}`;
+    }
+    const txt = await res.text();
+    return /^https?:\/\//i.test(txt)
+      ? txt
+      : `${API_BASE}/${txt.replace(/^\/+/, "")}`;
+  }
+
+  // בחירת קובץ (העלאה מהמחשב): פריוויו מיידי -> העלאה -> החלפה ב־URL של השרת
+  const handleFileSelect = async (index: number, file?: File | null) => {
+    if (!file) return;
+    setErrorAt((p) => ({ ...p, [index]: null }));
+    const preview = URL.createObjectURL(file);
+    setImageAt(index, preview);
+    setUploading((p) => ({ ...p, [index]: true }));
+    try {
+      const serverUrl = await uploadFileToServer(file);
+      setImageAt(index, serverUrl);
+    } catch (e: any) {
+      setErrorAt((p) => ({
+        ...p,
+        [index]: e?.message || "שגיאת העלאה",
+      }));
+    } finally {
+      setUploading((p) => ({ ...p, [index]: false }));
+    }
+  };
+
+  // פתיחת בחירה מ־BackgroundPickerPopUp (Pexels/חיפוש)
+  const handleOpenPicker = (index: number, anchorEl: HTMLElement) => {
+    setPickerIndex(index);
+    setPickerAnchor(anchorEl);
+    setPickerOpen(true);
+  };
+
+  // תוצאת בחירה מה־Picker (שומר קישור ישיר)
+  const handlePickFromPicker = (url: string) => {
+    if (pickerIndex != null) setImageAt(pickerIndex, url);
+    setPickerOpen(false);
+    setPickerIndex(null);
+  };
+
+  // helper לפתיחת הקובץ הראשון (יוצר סלוט 0 אוטומטית)
+  const ensureSlotAndOpenFile = (i = 0) => {
+    setLocalImages((prev) => {
+      if (prev.length > i) return prev;
+      const next = [...prev];
+      while (next.length <= i) next.push("");
+      return next;
+    });
+    requestAnimationFrame(() => {
+      const input = document.getElementById(`file-input-${i}`) as HTMLInputElement | null;
+      input?.click();
+    });
+  };
+
+  // פתיחת בורר לתמונה הראשונה כשהגלריה ריקה
+  const openPickerForFirst = (anchorEl: HTMLElement) => {
+    setLocalImages((prev) => (prev.length ? prev : [""]));
+    setPickerIndex(0);
+    setPickerAnchor(anchorEl);
+    setPickerOpen(true);
+  };
+
+  // בחירת טמפלט אקטיבי לפי opts.template
+  const ActiveVariant =
+    VARIANTS[Math.min(VARIANTS.length - 1, Math.max(0, opts.template))] as any;
 
   return (
-    <section className={galleryStyle.galleryWrapper}>
-      <div className={galleryStyle.arrowButtons}>
-        <button onClick={() => setTemplateIndex((templateIndex - 1 + templates.length) % templates.length)}>
-          <FaArrowRight />
+    <section className={s.gallerySection} dir="rtl">
+      {/* טולבר למעלה: הוסף / ערוך / מחק */}
+      <div className={s.toolbar} aria-label="פעולות גלריה">
+        <button
+          className={s.iconBtn}
+          title="הוסף תמונה"
+          onClick={addSlot}
+          type="button"
+        >
+          <FaPlus size={14} />
         </button>
-        <button onClick={() => setTemplateIndex((templateIndex + 1) % templates.length)}>
-          <FaArrowLeft />
+        <button
+          ref={editBtnRef}
+          className={s.iconBtn}
+          title="ערוך תצוגה וטמפלט"
+          onClick={() => setOpenPop(true)}
+          type="button"
+        >
+          <FaPalette size={14} />
         </button>
+        {onDelete && (
+          <button
+            className={`${s.iconBtn} ${s.trashBtn}`}
+            title="מחק סקשן"
+            onClick={onDelete}
+            type="button"
+          >
+            <FaTrash size={13} />
+          </button>
+        )}
       </div>
-      {templates[templateIndex]}
+
+      {/* כותרת (אופציונלי) */}
+      {showHeader && (title || subtitle) && (
+        <header className={s.header}>
+          {title && <h2 className={s.heading}>{title}</h2>}
+          {subtitle && <p className={s.subtitle}>{subtitle}</p>}
+        </header>
+      )}
+
+      {/* כשהגלריה ריקה — Empty State עם גרירה/העלאה/בחירה */}
+      {localImages.length === 0 ? (
+        <div
+          className={s.empty}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => {
+            e.preventDefault();
+            const f = e.dataTransfer.files?.[0];
+            if (f && f.type.startsWith("image/")) {
+              setLocalImages((prev) => (prev.length ? prev : [""]));
+              handleFileSelect(0, f);
+            }
+          }}
+        >
+          <div className={s.emptyInner}>
+            <div className={s.emptyIcon} aria-hidden>🖼️</div>
+            <h3 className={s.emptyTitle}>הגלריה ריקה</h3>
+            <p className={s.emptySub}>העלו תמונה ראשונה או בחרו מספרייה</p>
+
+            {/* input נסתר עבור קובץ ראשון */}
+            <input
+              id="file-input-0"
+              type="file"
+              accept="image/*"
+              className={s.hiddenInput}
+              onChange={(e) =>
+                e.currentTarget.files?.[0] && handleFileSelect(0, e.currentTarget.files[0])
+              }
+            />
+
+            <div className={s.emptyActions}>
+              <button
+                type="button"
+                className={`${s.pBtn} ${s.uploadBtn}`}
+                onClick={() => ensureSlotAndOpenFile(0)}
+              >
+                📤 העלאה מהמחשב
+              </button>
+              <button
+                type="button"
+                className={`${s.pBtn} ${s.pexelsBtn}`}
+                onClick={(e) => openPickerForFirst(e.currentTarget as HTMLElement)}
+              >
+                📷 בחר מתמונות
+              </button>
+            </div>
+
+            <div className={s.emptyHint}>או גררו תמונה לכאן</div>
+          </div>
+        </div>
+      ) : (
+        /* אחרת — מציגים את הטמפלט האקטיבי */
+        <ActiveVariant
+          images={localImages}
+          options={opts}
+          onFileSelect={handleFileSelect}
+          onOpenPicker={handleOpenPicker}
+          onRemove={removeAt}
+          onReplace={(i: number) => {
+            const input = document.getElementById(`file-input-${i}`) as HTMLInputElement | null;
+            input?.click();
+          }}
+          uploading={uploading}
+          errors={errorAt}
+        />
+      )}
+
+      {/* פופ־אפ עיצוב טמפלט */}
+      <GalleryPopup
+        open={openPop}
+        options={opts}
+        onChange={setOpts}
+        onClose={() => setOpenPop(false)}
+        anchorRef={editBtnRef}
+        dir="rtl"
+      />
+
+      {/* בורר תמונות (Pexels/חיפוש) */}
+      <BackgroundPickerPopUp
+        open={pickerOpen}
+        onClose={() => setPickerOpen(false)}
+        onPick={handlePickFromPicker}
+        anchorRef={pickerAnchorRef}
+        initialQuery="portfolio work"
+        dir="rtl"
+      />
     </section>
   );
 }
