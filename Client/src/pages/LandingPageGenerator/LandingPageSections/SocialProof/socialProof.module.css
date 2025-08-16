@@ -1,0 +1,91 @@
+:root{
+  --primary-color:#ffffff;
+  --secondary-color:#f8fafc;
+  --tertiary-color:#1e90ff;
+  --text-color:#0f172a;
+  --muted:#64748b;
+  --border: color-mix(in oklab, var(--text-color) 12%, transparent);
+}
+
+/* Section */
+.spSection{
+  position:relative;
+  padding: clamp(36px, 6vw, 64px) 16px;
+  color:var(--text-color);
+  container-type:inline-size;
+}
+.header{ text-align:center; margin-bottom: clamp(18px, 3.2vw, 28px); }
+.heading{ font-size: clamp(22px, 4.8vw, 36px); font-weight: 900; margin:0; }
+
+/* Toolbar */
+.toolbar{
+  position:absolute; top:12px; inset-inline-end:12px;
+  display:flex; gap:8px; z-index:6;
+}
+.iconBtn{
+  width:36px;height:36px;border-radius:999px;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:color-mix(in oklab,var(--text-color) 28%,transparent);
+  color:#fff; border:1px solid color-mix(in oklab,var(--text-color) 24%,transparent);
+  box-shadow:0 6px 18px -8px color-mix(in oklab,var(--text-color) 32%,transparent);
+  cursor:pointer; transition:.15s;
+}
+.iconBtn:hover{ transform: translateY(-2px); background:color-mix(in oklab,var(--text-color) 38%,transparent); }
+.trashBtn{ background:color-mix(in oklab,#d90429 45%,transparent); }
+.trashBtn:hover{ background:color-mix(in oklab,#d90429 60%,transparent); }
+
+/* Grid helpers */
+.grid{ display:grid; gap: var(--gap, 14px); }
+.columns-auto{ grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+.columns-2{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+.columns-3{ grid-template-columns: repeat(3, minmax(0,1fr)); }
+.compact{ --gap: 10px; } .normal{ --gap: 14px; } .spacious{ --gap: 18px; }
+
+/* Pills / logos */
+.pill{
+  display:inline-flex; align-items:center; justify-content:center;
+  gap:10px; padding: 10px 14px;
+  background:#fff; border:1px solid var(--border);
+  border-radius: 999px; min-height: 42px;
+  box-shadow: 0 8px 18px -14px rgba(0,0,0,.15);
+}
+.pill img{ max-height: 22px; width:auto; display:block; }
+.pill span{ font-weight: 800; color: color-mix(in oklab, var(--text-color) 90%, transparent); }
+
+.rounded img{ border-radius: 8px; }
+.soft .pill, .soft .card{ background: color-mix(in oklab, var(--secondary-color) 96%, transparent); }
+
+/* Cards */
+.card{
+  background:#fff; border:1px solid var(--border); border-radius:14px;
+  padding: 16px; display:grid; place-items:center; min-height: 84px;
+  box-shadow: 0 8px 18px -14px rgba(0,0,0,.15);
+}
+.card img{ max-height:34px; width:auto; display:block; }
+.brandText{ font-weight:900; }
+
+/* Marquee */
+.marqueeWrap{
+  position:relative; overflow:hidden;
+  border-radius:16px;
+  outline: 1px solid var(--border);
+  background:#fff;
+  padding: 10px;
+}
+.marquee{
+  display:flex; gap: 16px; align-items:center;
+  animation: scroll 28s linear infinite;
+}
+.marquee .pill{ margin-inline: 4px; }
+@keyframes scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce){
+  .marquee{ animation: none; flex-wrap: wrap; justify-content: center; }
+}
+
+/* Responsive */
+@media (max-width: 820px){
+  .columns-2, .columns-3{ grid-template-columns: 1fr; }
+}

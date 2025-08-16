@@ -1,7 +1,7 @@
 // src/components/LandingPage/SectionRenderer.tsx
 import React, { useState, useEffect } from "react";
 import { config } from "../../../config";
-
+import Pricing from "../LandingPageSections/Pricing/Pricing";
 import Header from "../LandingPageSections/Header/Header";
 import Footer from "../LandingPageSections/Footer/Footer";
 import Hero from "../LandingPageSections/Hero/Hero";
@@ -11,6 +11,11 @@ import AboutUs from "../LandingPageSections/AboutUs/AboutUs";
 import ContactUs from "../LandingPageSections/ContactUs/ContactUs";
 import Gallery from "../LandingPageSections/Gallery/Gallery";
 import ServicesSection from "../LandingPageSections/Services/Services";
+import HowItWorks from "../LandingPageSections/HowItWorks/HowItWorks";
+import Trust from "../LandingPageSections/Trust/Trust";
+import FAQ from "../LandingPageSections/FAQ/FAQ";
+import SocialProof from "../LandingPageSections/SocialProof/SocialProof";
+// import CTAVariants from "../LandingPageSections/CTA/CTAVariants"; 
 import { businessInfoService } from "../../../services/besinessInfo.service";
 import { useAuth } from "../../../context/AuthContext";
 
@@ -99,148 +104,6 @@ const toArray = (val?: string | string[]): string[] => {
     .filter(Boolean);
 };
 
-const HowItWorksPlaceholder: React.FC<{ steps: StepItem[]; title?: string }> = ({ steps, title = "איך זה עובד" }) => (
-  <section style={{ padding: "48px 16px" }}>
-    <h2 style={{ marginTop: 0 }}>{title}</h2>
-    <ol style={{ display: "grid", gap: 12, paddingInlineStart: 24 }}>
-      {steps
-        .sort((a, b) => a.step - b.step)
-        .map((st, i) => (
-          <li key={i}>
-            <strong>{st.title}</strong> — {st.text}
-          </li>
-        ))}
-    </ol>
-  </section>
-);
-
-const PricingPlaceholder: React.FC<{ plans: Plan[]; title?: string; subtitle?: string; disclaimer?: string }> = ({
-  plans,
-  title = "חבילות ושירותים",
-  subtitle,
-  disclaimer,
-}) => (
-  <section style={{ padding: "48px 16px" }}>
-    <h2 style={{ marginTop: 0 }}>{title}</h2>
-    {subtitle ? <p style={{ marginTop: 0, opacity: 0.85 }}>{subtitle}</p> : null}
-    <div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))" }}>
-      {plans.map((p, i) => (
-        <article
-          key={i}
-          style={{
-            border: "1px solid #eee",
-            borderRadius: 16,
-            padding: 20,
-            boxShadow: p.highlight ? "0 8px 24px rgba(0,0,0,.08)" : "none",
-          }}
-        >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-            <h3 style={{ margin: 0 }}>{p.name}</h3>
-            <div style={{ fontWeight: 700 }}>{p.priceMonthly}₪/חודש</div>
-          </div>
-          <ul style={{ margin: "12px 0", paddingInlineStart: 18 }}>
-            {p.features.map((f, idx) => (
-              <li key={idx}>{f}</li>
-            ))}
-          </ul>
-          <button type="button">{p.cta}</button>
-        </article>
-      ))}
-    </div>
-    {disclaimer ? <p style={{ marginTop: 12, fontSize: 12, opacity: 0.7 }}>{disclaimer}</p> : null}
-  </section>
-);
-
-const TrustPlaceholder: React.FC<{ stats?: Stat[]; badges?: string[]; title?: string }> = ({
-  stats,
-  badges,
-  title = "למה לבחור בנו",
-}) => (
-  <section style={{ padding: "48px 16px" }}>
-    <h2 style={{ marginTop: 0 }}>{title}</h2>
-    {stats && stats.length > 0 && (
-      <div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))" }}>
-        {stats.map((s, i) => (
-          <div key={i} style={{ border: "1px solid #eee", borderRadius: 12, padding: 16, textAlign: "center" }}>
-            <div style={{ fontSize: 24, fontWeight: 700 }}>{s.value}</div>
-            <div style={{ opacity: 0.8 }}>{s.label}</div>
-          </div>
-        ))}
-      </div>
-    )}
-    {badges && badges.length > 0 && (
-      <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 16 }}>
-        {badges.map((b, i) => (
-          <span key={i} style={{ border: "1px solid #ddd", borderRadius: 999, padding: "6px 10px", fontSize: 12 }}>
-            {b}
-          </span>
-        ))}
-      </div>
-    )}
-  </section>
-);
-
-const FAQPlaceholder: React.FC<{ items: QA[]; title?: string }> = ({ items, title = "שאלות נפוצות" }) => (
-  <section style={{ padding: "48px 16px" }}>
-    <h2 style={{ marginTop: 0 }}>{title}</h2>
-    <div style={{ display: "grid", gap: 12 }}>
-      {items.map((qa, i) => (
-        <details key={i} style={{ border: "1px solid #eee", borderRadius: 12, padding: 12 }}>
-          <summary style={{ cursor: "pointer", fontWeight: 600 }}>{qa.q}</summary>
-          <p style={{ marginTop: 8 }}>{qa.a}</p>
-        </details>
-      ))}
-    </div>
-  </section>
-);
-
-const SocialProofPlaceholder: React.FC<{ brands?: string[]; title?: string }> = ({
-  brands,
-  title = "בין לקוחותינו",
-}) => (
-  <section style={{ padding: "48px 16px" }}>
-    <h2 style={{ marginTop: 0 }}>{title}</h2>
-    {brands && brands.length > 0 ? (
-      <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-        {brands.map((b, i) => (
-          <span key={i} style={{ border: "1px solid #eee", borderRadius: 10, padding: "8px 12px" }}>
-            {b}
-          </span>
-        ))}
-      </div>
-    ) : (
-      <p style={{ opacity: 0.8 }}>—</p>
-    )}
-  </section>
-);
-
-const CTAVariantsPlaceholder: React.FC<{ items?: string[] }> = ({ items }) => (
-  <section style={{ padding: "32px 16px", display: "flex", flexWrap: "wrap", gap: 12 }}>
-    {(items || []).map((txt, i) => (
-      <button key={i} type="button">
-        {txt}
-      </button>
-    ))}
-  </section>
-);
-
-const SEOPlaceholder: React.FC<{ title?: string; description?: string; keywords?: string[] }> = ({
-  title,
-  description,
-  keywords,
-}) => (
-  <section style={{ padding: "24px 16px", borderTop: "1px dashed #eee", fontSize: 12, opacity: 0.85 }}>
-    <div>
-      <strong>SEO Title:</strong> {title || "—"}
-    </div>
-    <div>
-      <strong>Description:</strong> {description || "—"}
-    </div>
-    <div>
-      <strong>Keywords:</strong> {(keywords || []).join(", ") || "—"}
-    </div>
-  </section>
-);
 
 /* --------------------------------------
    Component
@@ -308,7 +171,10 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({ section, onDeleteSect
       case "reviews":
         return (
           <Reviews
-            content={Array.isArray(section.content) ? section.content : toArray(section.content)}
+            title={section.title}
+            subtitle={undefined} // או טקסט שתבחר
+            content={Array.isArray(section.content) ? section.content : (section.content || "")}
+            ratingSummary={section.ratingSummary}
             onDelete={onDeleteSection}
           />
         );
@@ -333,8 +199,17 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({ section, onDeleteSect
         );
 
       case "gallery":
-        return <Gallery />;
-
+        return (
+          <Gallery
+            title={section.title}
+            subtitle={section.subtitle}
+            cover={section.cover}
+            images={Array.isArray((section as any).images) ? (section as any).images : undefined}
+            onDelete={onDeleteSection}
+            showHeader
+          />
+        );
+        
       case "footer":
         return (
           <Footer
@@ -354,54 +229,85 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({ section, onDeleteSect
         );
 
       case "howItWorks":
-        return <HowItWorksPlaceholder title={section.title} steps={Array.isArray(section.steps) ? section.steps : []} />;
+        return (
+          <HowItWorks
+            steps={section.steps}
+            title="איך זה עובד"
+            subtitle="כל התהליך אצלנו פשוט, מהיר ושקוף – משלב הייעוץ ועד להשלמת העבודה."
+            showHeader
+            onDelete={() => console.log("delete section")}
+          />
+        );
 
       case "pricing":
         return (
-          <PricingPlaceholder
-            title={section.title}
-            subtitle={section.subtitle}
-            plans={Array.isArray(section.plans) ? section.plans : []}
-            disclaimer={section.disclaimer}
+          <Pricing
+            title="חבילות ושירותים"
+            subtitle="בחרו את מה שמתאים לכם – גמיש, שקוף וברור."
+            plans={section.plans}
+            disclaimer="המחירים לפני מע״מ ויכולים להשתנות."
+            onDelete={() => console.log("delete pricing section")}
           />
         );
 
       case "trust":
         return (
-          <TrustPlaceholder
+          <Trust
             title={section.title}
-            stats={Array.isArray(section.stats) ? section.stats : []}
-            badges={Array.isArray(section.badges) ? section.badges : []}
+            subtitle={section.subtitle}
+            stats={Array.isArray(section.stats) ? section.stats : undefined}
+            badges={Array.isArray(section.badges) ? section.badges : undefined}
+            onDelete={onDeleteSection}
           />
         );
 
       case "faq": {
+        // type guard קטן כדי לנרמל נתונים אם מגיעים ממקור ישן
+        const isQA = (x: any): x is QA =>
+          x && typeof x.q === "string" && typeof x.a === "string";
+
         const qa: QA[] = Array.isArray(section.itemsQA)
           ? section.itemsQA
+          : Array.isArray(section.items)
+          ? (section.items as any[]).filter(isQA)
           : Array.isArray(section.content)
-          ? (section.content as any[]).filter(
-              (x) => x && typeof (x as any).q === "string" && typeof (x as any).a === "string"
-            )
+          ? (section.content as any[])
+              .filter(isQA)
           : [];
-        return <FAQPlaceholder title={section.title} items={qa} />;
-      }
 
-      case "socialProof":
-        return <SocialProofPlaceholder title={section.title} brands={section.brands} />;
+        // נרמול סופי + סינון ריקים
+        const safeQA = qa
+          .map(({ q, a }) => ({ q: String(q || "").trim(), a: String(a || "").trim() }))
+          .filter(x => x.q && x.a);
 
-      case "ctaVariants":
         return (
-          <CTAVariantsPlaceholder items={Array.isArray(section.itemsCTA) ? section.itemsCTA : toArray(section.content)} />
-        );
-
-      case "seo":
-        return (
-          <SEOPlaceholder
-            title={section.title}
-            description={typeof section.content === "string" ? section.content : section.description}
-            keywords={Array.isArray(section.keywords) ? section.keywords : toArray(section.content)}
+          <FAQ
+            title={section.title || "שאלות נפוצות"}
+            subtitle={section.subtitle}
+            items={safeQA}
+            onDelete={onDeleteSection}
+            showHeader
           />
         );
+      }
+
+
+      case "socialProof":
+        return (
+          <SocialProof
+            title={section.title}
+            brands={Array.isArray(section.brands) ? section.brands : []}
+            onDelete={onDeleteSection}
+          />
+        );
+      // case "ctaVariants":
+      //   return (
+      //     <CTAVariants
+      //       items={Array.isArray(section.itemsCTA) ? section.itemsCTA : toArray(section.content)}
+      //       onDelete={onDeleteSection}
+      //       showHeader
+      //     />
+      //   );
 
       default:
         return null;

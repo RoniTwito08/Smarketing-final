@@ -724,12 +724,12 @@ ${fieldToTranslate}`
       gallerySection,
       socialProofSection,
       contactUsSection,
-      footerSection,
       ctaSection,
       seoSection,
       colorAndFont: colorAndFontPrompt,
       goals,
       microcopy,
+      footerSection
     };
 
     res.status(200).json(context);
