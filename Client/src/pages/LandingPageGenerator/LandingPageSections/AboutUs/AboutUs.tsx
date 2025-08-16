@@ -1,4 +1,3 @@
-// src/components/LandingPageSections/AboutUs/AboutUs.tsx
 "use client";
 import { useMemo, useRef, useState } from "react";
 import { FaPalette, FaTrash } from "react-icons/fa";
@@ -27,7 +26,7 @@ const VARIANTS = [V1, V2, V3, V4];
 export default function AboutUs(props: AboutUsProps) {
   const { content, title, mission, image, phone, whatsappNumber, bullets, stats, tagline, onDelete } = props;
 
-  const [hovered, setHovered] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const [openPop, setOpenPop] = useState(false);
   const editBtnRef = useRef<HTMLButtonElement>(null);
 
@@ -51,22 +50,36 @@ export default function AboutUs(props: AboutUsProps) {
   return (
     <section
       className={s.aboutUsSection}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
       dir="rtl"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      {hovered && (
-        <div className={s.toolbar}>
-          <button ref={editBtnRef} className={s.iconBtn} onClick={() => setOpenPop(true)} title="ערוך">
-            <FaPalette size={14} />
+      {/* טולבר – תמיד ב־DOM, נגלה/נסתר ב־CSS למניעת הבהוב */}
+      <div className={`${s.toolbar} ${isHovered ? s.toolbarVisible : ""}`}>
+        <button
+          ref={editBtnRef}
+          type="button"
+          className={s.iconBtn}
+          onClick={() => setOpenPop(true)}
+          title="התאמה"
+          aria-haspopup="dialog"
+          aria-expanded={openPop}
+        >
+          <FaPalette size={14} />
+        </button>
+
+        {onDelete && (
+          <button
+            type="button"
+            className={`${s.iconBtn} ${s.trashBtn}`}
+            onClick={() => onDelete?.()}
+            title="מחק סקשן"
+            aria-label="מחק סקשן"
+          >
+            <FaTrash size={13} />
           </button>
-          {onDelete && (
-            <button className={`${s.iconBtn} ${s.trashBtn}`} onClick={onDelete} title="מחק">
-              <FaTrash size={13} />
-            </button>
-          )}
-        </div>
-      )}
+        )}
+      </div>
 
       {title && <h2 className={s.heading}>{title}</h2>}
       {mission && <p className={s.mission}>{mission}</p>}

@@ -19,10 +19,20 @@ export default function V3({
 }) {
   const densCls = options.density === "compact" ? s.compact : options.density === "spacious" ? s.spacious : s.normal;
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [local, setLocal] = useState<QA[]>(items);
+
+  const onQInput = (i:number) => (e:React.FormEvent<HTMLHeadingElement>)=>{
+    const v=(e.currentTarget as HTMLHeadingElement).innerText;
+    setLocal(prev=>{const n=[...prev]; n[i]={...n[i], q:v}; return n;});
+  };
+  const onAInput = (i:number) => (e:React.FormEvent<HTMLParagraphElement>)=>{
+    const v=(e.currentTarget as HTMLParagraphElement).innerText;
+    setLocal(prev=>{const n=[...prev]; n[i]={...n[i], a:v}; return n;});
+  };
 
   return (
     <ul className={`${s.list} ${densCls}`}>
-      {items.map((qa, i) => {
+      {local.map((qa, i) => {
         const active = openIndex === i;
         return (
           <li key={i} className={`${s.li} ${active ? s.open : ""}`}>
@@ -34,14 +44,28 @@ export default function V3({
               aria-controls={`v3-panel-${i}`}
             >
               {options.showNumbers && <span className={s.num}>{i + 1}</span>}
-              <h3 className={s.liQ}>{qa.q}</h3>
+              <h3
+                className={s.liQ}
+                contentEditable
+                suppressContentEditableWarning
+                onInput={onQInput(i)}
+              >
+                {qa.q}
+              </h3>
             </button>
             <div
               id={`v3-panel-${i}`}
               className={`${s.accPanel} ${active ? s.open : ""}`}
               aria-hidden={!active}
             >
-              <p className={s.liA}>{qa.a}</p>
+              <p
+                className={s.liA}
+                contentEditable
+                suppressContentEditableWarning
+                onInput={onAInput(i)}
+              >
+                {qa.a}
+              </p>
             </div>
           </li>
         );

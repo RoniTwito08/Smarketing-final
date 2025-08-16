@@ -1,4 +1,5 @@
 "use client";
+import  { useState, useMemo } from "react";
 import s from "../socialProof.module.css";
 
 type Options = {
@@ -15,20 +16,54 @@ export default function V1({
   brands: string[];
   options: Options;
 }) {
+  const [local, setLocal] = useState<string[]>(brands);
+
+  const onBrandChange = (i: number) => (next: string) => {
+    setLocal(prev => {
+      const n = [...prev];
+      n[i] = next;
+      return n;
+    });
+  };
+
   return (
     <div className={`${s.grid} ${colsCls(options.columns)} ${densityCls(options.density)} ${options.rounded ? s.rounded : ""} ${options.softBackground ? s.soft : ""}`}>
-      {brands.map((b, i) => (
-        <BrandPill key={i} textOrUrl={b} />
+      {local.map((b, i) => (
+        <BrandPill key={i} textOrUrl={b} onEdit={onBrandChange(i)} />
       ))}
     </div>
   );
 }
 
-function BrandPill({ textOrUrl }: { textOrUrl: string }) {
-  const isImg = /\.(png|jpe?g|webp|svg)$/i.test(textOrUrl) || (/^https?:\/\//i.test(textOrUrl) && !/\s/.test(textOrUrl));
+function BrandPill({ textOrUrl, onEdit }: { textOrUrl: string; onEdit: (v: string) => void }) {
+  const isImg = useMemo(
+    () => /\.(png|jpe?g|webp|svg)$/i.test(textOrUrl) || (/^https?:\/\//i.test(textOrUrl) && !/\s/.test(textOrUrl)),
+    [textOrUrl]
+  );
+
   return (
     <div className={s.pill}>
-      {isImg ? <img src={textOrUrl} alt="" loading="lazy" /> : <span>{textOrUrl}</span>}
+      {isImg ? (
+        <div className={s.pillInner}>
+          <img src={textOrUrl} alt="" loading="lazy" />
+          <span
+            className={s.editableUrl}
+            contentEditable
+            suppressContentEditableWarning
+            onInput={(e) => onEdit((e.currentTarget as HTMLSpanElement).innerText)}
+          >
+            {textOrUrl}
+          </span>
+        </div>
+      ) : (
+        <span
+          contentEditable
+          suppressContentEditableWarning
+          onInput={(e) => onEdit((e.currentTarget as HTMLSpanElement).innerText)}
+        >
+          {textOrUrl}
+        </span>
+      )}
     </div>
   );
 }

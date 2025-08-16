@@ -1,5 +1,5 @@
-// src/components/LandingPageSections/Trust/Variants/V1.tsx
 "use client";
+import React, { useState } from "react";
 import s from "../trust.module.css";
 import type { Stat } from "../Trust";
 import { FaClock, FaUsers, FaCheck, FaStar, FaAward, FaShieldAlt, FaBolt, FaThumbsUp } from "react-icons/fa";
@@ -12,7 +12,7 @@ const pickIcon = (label: string) => {
   if (/(שנים|ניסיון|ותק)/.test(l)) return FaAward;
   if (/(אחוז|דירוג|כוכב|מרוצים)/.test(l)) return FaStar;
   if (/(אחריות|אמון|בטוח|בטיחות)/.test(l)) return FaShieldAlt;
-  if (/(מהיר|זריז|Performance|ביצועים)/.test(l)) return FaBolt;
+  if (/(מהיר|זריז|performance|ביצועים)/i.test(l)) return FaBolt;
   return FaThumbsUp;
 };
 
@@ -33,27 +33,65 @@ export default function V1({
     accent: "primary" | "secondary" | "tertiary";
   };
 }) {
+  const [localStats, setLocalStats] = useState<Stat[]>(stats);
+  const [localBadges, setLocalBadges] = useState<string[]>(badges || []);
+
+  const onVal = (i: number) => (e: React.FormEvent<HTMLDivElement>) => {
+    const v = (e.currentTarget as HTMLDivElement).innerText;
+    setLocalStats(prev => { const n=[...prev]; n[i]={...n[i], value:v}; return n; });
+  };
+  const onLabel = (i: number) => (e: React.FormEvent<HTMLDivElement>) => {
+    const v = (e.currentTarget as HTMLDivElement).innerText;
+    setLocalStats(prev => { const n=[...prev]; n[i]={...n[i], label:v}; return n; });
+  };
+  const onBadge = (i: number) => (e: React.FormEvent<HTMLSpanElement>) => {
+    const v = (e.currentTarget as HTMLSpanElement).innerText;
+    setLocalBadges(prev => { const n=[...prev]; n[i]=v; return n; });
+  };
+
   return (
     <>
       <div className={`${s.grid} ${colsCls(options.columns)} ${densCls(options.density)} ${options.equalHeights ? s.equalHeights : ""}`}>
-        {stats.map((st, i) => {
+        {localStats.map((st, i) => {
           const Icon = options.showIcons ? pickIcon(st.label) : null;
           return (
             <article key={i} className={`${s.card} ${s["shape-"+options.shape]} ${s["accent-"+options.accent]}`}>
               <div className={s.row}>
                 {Icon && <div className={s.icon}><Icon/></div>}
-                <div className={s.value}>{st.value}</div>
+                <div
+                  className={s.value}
+                  contentEditable
+                  suppressContentEditableWarning
+                  onInput={onVal(i)}
+                >
+                  {st.value}
+                </div>
               </div>
-              <div className={s.label}>{st.label}</div>
+              <div
+                className={s.label}
+                contentEditable
+                suppressContentEditableWarning
+                onInput={onLabel(i)}
+              >
+                {st.label}
+              </div>
             </article>
           );
         })}
       </div>
 
-      {options.showBadges && badges?.length > 0 && (
+      {options.showBadges && localBadges.length > 0 && (
         <div className={s.badgesRow}>
-          {badges.slice(0, 8).map((b, i) => (
-            <span key={i} className={`${s.badge} ${s["accent-"+options.accent]}`}>{b}</span>
+          {localBadges.slice(0, 8).map((b, i) => (
+            <span
+              key={i}
+              className={`${s.badge} ${s["accent-"+options.accent]}`}
+              contentEditable
+              suppressContentEditableWarning
+              onInput={onBadge(i)}
+            >
+              {b}
+            </span>
           ))}
         </div>
       )}

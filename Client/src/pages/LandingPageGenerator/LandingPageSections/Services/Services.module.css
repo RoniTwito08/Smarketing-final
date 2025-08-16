@@ -163,3 +163,17 @@
 .cardSplitB{
   padding: var(--services-pad, 20px);
 }
+
+/* גורם לדפדפן לבחור כיוון לפי התוכן ומונע “היפוך” תחת הורה RTL */
+.editableAuto{
+  unicode-bidi: plaintext;
+  direction: inherit;
+  outline: 2px dashed transparent;
+  border-radius: 6px;
+  transition: background .15s ease, outline-color .15s ease;
+}
+.editableAuto:focus,
+.editableAuto:hover{
+  cursor: text;
+  outline-color: color-mix(in oklab, #0f172a 22%, transparent);
+}
