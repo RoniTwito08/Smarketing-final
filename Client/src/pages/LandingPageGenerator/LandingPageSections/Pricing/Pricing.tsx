@@ -22,21 +22,22 @@ export type Plan = {
 /** --- הטיפוס הפנימי של קומפוננטת ה-Pricing --- */
 export type PricingPlan = {
   name: string;
-  price: number | string;
-  period?: "month" | "year" | string;
-  features: string[];
+  price: string;
+  period?: string;
+  oldPrice?: string;
+  badge?: string;
   highlight?: boolean;
+  features?: string[];
   ctaLabel?: string;
   ctaHref?: string;
-  badge?: string;
-  oldPrice?: number | string;
+  secondaryCtaLabel?: string;
 };
 
 /** ממפה Plan ➜ PricingPlan */
 function toPricingPlan(p: Plan): PricingPlan {
   return {
     name: p.name,
-    price: p.priceMonthly,
+    price: p.priceMonthly.toString(),
     period: "לחודש",
     features: p.features ?? [],
     highlight: !!p.highlight,

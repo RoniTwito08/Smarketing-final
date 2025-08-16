@@ -20,8 +20,8 @@ export default function V2({
   const colsCls = options.columns === "single" ? (s as any)["columns-1"] : options.columns === "double" ? (s as any)["columns-2"] : (s as any)["columns-auto"];
   const densCls = options.density === "compact" ? s.compact : options.density === "spacious" ? s.spacious : s.normal;
 
-  // אם expandMode === "accordion" — רק אחד פתוח
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [local, setLocal] = useState<QA[]>(items);
   const panelsRef = useRef<HTMLDivElement[]>([]);
 
   useEffect(() => {
@@ -33,28 +33,37 @@ export default function V2({
     });
   }, [openIndex]);
 
+  const onQInput = (i:number) => (e:React.FormEvent<HTMLSpanElement>)=>{
+    const v = (e.currentTarget as HTMLSpanElement).innerText;
+    setLocal(prev => { const n=[...prev]; n[i]={...n[i], q:v}; return n; });
+  };
+  const onAInput = (i:number) => (e:React.FormEvent<HTMLParagraphElement>)=>{
+    const v = (e.currentTarget as HTMLParagraphElement).innerText;
+    setLocal(prev => { const n=[...prev]; n[i]={...n[i], a:v}; return n; });
+  };
+
   return (
     <div className={`${s.grid} ${colsCls} ${densCls} ${options.equalHeights ? s.equalHeights : ""}`}>
-      {items.map((qa, i) => {
+      {local.map((qa, i) => {
         const active = openIndex === i;
         return (
           <div key={i} className={`${s.card} ${active ? s.open : ""}`}>
             <button
               className={`${s.accHead} ${active ? s.open : ""}`}
               type="button"
-              onClick={() => {
-                if (options.expandMode === "accordion") {
-                  setOpenIndex(active ? null : i);
-                } else {
-                  // מצב "details" אינו רלוונטי פה; נשמר התנהגות אקורדיון כברירת מחדל
-                  setOpenIndex(active ? null : i);
-                }
-              }}
+              onClick={() => setOpenIndex(active ? null : i)}
               aria-expanded={active}
               aria-controls={`faq-panel-${i}`}
             >
               {options.showNumbers && <span className={s.num}>{i + 1}</span>}
-              {qa.q}
+              <span
+                contentEditable
+                suppressContentEditableWarning
+                onInput={onQInput(i)}
+                className={s.qText}
+              >
+                {qa.q}
+              </span>
             </button>
             <div
               id={`faq-panel-${i}`}
@@ -63,7 +72,14 @@ export default function V2({
               role="region"
               aria-hidden={!active}
             >
-              <p className={s.a}>{qa.a}</p>
+              <p
+                className={s.a}
+                contentEditable
+                suppressContentEditableWarning
+                onInput={onAInput(i)}
+              >
+                {qa.a}
+              </p>
             </div>
           </div>
         );

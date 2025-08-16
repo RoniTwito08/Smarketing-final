@@ -273,3 +273,101 @@
   .hero7{ grid-template-columns:1fr; }
   .hero7Panel{ margin-right:0; border-radius:0; }
 }
+
+/* --- Buttons row + buttons --- */
+.btnRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--btn-border, #e5e7eb);
+  background: var(--btn-bg, #fff);
+  color: var(--btn-fg, #111827);
+  text-decoration: none;
+  font-weight: 600;
+  transition: transform .06s ease, box-shadow .2s ease, background .2s ease, color .2s ease;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,0,0,.06); }
+.btn:active { transform: translateY(0); }
+
+.btnPrimary {
+  border-color: transparent;
+  background:var(--secondary-color);
+  color: #fff;
+}
+.btnPrimary:hover { box-shadow: 0 8px 24px rgba(17,24,39,.25); }
+
+/* --- Small icon buttons (⋯ / ×) --- */
+.iconBtn, .iconBtnDanger {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--border, #e5e7eb);
+  background: #fff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  line-height: 1;
+}
+.iconBtnDanger {
+  width: 28px;
+  height: 28px;
+  border-color: #fca5a5;
+  color: #b91c1c;
+  background: #fff5f5;
+}
+
+/* --- Popover --- */
+.popover {
+  position: absolute;
+  z-index: 20;
+  top: 110%;
+  inset-inline-start: 0;
+  padding: 10px;
+  background: #fff;
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 10px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.08);
+  min-width: 280px;
+  display: grid;
+  gap: 8px;
+}
+
+.input {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border, #e5e7eb);
+  font: inherit;
+}
+
+/* עטיפת הכפתורים (למיקום הפופאובר) */
+.btnWrap { position: relative; display: inline-flex; align-items: center; gap: 6px; }
+
+/* ברירת מחדל – לבן */
+.ctaEditLink {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid #fff !important;
+  background: transparent !important;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* בטמפלטים hero1, hero3, hero6 – צבע של tertiary */
+.hero1 .ctaEditLink,
+.hero3 .ctaEditLink,
+.hero6 .ctaEditLink {
+  border-color: var(--tertiary-color) !important;
+  color: var(--tertiary-color);
+}
