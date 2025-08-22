@@ -102,6 +102,11 @@ export default function Gallery({
     });
   };
 
+  const hasImages = useMemo(
+    () => localImages.some((u) => typeof u === "string" && u.trim() !== ""),
+    [localImages]
+  );
+
   // העלאה לשרת — מחזיר URL מוחלט
   async function uploadFileToServer(file: File): Promise<string> {
     const fd = new FormData();
@@ -193,6 +198,8 @@ export default function Gallery({
     <section
       className={s.gallerySection}
       dir="rtl"
+      data-gallery="true"
+      data-has-images={hasImages ? "true" : "false"}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
