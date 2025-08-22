@@ -12,6 +12,7 @@ import businessInfoRoutes from "./routes/businessInfo_routes";
 import LandingPageGeneratorRoutes from "./routes/landing_page_builder_routes";
 import CampaignRoutes from "./routes/campaign_routes";
 import LeadsRoutes from "./routes/leads_routes";
+import aiRoutes from "./routes/aiRoutes";
 import swaggerJsDoc from "swagger-jsdoc";
 import swaggerUI from "swagger-ui-express";
 import cors from "cors";
@@ -75,6 +76,7 @@ const initApp = (): Promise<Express> => {
   app.use("/business-info", businessInfoRoutes);
   app.use("/marketing", marketingRoutes);
   app.use("/leads", LeadsRoutes);
+  app.use("/ai", aiRoutes);
 
   app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
   app.use("/landing-page-generator", LandingPageGeneratorRoutes);
