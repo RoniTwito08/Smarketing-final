@@ -415,7 +415,7 @@ const cleanForProduction = (root: HTMLElement) => {
           <head>
             <meta charset="UTF-8">
             <title>Landing Page</title>
-            <link rel="stylesheet" href="${config.apiUrl}/dist/assets/index-BD9ZavSr.css">
+            <link rel="stylesheet" href="${config.apiUrl}/dist/assets/index-BFCFrXqm.css">
             <style>
               :root {
                 --primary-color: ${colors.primaryColor};
@@ -444,15 +444,20 @@ const cleanForProduction = (root: HTMLElement) => {
             ${landingPageHTML}
             <script>
               document.addEventListener("DOMContentLoaded", function () {
-                const form = document.querySelector("form");
+                var form = document.querySelector("form");
                 if (!form) return;
-                const fullNameInput = form.querySelector("input[name='fullName']");
-                const emailInput = form.querySelector("input[name='email']");
-                const phoneInput = form.querySelector("input[name='phone']");
-                const messageInput = form.querySelector("textarea[name='message']");
-                const userIdInput = form.querySelector("input[name='userId']");
 
-                const statusBox = document.createElement("p");
+                var fullNameInput = form.querySelector("input[name='fullName']");
+                var emailInput    = form.querySelector("input[name='email']");
+                var phoneInput    = form.querySelector("input[name='phone']");
+                var messageInput  = form.querySelector("textarea[name='message']");
+                var userIdInput   = form.querySelector("input[name='userId']");
+
+                // ★ אם ה-API יושב על אותו דומיין (Reverse-proxy) – השאר ריק ויהיה מסלול יחסי
+                // אחרת, שים פה את ה-base המלא, למשל: "https://api.mydomain.com"
+                var API_BASE = ""; 
+
+                var statusBox = document.createElement("p");
                 statusBox.style.marginTop = "10px";
                 statusBox.style.color = "#444";
                 form.appendChild(statusBox);
@@ -460,32 +465,42 @@ const cleanForProduction = (root: HTMLElement) => {
                 form.addEventListener("submit", async function (e) {
                   e.preventDefault();
                   statusBox.textContent = "שולח...";
+
+                  var payload = {
+                    name:    (fullNameInput && fullNameInput.value) || "",
+                    email:   (emailInput && emailInput.value) || "",
+                    phone:   (phoneInput && phoneInput.value) || "",
+                    message: (messageInput && messageInput.value) || "",
+                    userId:  (userIdInput && userIdInput.value) || "",
+                  };
+
                   try {
-                    const response = await fetch("${config.apiUrl}/leads/createLead", {
+                    var res = await fetch(API_BASE + "/leads/createLead", {
                       method: "POST",
                       headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({
-                        name: fullNameInput?.value || "",
-                        email: emailInput?.value || "",
-                        phone: phoneInput?.value || "",
-                        message: messageInput?.value || "",
-                        userId: userIdInput?.value || "",
-                      }),
+                      body: JSON.stringify(payload),
                     });
-                    if (!response.ok) throw new Error("שליחה נכשלה");
-                    setTimeout(() => { statusBox.textContent = ""; }, 3000);
+
+                    if (!res.ok) {
+                      var txt = "";
+                      try { txt = await res.text(); } catch(e) {}
+                      throw new Error("שליחה נכשלה (" + res.status + ") " + txt);
+                    }
+
                     statusBox.textContent = "✅ הפרטים נשלחו בהצלחה!";
-                    (form as HTMLFormElement).reset();
-                  } catch (error) {
-                    console.error("שגיאה בשליחה:", error);
+                    setTimeout(function() { statusBox.textContent = ""; }, 3000);
+                    form.reset();
+                  } catch (err) {
+                    console.error("שגיאה בשליחה:", err);
                     statusBox.textContent = "❌ שגיאה בשליחת הפרטים";
                   }
                 });
 
-                const scrollButton = document.getElementById("headerButtonContainer");
-                const contactTarget = document.getElementById("contact-us-root") || document.querySelector(".contactUs");
+                // כפתור גלילה לקטע יצירת קשר
+                var scrollButton  = document.getElementById("headerButtonContainer");
+                var contactTarget = document.getElementById("contact-us-root") || document.querySelector(".contactUs");
                 if (scrollButton && contactTarget) {
-                  scrollButton.addEventListener("click", () => {
+                  scrollButton.addEventListener("click", function() {
                     contactTarget.scrollIntoView({ behavior: "smooth", block: "start" });
                   });
                 }
