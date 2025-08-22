@@ -3,7 +3,7 @@ import { extendTheme } from "@mui/material/styles";
 import { AppProvider, Navigation, Router } from "@toolpad/core/AppProvider";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { PageContainer } from "@toolpad/core/PageContainer";
-import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
+// import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
 import SettingsIcon from "@mui/icons-material/Settings";
 import AnalysisIcon from "@mui/icons-material/Analytics";
@@ -55,11 +55,11 @@ export default function DashboardLayoutBasic(props: any) {
       title: "",
       icon: <AnalysisIcon />,
     },
-    {
-      segment: "chats",
-      title: "",
-      icon: <CalendarTodayOutlinedIcon />,
-    },
+    // {
+    //   segment: "chats",
+    //   title: "",
+    //   icon: <CalendarTodayOutlinedIcon />,
+    // },
     {
       kind: "divider",
     },
