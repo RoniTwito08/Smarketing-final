@@ -4,7 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import { FaPalette, FaTrash } from "react-icons/fa";
 import s from "./howItWorks.module.css";
 import HowItWorksPopup, { HowItWorksOptions } from "./HowItWorksPopup";
-
+import t from "../Services/Services.module.css"
 // Variants
 import V1 from "./Variants/V1";
 import V2 from "./Variants/V2";
@@ -69,22 +69,20 @@ export default function HowItWorks({
       dir="rtl"
     >
       {hovered && (
-        <div className={s.toolbar}>
+        <div className={t.toolbar}>
           <button
             ref={editBtnRef}
-            className={s.iconBtn}
+            className={t.iconBtn}
             onClick={() => setOpenPop(true)}
             title="ערוך"
-            type="button"
           >
             <FaPalette size={14} />
           </button>
           {onDelete && (
             <button
-              className={`${s.iconBtn} ${s.trashBtn}`}
+              className={`${t.iconBtn} ${t.trashBtn}`}
               onClick={onDelete}
               title="מחק"
-              type="button"
             >
               <FaTrash size={13} />
             </button>

@@ -2,6 +2,7 @@
 import { useMemo, useRef, useState } from "react";
 import { FaPalette, FaTrash } from "react-icons/fa";
 import s from "./aboutUs.module.css";
+import t from "../Services/Services.module.css"
 import AboutUsPopup, { AboutUsOptions } from "./AboutUsPopup";
 import V1 from "./Variants/V1";
 import V2 from "./Variants/V2";
@@ -55,31 +56,25 @@ export default function AboutUs(props: AboutUsProps) {
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* טולבר – תמיד ב־DOM, נגלה/נסתר ב־CSS למניעת הבהוב */}
-      <div className={`${s.toolbar} ${isHovered ? s.toolbarVisible : ""}`}>
-        <button
-          ref={editBtnRef}
-          type="button"
-          className={s.iconBtn}
-          onClick={() => setOpenPop(true)}
-          title="התאמה"
-          aria-haspopup="dialog"
-          aria-expanded={openPop}
-        >
-          <FaPalette size={14} />
-        </button>
-
-        {onDelete && (
+      {isHovered && (
+        <div className={t.toolbar}>
           <button
-            type="button"
-            className={`${s.iconBtn} ${s.trashBtn}`}
-            onClick={() => onDelete?.()}
-            title="מחק סקשן"
-            aria-label="מחק סקשן"
+            ref={editBtnRef}
+            className={t.iconBtn}
+            onClick={() => setOpenPop(true)}
+            title="התאמה"
+            aria-haspopup="dialog"
+            aria-expanded={openPop}
           >
-            <FaTrash size={13} />
+            <FaPalette size={14} />
           </button>
-        )}
-      </div>
+          {onDelete && (
+            <button className={`${t.iconBtn} ${t.trashBtn}`} onClick={onDelete} title="מחק סקשן">
+              <FaTrash size={13} />
+            </button>
+          )}
+        </div>
+      )}
 
       {title && <h2 className={s.heading}>{title}</h2>}
       {mission && <p className={s.mission}>{mission}</p>}

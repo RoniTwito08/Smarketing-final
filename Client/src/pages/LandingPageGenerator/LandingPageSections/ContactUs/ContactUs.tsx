@@ -2,11 +2,13 @@
 "use client";
 import { useMemo, useRef, useState } from "react";
 import axios from "axios";
-import { FaPalette, FaTrash, FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { FaPalette, FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import s from "./contactUs.module.css";
 import { config } from "../../../../config";
 import { useAuth } from "../../../../context/AuthContext";
 import ContactPopup, { ContactOptions } from "./ContactUsPopup";
+import t from "../Services/Services.module.css";
+
 
 import V1 from "./Variants/V1";
 import V2 from "./Variants/V2";
@@ -23,7 +25,6 @@ const VARIANTS = [V1, V2, V3] as const;
 export default function ContactUs({
   title = "📞 צור קשר",
   subtitle = "נשמח לשוחח איתך ולשמוע עוד!",
-  onDelete,
 }: ContactUsProps) {
   const { user } = useAuth();
   const userIdRef = useRef<HTMLInputElement>(null);
@@ -234,7 +235,7 @@ export default function ContactUs({
       onMouseLeave={() => setHovered(false)}
     >
       {hovered && (
-        <div className={s.toolbar}>
+        <div className={t.toolbar}>
           {/* <button
             className={s.iconBtn}
             title="קודם"
@@ -253,20 +254,15 @@ export default function ContactUs({
           </button> */}
 
           <button
-            ref={editBtnRef}                 // ⬅️ חיבור העוגן
-            className={s.iconBtn}
-            title="ערוך עיצוב"
+            ref={editBtnRef}
+            className={t.iconBtn}
             onClick={() => setOpenPop(true)}
-            type="button"
+            title="התאמה"
+            aria-haspopup="dialog"
+            aria-expanded={openPop}
           >
             <FaPalette size={14} />
           </button>
-
-          {onDelete && (
-            <button className={`${s.iconBtn} ${s.trashBtn}`} title="מחק" onClick={onDelete} type="button">
-              <FaTrash size={13} />
-            </button>
-          )}
         </div>
       )}
 

@@ -3,7 +3,7 @@ import { useMemo, useRef, useState } from "react";
 import { FaPalette, FaTrash, FaPlus } from "react-icons/fa";
 import s from "./gallery.module.css";
 import GalleryPopup, { GalleryOptions } from "./GalleryPopup";
-
+import t from "../Services/Services.module.css";
 import V1 from "./Variants/V1";
 import V2 from "./Variants/V2";
 import V3 from "./Variants/V3";
@@ -41,10 +41,13 @@ export default function Gallery({
   images,
   onDelete,
   showHeader = true,
-  prefillFromProps = false, // ⟵ ברירת מחדל: לא לטעון שום דבר מה־props
+  prefillFromProps = false,
 }: GalleryProps) {
   const [openPop, setOpenPop] = useState(false);
   const editBtnRef = useRef<HTMLButtonElement>(null);
+
+  // ✅ הצגת טולבר רק על hover
+  const [hovered, setHovered] = useState(false);
 
   // בורר תמונות (Pexels/רקע)
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -69,9 +72,9 @@ export default function Gallery({
     rounded: true,
   });
 
-  // ⟵ הכי חשוב: מתחילים ריק לגמרי, בלי seed ובלי useEffect שמסנכרן עם props
+  // מתחילים ריק לגמרי (אלא אם prefillFromProps=true)
   const initialFromProps = useMemo<string[]>(() => {
-    if (!prefillFromProps) return []; // לא נטען מה־props בהרצה הראשונה
+    if (!prefillFromProps) return [];
     const fromProps = [
       ...(cover ? [cover] : []),
       ...(Array.isArray(images) ? images.filter(Boolean) : []),
@@ -126,7 +129,7 @@ export default function Gallery({
       : `${API_BASE}/${txt.replace(/^\/+/, "")}`;
   }
 
-  // בחירת קובץ (העלאה מהמחשב): פריוויו מיידי -> העלאה -> החלפה ב־URL של השרת
+  // בחירת קובץ: פריוויו מיידי -> העלאה -> החלפה ב־URL של השרת
   const handleFileSelect = async (index: number, file?: File | null) => {
     if (!file) return;
     setErrorAt((p) => ({ ...p, [index]: null }));
@@ -153,14 +156,14 @@ export default function Gallery({
     setPickerOpen(true);
   };
 
-  // תוצאת בחירה מה־Picker (שומר קישור ישיר)
+  // תוצאת בחירה מה־Picker
   const handlePickFromPicker = (url: string) => {
     if (pickerIndex != null) setImageAt(pickerIndex, url);
     setPickerOpen(false);
     setPickerIndex(null);
   };
 
-  // helper לפתיחת הקובץ הראשון (יוצר סלוט 0 אוטומטית)
+  // helper לפתיחת הקובץ הראשון
   const ensureSlotAndOpenFile = (i = 0) => {
     setLocalImages((prev) => {
       if (prev.length > i) return prev;
@@ -187,37 +190,43 @@ export default function Gallery({
     VARIANTS[Math.min(VARIANTS.length - 1, Math.max(0, opts.template))] as any;
 
   return (
-    <section className={s.gallerySection} dir="rtl">
-      {/* טולבר למעלה: הוסף / ערוך / מחק */}
-      <div className={s.toolbar} aria-label="פעולות גלריה">
-        <button
-          className={s.iconBtn}
-          title="הוסף תמונה"
-          onClick={addSlot}
-          type="button"
-        >
-          <FaPlus size={14} />
-        </button>
-        <button
-          ref={editBtnRef}
-          className={s.iconBtn}
-          title="ערוך תצוגה וטמפלט"
-          onClick={() => setOpenPop(true)}
-          type="button"
-        >
-          <FaPalette size={14} />
-        </button>
-        {onDelete && (
+    <section
+      className={s.gallerySection}
+      dir="rtl"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {/* טולבר — מוצג רק על Hover */}
+      {hovered && (
+        <div className={t.toolbar} aria-label="פעולות גלריה">
           <button
-            className={`${s.iconBtn} ${s.trashBtn}`}
-            title="מחק סקשן"
-            onClick={onDelete}
-            type="button"
+            className={t.iconBtn}
+            title="הוסף תמונה"
+            onClick={addSlot}
           >
-            <FaTrash size={13} />
+            <FaPlus size={14} />
           </button>
-        )}
-      </div>
+
+          <button
+            ref={editBtnRef}
+            className={t.iconBtn}
+            title="ערוך תצוגה וטמפלט"
+            onClick={() => setOpenPop(true)}
+          >
+            <FaPalette size={14} />
+          </button>
+
+          {typeof onDelete === "function" && (
+            <button
+              className={`${t.iconBtn} ${t.trashBtn}`}
+              title="מחק סקשן"
+              onClick={onDelete}
+            >
+              <FaTrash size={13} />
+            </button>
+          )}
+        </div>
+      )}
 
       {/* כותרת (אופציונלי) */}
       {showHeader && (title || subtitle) && (
@@ -227,7 +236,7 @@ export default function Gallery({
         </header>
       )}
 
-      {/* כשהגלריה ריקה — Empty State עם גרירה/העלאה/בחירה */}
+      {/* כשהגלריה ריקה — Empty State */}
       {localImages.length === 0 ? (
         <div
           className={s.empty}

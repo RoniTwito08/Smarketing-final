@@ -22,20 +22,6 @@
 }
 .contactSection > *{ max-width: 1100px; margin-inline:auto; }
 
-.toolbar{
-  position:absolute; top:12px; inset-inline-end:12px; display:flex; gap:8px; z-index:6;
-}
-.iconBtn{
-  width:36px;height:36px;border-radius:999px; display:inline-flex;align-items:center;justify-content:center;
-  background:color-mix(in oklab,var(--text) 28%,transparent); color:#fff;
-  border:1px solid color-mix(in oklab,var(--text) 24%,transparent);
-  box-shadow:0 6px 18px -8px color-mix(in oklab,var(--text) 32%,transparent);
-  cursor:pointer; transition:.15s;
-}
-.iconBtn:hover{ transform: translateY(-2px); background:color-mix(in oklab,var(--text) 38%,transparent); }
-.trashBtn{ background:color-mix(in oklab,#d90429 45%,transparent); }
-.trashBtn:hover{ background:color-mix(in oklab,#d90429 60%,transparent); }
-
 /* ====== Titles ====== */
 .title{
   margin:0 0 10px; font-weight:900; color:var(--text);
@@ -90,7 +76,6 @@
   background: #fff; box-shadow: var(--shadow);
 }
 .v2Left{ padding-inline: clamp(6px, 2vw, 12px); }
-.v2Right{ }
 .bullets{ margin: 10px 0 0; padding: 0 1rem; color: color-mix(in oklab, var(--text) 80%, transparent); line-height:1.9; }
 .ribbon{
   position:absolute; inset: -10% auto auto -12%;

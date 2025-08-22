@@ -4,7 +4,6 @@ import "./Feed.css";
 import { useAuth } from "../../../context/AuthContext";
 import { toast } from "react-toastify";
 import MyCampaigns from "../../Campaigns/MyCampaigns";
-import CampaignDetailsPopup from "../../Campaigns/CampaignDetailsPopup";
 import { config } from "../../../config";
 import { ToastContainer } from "react-toastify";
 
@@ -66,11 +65,6 @@ const Feed: React.FC<{ className?: string }> = ({ className }) => {
     }
   };
 
-  const handleDeleteCampaign = (campaignId: string) => {
-    console.log("Campaign deleted:", campaignId);
-    setRefreshFeed(true); // Trigger refresh after deletion
-  };
-
   const handleSelectCampaign = (campaign: any) => {
     setSelectedCampaign(campaign);
   };
@@ -96,14 +90,6 @@ const Feed: React.FC<{ className?: string }> = ({ className }) => {
         onClose={() => setShowPopup(false)}
         onSubmit={handleCampaignSubmit}
       />
-      {selectedCampaign && (
-        <CampaignDetailsPopup
-          campaign={selectedCampaign}
-          onClose={() => setSelectedCampaign(null)}
-          onSubmit={handleCampaignSubmit}
-          onDelete={handleDeleteCampaign}
-        />
-      )}
     </div>
   );
 };
