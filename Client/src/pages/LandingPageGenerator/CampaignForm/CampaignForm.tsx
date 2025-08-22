@@ -358,7 +358,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
           <head>
             <meta charset="UTF-8">
             <title>Landing Page</title>
-            <link rel="stylesheet" href="${config.apiUrl}/dist/assets/index-cRtFAP5i.css">
+            <link rel="stylesheet" href="${config.apiUrl}/dist/assets/index-iSbiMuwa.css">
 
             <style>
               :root {
@@ -713,7 +713,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
                   <input
                     type="range"
                     name="budget"
-                    min="1"
+                    min="0"
                     max="100"
                     step="10"
                     value={Math.round(form.budget)}

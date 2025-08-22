@@ -21,7 +21,7 @@ import { GoogleAdsAnalytics } from "../GoogleAdsAnalytics/GoogleAdsAnalytics";
 export default function DashboardLayoutBasic(props: any) {
   const { window } = props;
   const { user, accessToken } = useAuth();
-  const router = useDemoRouter("/analytics");
+  const router = useDemoRouter("/feed");
   const demoWindow = window ? window() : undefined;
   const { logout } = useAuth();
   // const [selectedChatUser, setSelectedChatUser] = useState<User | null>(null);
@@ -38,6 +38,7 @@ export default function DashboardLayoutBasic(props: any) {
       kind: "header",
       title: "Menu",
     },
+    
     {
       segment: "feed",
       title: "",
