@@ -312,34 +312,91 @@ export const CampaignPopup: React.FC<CampaignPopupProps> = ({
     setColors((prev: any) => ({ ...prev, font }));
   };
 
-  const cleanForProduction = (root: HTMLElement) => {
-    root
-      .querySelectorAll(
-        '.actionButtonsContainer, .actionBar, [data-resize-handle], [class*="arrowButtons"]'
-      )
-      .forEach((el) => el.remove());
-    [
-      "data-rbd-draggable-id",
-      "data-rbd-draggable-context-id",
-      "data-rbd-drag-handle-draggable-id",
-      "data-rbd-drag-handle-context-id",
-      "draggable",
-      "tabindex",
-      "role",
-      "aria-describedby",
-    ].forEach((attr) =>
-      root
-        .querySelectorAll(`[${attr}]`)
-        .forEach((el) => el.removeAttribute(attr))
-    );
+  // Drop-in replacement
+// Drop-in replacement
+const cleanForProduction = (root: HTMLElement) => {
+  // 1) להסיר אלמנטים של עריכה/טולבר/”שלוש נקודות”
+  const removeSelectors = [
+    // כלים פנימיים/גנריים
+    '.actionButtonsContainer',
+    '.actionBar',
+    '[data-resize-handle]',
+    '[class*="arrowButtons"]',
 
-    root
-      .querySelectorAll("[contenteditable]")
-      .forEach((el) => el.removeAttribute("contenteditable"));
-    root
-      .querySelectorAll("[suppresscontenteditablewarning]")
-      .forEach((el) => el.removeAttribute("suppresscontenteditablewarning"));
-  };
+    // טולבר כללי (כולל CSS-Modules)
+    '[class*="toolbar"]',
+    '[class*="_toolbar_"]',
+
+    // כפתורי אייקון/עריכה/אשפה (כולל CSS-Modules)
+    '[class*="iconBtn"]',
+    '[class*="_iconBtn_"]',
+    '[class*="editBtn"]',
+    '[class*="_editBtn_"]',
+    '[class*="trashBtn"]',
+    '[class*="_trashBtn_"]',
+
+    // “שלוש נקודות” ליד כפתורי CTA (כולל CSS-Modules)
+    '[class*="ctaEditLink"]',
+    '[class*="_ctaEditLink_"]',
+
+    // כפתורי מחיקת CTA (כולל CSS-Modules)
+    '[class*="ctaRemove"]',
+    '[class*="_ctaRemove"]',
+    '[class*="ctaRemoveIn"]',
+    '[class*="_ctaRemoveIn_"]',
+
+    // כפתור “X” למחיקת כרטיסים בביקורות וכו׳
+    '[class*="closeCardBtn"]',
+    '[class*="_closeCardBtn_"]',
+  ].join(',');
+  root.querySelectorAll(removeSelectors).forEach((el) => el.remove());
+  root
+      .querySelectorAll('section[data-gallery][data-has-images="false"]')
+      .forEach((el) => el.remove());
+  // 1a) ללכוד "שלוש נקודות" גם אם אין מחלקה ידועה (⋯ … ⋮ ︙ •••) – כפתורים/לינקים בלבד
+  const ELLIPSIS = new Set(['⋯','…','⋮','︙','•••','...']);
+  root.querySelectorAll('button, a').forEach((el) => {
+    const txt = (el.textContent || '').trim();
+    const t = (el.getAttribute('title') || el.getAttribute('aria-label') || '').trim();
+    const isEllipsis = ELLIPSIS.has(txt) || /^[\u22EF\u2026\u22EE\uFE19.]{1,3}$/.test(txt);
+    const isEditorHint = ['התאמה','עריכת קישור','הגדרת קישור','הוסף כפתור','מחק כפתור','מחק סקשן']
+      .some((hint) => t.includes(hint));
+    if (isEllipsis || isEditorHint) el.remove();
+  });
+
+  // 2) ניקוי אטריביוטים זמניים של דראג/עריכה/ARIA
+  [
+    'data-rbd-draggable-id',
+    'data-rbd-draggable-context-id',
+    'data-rbd-drag-handle-draggable-id',
+    'data-rbd-drag-handle-context-id',
+    'data-react-beautiful-dnd-draggable',
+    'data-react-beautiful-dnd-droppable',
+    'data-draggable',
+    'draggable',
+    'tabindex',
+    'role',
+    'aria-describedby',
+    'aria-grabbed',
+    'aria-dropeffect',
+    'aria-expanded',
+    'aria-pressed',
+  ].forEach((attr) => {
+    root.querySelectorAll(`[${attr}]`).forEach((el) => el.removeAttribute(attr));
+  });
+
+  // 3) ביטול contenteditable + האזהרה שלו
+  root.querySelectorAll('[contenteditable]').forEach((el) => el.removeAttribute('contenteditable'));
+  root.querySelectorAll('[suppresscontenteditablewarning]').forEach((el) =>
+    el.removeAttribute('suppresscontenteditablewarning')
+  );
+
+  // 4) אם נשארו עטיפות טולבר ריקות – ניקוי
+  root.querySelectorAll('[class*="toolbar"], [class*="_toolbar_"]').forEach((el) => {
+    if (!el.children.length) el.remove();
+  });
+};
+
 
   const handleSaveLandingPage = async () => {
     setIsSidebarOpen(false);
