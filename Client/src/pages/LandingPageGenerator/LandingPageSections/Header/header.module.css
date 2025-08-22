@@ -9,148 +9,148 @@
 }
 
 .headerWrapper {
-  container-type: inline-size;
   width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 2px solid color-mix(in oklab, var(--text-color) 12%, transparent);
+  backdrop-filter: blur(8px);
+  container-type: inline-size;
 }
 
+
 .headerSectionContainer {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
-  border-bottom: 1px solid #ddd;
-  min-height: 80px;
-  width: 100%;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  color: var(--text-color, #333);
-  padding: 0 20px;
-  gap: 10px;
+  gap: clamp(8px, 2vw, 20px);
+  padding: clamp(10px, 2.2vw, 18px) clamp(12px, 3vw, 28px);
+  border-bottom: 1px solid color-mix(in oklab, var(--text-color) 12%, transparent);
+  box-shadow:
+    0 1px 0 color-mix(in oklab, var(--text-color) 4%, transparent),
+    0 8px 24px -12px color-mix(in oklab, var(--text-color) 14%, transparent);
+  color: var(--text-color);
 }
 
 .logoContainer {
   display: flex;
   align-items: center;
+  min-width: 56px;
 }
 
 .logo {
-  height: 70px;
+  height: clamp(40px, 6.5cqw, 72px);
   width: auto;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 6px 20px color-mix(in oklab, var(--text-color) 15%, transparent);
+  object-fit: contain;
 }
 
-.uploadInput {
-  display: none;
-}
-
-.uploadLabel {
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.logoCircle {
+  width: 80px;      /* גודל הלוגו */
+  height: 80px;     /* גובה זהה כדי לקבל עיגול מושלם */
+  border-radius: 50%;
+  object-fit: cover; /* שומר על התמונה ממורכזת בלי לעוות */
+  border: 2px solid #ccc; /* קו מסגרת עדין - אופציונלי */
+  background-color: #fff; /* רקע במקרה ויש שקיפות */
 }
 
 .uploadText {
-  font-size: 16px;
-  color: var(--text-color, #333);
-}
-
-.businessName {
-  font-size: 40px;
-  font-weight: 700;
-  text-align: center;
-  flex-grow: 1;
-  word-break: break-word;
-  color: var(--text-color, #333);
+  font-size: clamp(12px, 2.5cqw, 16px);
+  color: color-mix(in oklab, var(--text-color) 80%, transparent);
+  white-space: nowrap;
 }
 
 .sectionTitle {
-  font-size: 22px;
-  font-weight: 600;
+  font-weight: 700;
+  font-size: clamp(18px, 3.2cqw, 28px);
+  letter-spacing: 0.015em;
   text-align: center;
-  opacity: 0.9;
-  color: var(--text-color, #333);
+  color: var(--text-color);
+  opacity: 0.95;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .headerButtonContainer {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
 }
 
 .headerSectionButton {
-  font-size: 16px;
-  font-weight: bold;
-  padding: 10px 20px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  background-color: var(--tertiary-color);
+  appearance: none;
+  border: 2px solid color-mix(in oklab, var(--text-color) 18%, transparent);
+  background-color: var(--secondary-color);
   background-image: var(--tertiary-gradient);
-  color: var(--text-color, #333);
-  transition: all 0.3s ease-in-out;
+  color: var(--text-color);
+  padding: clamp(8px, 1.8cqw, 12px) clamp(14px, 3.6cqw, 22px);
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: clamp(14px, 2.8cqw, 16px);
+  line-height: 1;
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease;
+  box-shadow:
+    0 2px 0 color-mix(in oklab, var(--text-color) 8%, transparent),
+    0 10px 24px -12px color-mix(in oklab, var(--text-color) 18%, transparent);
 }
 
 .headerSectionButton:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+  box-shadow:
+    0 3px 0 color-mix(in oklab, var(--text-color) 9%, transparent),
+    0 16px 36px -16px color-mix(in oklab, var(--text-color) 22%, transparent);
+  border-color: color-mix(in oklab, var(--text-color) 26%, transparent);
 }
 
-@container (max-width: 768px) and (min-width: 577px) {
+.headerSectionButton:active {
+  transform: translateY(0);
+}
+
+.headerSectionButton:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 3px color-mix(in oklab, var(--text-color) 18%, transparent),
+    0 10px 24px -12px color-mix(in oklab, var(--text-color) 22%, transparent);
+}
+
+@container (max-width: 900px) {
   .headerSectionContainer {
-    flex-direction: row;
-    align-items: center;
-    padding: 15px 20px;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "logo  button"
+      "title title";
+    row-gap: 10px;
     text-align: center;
   }
+  .logoContainer { grid-area: logo; }
+  .sectionTitle { grid-area: title; white-space: normal; }
+  .headerButtonContainer { grid-area: button; justify-content: end; }
+}
 
-  .logo {
-    height: 60px;
+@container (max-width: 600px) {
+  .headerSectionContainer {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "logo"
+      "title"
+      "button";
+    row-gap: 8px;
   }
-
-  .businessName {
-    font-size: 28px;
-    margin-top: 10px;
-  }
-
-  .headerButtonContainer {
-    justify-content: center;
-    margin-top: 10px;
-  }
-
-  .headerSectionButton {
-    font-size: 14px;
-    padding: 8px 16px;
-  }
+  .headerButtonContainer { justify-content: center; }
+  .sectionTitle { font-size: clamp(18px, 5cqw, 22px); }
+  .logo { height: clamp(36px, 10cqw, 56px); }
 }
 
 @container (max-width: 350px) {
   .headerSectionContainer {
-    flex-direction: column;
-    align-items: center;
     padding: 10px;
-    gap: 10px;
-    max-height: 30px;
+    gap: 8px;
   }
-
-  .logo {
-    height: 50px;
-  }
-
-  .businessName {
-    font-size: 20px;
-    margin: 5px 0;
-  }
-
-  .headerButtonContainer {
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-  }
-
+  .headerButtonContainer { width: 100%; }
   .headerSectionButton {
-    display: none;
+    width: 100%;
   }
 }

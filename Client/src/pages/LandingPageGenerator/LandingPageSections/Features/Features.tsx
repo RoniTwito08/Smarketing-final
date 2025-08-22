@@ -1,7 +1,16 @@
-import { useState, useEffect } from "react";
-import { FaArrowLeft, FaArrowRight, FaCheckCircle } from "react-icons/fa";
-import ActionsButtons from "../../LandingPageActions/ActionsButtons/ActionsButtons";
-import featuresStyles from "./features.module.css";
+"use client";
+import { useState, useEffect, useMemo, useRef } from "react";
+import { FaPalette, FaTrash, FaImage, FaPlus } from "react-icons/fa";
+import s from "./features.module.css";
+import FeaturesLayoutPopUp, { FeaturesLayoutOptions } from "./FeaturesLayoutPopUp";
+import FeaturesBackgroundChoosen from "./FeaturesBackgroundChoosen";
+import { businessInfoService } from "../../../../services/besinessInfo.service";
+import { useAuth } from "../../../../context/AuthContext";
+import t from "../Services/Services.module.css"
+// Variants
+import V1 from "./Variants/V1";
+import V2 from "./Variants/V2";
+import V3 from "./Variants/V3";
 
 interface FeaturesProps {
   content: string[];
@@ -9,122 +18,225 @@ interface FeaturesProps {
   onDelete?: () => void;
 }
 
+const VARIANTS = [V1, V2, V3];
+
 export default function Features({ content, image, onDelete }: FeaturesProps) {
   const [services, setServices] = useState<string[]>([]);
   const [isHovered, setIsHovered] = useState(false);
   const [templateIndex, setTemplateIndex] = useState(0);
 
+  const { user, accessToken } = useAuth();
+  const userId = user?._id;
+  const [businessField, setBusinessField] = useState<string>("business");
+
   useEffect(() => {
-    const cleaned = content
-      .slice(2, content.length - 3)
-      .map(s => s.replace(/['",]/g, "").trim())
-      .slice(0, 4);         
-    setServices(cleaned);
+    if (!userId || !accessToken) return;
+    businessInfoService
+      .getBusinessInfo(userId, accessToken)
+      .then((data) => setBusinessField(data.data.businessField || "business"))
+      .catch(() => setBusinessField("business"));
+  }, [userId, accessToken]);
+
+  // תמונה שנבחרה (ברירת מחדל: מ־props)
+  const [pickedImage, setPickedImage] = useState<string>(image);
+
+  // אפשרויות עיצוב
+  const [opts, setOpts] = useState<FeaturesLayoutOptions>({
+    imageSide: "left",
+    textAlign: "right",
+    gridCols: 2,
+    gap: 30,
+    radius: 16,
+    glassBlur: 10,
+    showIcons: true,
+    cardShadow: "soft",
+  });
+
+  const [openEditor, setOpenEditor] = useState(false);
+  const editBtnRef = useRef<HTMLButtonElement>(null);
+
+  const [openImgPicker, setOpenImgPicker] = useState(false);
+  const imgBtnRef = useRef<HTMLButtonElement>(null);
+
+  // ניקוי הטקסט שהגיע כ־JSON מ־LLM (אותו קטע מהקוד שלך)
+ useEffect(() => {
+  // אם אין כלום
+    if (!content) {
+      setServices([]);
+      return;
+    }
+
+    // כבר מגיע כ-array? מעולה — רק ננקה/נגביל לאורך
+    if (Array.isArray(content)) {
+      setServices(
+        content
+          .map((s) => (s ?? "").toString().trim())
+          .filter(Boolean)
+          .slice(0, 6)
+      );
+      return;
+    }
+
+    // אחרת, נסה לפרש כמחרוזת JSON (לשמירת תאימות אחורה)
+    try {
+      const parsed = JSON.parse(content as unknown as string);
+      if (Array.isArray(parsed)) {
+        setServices(
+          parsed
+            .map((s) => (s ?? "").toString().replace(/['",]/g, "").trim())
+            .filter(Boolean)
+            .slice(0, 6)
+        );
+        return;
+      }
+    } catch {
+      // fallback: פיצול לפי שורות/פסיקים
+      const fallback = (content as unknown as string)
+        .split(/\r?\n|,/)
+        .map((s) => s.replace(/['",\[\]]/g, "").trim())
+        .filter(Boolean)
+        .slice(0, 6);
+
+      setServices(fallback);
+    }
   }, [content]);
+
+
+  // סנכרון שינוי חיצוני של תמונה
+  useEffect(() => {
+    setPickedImage(image);
+  }, [image]);
 
   const handleBlur = (i: number, e: React.FocusEvent<HTMLSpanElement>) => {
     const txt = e.currentTarget.innerText;
-    setServices(prev => {
+    setServices((prev) => {
       const copy = [...prev];
       copy[i] = txt;
       return copy;
     });
   };
 
-  const template0 = (
-    <div className={featuresStyles.twoColLayout}>
-      <img src={image} className={featuresStyles.featuresImage} />
-      <ul className={featuresStyles.featuresList}>
-        {services.map((s, i) => (
-          <li key={i} className={featuresStyles.featureItem}>
-            <span
-              contentEditable
-              suppressContentEditableWarning
-              onBlur={e => handleBlur(i, e)}
-              className={featuresStyles.featureText}
-            >
-              {s}
-            </span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+  const addService = () => {
+    setServices((prev) => {
+      if (prev.length >= 6) return prev;
+      return [...prev, " יתרון חדש"];
+    });
+  };
 
-  const template1 = (
-    <div className={featuresStyles.glassWrapper}>
-      <img src={image} className={featuresStyles.glassImage} />
-      <div className={featuresStyles.glassGrid}>
-        {services.map((s, i) => (
-          <div key={i} className={featuresStyles.glassCard}>
-            <span
-              contentEditable
-              suppressContentEditableWarning
-              onBlur={e => handleBlur(i, e)}
-              className={featuresStyles.featureText}
-            >
-              {s}
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+  // CSS variables דינמיים (הקוד המקורי שלך)
+  const featuresVars = useMemo<React.CSSProperties>(() => {
+    const shadow =
+      opts.cardShadow === "none"
+        ? "none"
+        : opts.cardShadow === "strong"
+        ? "0 14px 34px rgba(0,0,0,.18)"
+        : "0 8px 24px rgba(0,0,0,.10)";
 
-  const template2 = (
-  <div className={featuresStyles.fancyWrapper}>
-    <div className={featuresStyles.fancyHero}>
-      <img src={image} className={featuresStyles.fancyImage} />
-    </div>
-    <div className={featuresStyles.fancyCards}>
-      {services.map((s, i) => (
-        <div
-          key={i}
-          className={featuresStyles.fancyCard}
-          style={{ "--tilt": `${i % 2 === 0 ? -6 : 6}deg` } as React.CSSProperties}
-        >
-          <FaCheckCircle />
-          <span
-            contentEditable
-            suppressContentEditableWarning
-            onBlur={e => handleBlur(i, e)}
-            className={featuresStyles.featureText}
-          >
-            {s}
-          </span>
-        </div>
-      ))}
-    </div>
-  </div>
-);
+    return {
+      ["--feat-gap" as any]: `${opts.gap}px`,
+      ["--feat-radius" as any]: `${opts.radius}px`,
+      ["--feat-grid-cols" as any]: String(opts.gridCols),
+      ["--feat-text-align" as any]: opts.textAlign,
+      ["--feat-card-shadow" as any]: shadow,
+      ["--feat-glass-blur" as any]: `${opts.glassBlur}px`,
+    };
+  }, [opts]);
 
+  const atLimit = services.length >= 6;
+  const currentImage = pickedImage || image;
 
-  const templates = [template0, template1, template2];
+  const ActiveVariant = VARIANTS[Math.max(0, Math.min(VARIANTS.length - 1, templateIndex))];
+
+  // handlers לעריכה inline
+  const handlers = (i: number) => ({ onBlur: (e: React.FocusEvent<HTMLSpanElement>) => handleBlur(i, e) });
 
   return (
     <section
-      className={featuresStyles.featuresSection}
+      className={s.featuresSection}
+      style={featuresVars}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
+      {/* טולבר */}
       {isHovered && (
-        <div className={featuresStyles.arrowButtons}>
-          <button onClick={() => setTemplateIndex((templateIndex - 1 + templates.length) % templates.length)}>
-            <FaArrowRight />
+        <div className={t.toolbar}>
+          <button
+            ref={editBtnRef}
+            className={t.iconBtn}
+            onClick={() => setOpenEditor(true)}
+            title="התאמה"
+            aria-haspopup="dialog"
+            aria-expanded={openEditor}
+          >
+            <FaPalette size={14} />
           </button>
-          <button onClick={() => setTemplateIndex((templateIndex + 1) % templates.length)}>
-            <FaArrowLeft />
+
+          <button
+            ref={imgBtnRef}
+            className={t.iconBtn}
+            onClick={() => setOpenImgPicker(true)}
+            title="בחר תמונת פיצ'רים"
+            aria-haspopup="dialog"
+            aria-expanded={openImgPicker}
+          >
+            <FaImage size={14} />
           </button>
+
+          <button
+            className={`${t.iconBtn} ${atLimit ? t.iconBtnDisabled : ""}`}
+            onClick={addService}
+            title={atLimit ? "מקסימום 6 שורות" : "הוסף שורה"}
+            aria-disabled={atLimit}
+            disabled={atLimit}
+          >
+            <FaPlus size={14} />
+          </button>
+
+          {onDelete && (
+            <button
+              className={`${t.iconBtn} ${t.trashBtn}`}
+              onClick={onDelete}
+              title="מחק סקשן"
+              aria-label="מחק סקשן"
+            >
+              <FaTrash size={13} />
+            </button>
+          )}
         </div>
       )}
 
-      {templates[templateIndex]}
+      {/* וריאנט פעיל */}
+      <ActiveVariant
+        services={services}
+        currentImage={currentImage}
+        opts={{ textAlign: opts.textAlign, imageSide: opts.imageSide, gridCols: opts.gridCols }}
+        handlers={handlers}
+        withIcons={!!opts.showIcons}
+      />
 
-      {isHovered && onDelete && (
-        <div className={featuresStyles.actionBar}>
-          <ActionsButtons onDelete={onDelete} sectionName="features" />
-        </div>
-      )}
+      {/* פופ־אפים */}
+      <FeaturesLayoutPopUp
+        open={openEditor}
+        options={opts}
+        onChange={setOpts}
+        onClose={() => setOpenEditor(false)}
+        onPickTemplate={(i) => setTemplateIndex(i)}
+        activeTemplate={templateIndex}
+        anchorRef={editBtnRef}
+        dir="rtl"
+      />
+
+      <FeaturesBackgroundChoosen
+        open={openImgPicker}
+        onClose={() => setOpenImgPicker(false)}
+        anchorRef={imgBtnRef}
+        initialQuery={businessField}
+        onPick={(url) => {
+          setPickedImage(url);
+          setOpenImgPicker(false);
+        }}
+        dir="rtl"
+      />
     </section>
   );
 }

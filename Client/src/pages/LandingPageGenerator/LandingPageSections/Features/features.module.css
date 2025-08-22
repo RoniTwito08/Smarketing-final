@@ -3,8 +3,16 @@
   --secondary-color: #ffffff;
   --tertiary-color: #1e90ff;
   --text-color: #000000;
+
+  --feat-gap: 30px;
+  --feat-radius: 16px;
+  --feat-grid-cols: 2;
+  --feat-text-align: right;
+  --feat-card-shadow: 0 8px 24px rgba(0,0,0,.10);
+  --feat-glass-blur: 10px;
 }
 
+/* ===== סקשן כללי ===== */
 .featuresSection {
   position: relative;
   width: 100%;
@@ -19,178 +27,156 @@
   text-align: center;
 }
 
-.arrowButtons {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: space-between;
-  transform: translateY(-50%);
-  padding: 0 12px;
-  pointer-events: none;
-  z-index: 5;
-}
-
-.arrowButtons button {
-  pointer-events: auto;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  background: black;
-  border: 2px solid var(--primary-color);
-  color: var(--primary-color);
-  border-radius: 50%;
-  box-shadow: 0 2px 8px rgba(0,0,0,.12);
-  opacity: 0;
-  transform: scale(.9);
-  transition: opacity .25s ease, transform .25s ease;
-  cursor: pointer;
-}
-
-.actionBar {
+/* ===== טולבר כללי ===== */
+.toolbar {
   position: absolute;
   top: 12px;
-  right: 0px;
-}
-.featuresSection:hover .arrowButtons button {
-  opacity: 1;
-  transform: scale(1);
+  inset-inline-end: 12px;
+  display: flex;
+  gap: 8px;
+  z-index: 6;
 }
 
-.arrowButtons button:hover {
-  background: var(--primary-color);
+/* ===== כפתורי אייקון ===== */
+.iconBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in oklab, var(--text-color) 28%, transparent);
   color: #fff;
-  transform: scale(1.1);
+  border: 1px solid color-mix(in oklab, var(--text-color) 24%, transparent);
+  box-shadow:
+    0 0 4px color-mix(in oklab, var(--text-color) 35%, transparent),
+    0 6px 18px -8px color-mix(in oklab, var(--text-color) 32%, transparent);
+  transition: background .2s ease, transform .2s ease, box-shadow .2s ease;
+  cursor: pointer;
+}
+.iconBtn:hover {
+  background: color-mix(in oklab, var(--text-color) 44%, transparent);
+  transform: translateY(-2px) scale(1.06);
+  box-shadow:
+    0 0 6px color-mix(in oklab, var(--text-color) 45%, transparent),
+    0 10px 20px -8px color-mix(in oklab, var(--text-color) 32%, transparent);
+}
+.iconBtn:active {
+  transform: translateY(0) scale(0.94);
+  box-shadow: 0 4px 10px -6px color-mix(in oklab, var(--text-color) 35%, transparent);
+}
+.iconBtnDisabled,
+.iconBtn[disabled] {
+  opacity: .45;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
 }
 
+/* ===== כפתור מחיקה ===== */
+.trashBtn {
+  background: color-mix(in oklab, #d90429 58%, transparent);
+  border-color: color-mix(in oklab, #d90429 42%, transparent);
+  color: #fff;
+  box-shadow:
+    0 0 4px color-mix(in oklab, #d90429 45%, transparent),
+    0 6px 18px -8px color-mix(in oklab, #d90429 38%, transparent);
+}
+.trashBtn:hover {
+  background: color-mix(in oklab, #d90429 80%, transparent);
+  transform: translateY(-2px) scale(1.06);
+  box-shadow:
+    0 0 6px color-mix(in oklab, #d90429 60%, transparent),
+    0 10px 20px -8px color-mix(in oklab, #d90429 38%, transparent);
+}
+.trashBtn:active {
+  transform: translateY(0) scale(0.94);
+  box-shadow: 0 4px 10px -6px color-mix(in oklab, #d90429 45%, transparent);
+}
+
+/* ===== לייאאוט דו-עמודי ===== */
 .twoColLayout {
   display: flex;
-  gap: 40px;
+  gap: var(--feat-gap);
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   width: 100%;
 }
-
+.rowReverse { flex-direction: row-reverse; }
+.column { flex-direction: column; }
 .featuresImage {
   width: 480px;
   max-width: 90%;
-  border-radius: 16px;
-  box-shadow: 0 6px 24px rgba(0,0,0,.1);
+  border-radius: var(--feat-radius);
+  box-shadow: var(--feat-card-shadow);
 }
-
 .featuresList {
   list-style: none;
   padding: 0;
   margin: 0;
   display: grid;
   gap: 18px;
+  text-align: var(--feat-text-align);
 }
-
 .featureItem {
   font-size: 18px;
   color: var(--text-color);
   display: flex;
   align-items: center;
   gap: 10px;
+  justify-content: flex-start;
 }
-
-.featureText {
-  cursor: text;                 
-}
-
-.featureText:focus {
-  outline: 2px solid rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.6);
-}
-
-
 .featureItem svg { color: var(--tertiary-color); }
+.featureText {
+  cursor: text;
+  outline: none;
+}
+.featureText:focus {
+  outline: 2px solid rgba(0,0,0,.1);
+  border-radius: 4px;
+  background: rgba(255,255,255,.6);
+}
 
+/* ===== לייאאוט Glass ===== */
 .glassWrapper {
   position: relative;
   display: flex;
   flex-wrap: wrap;
-  gap: 60px;
+  gap: var(--feat-gap);
   justify-content: center;
   align-items: center;
   width: 100%;
 }
-
 .glassImage {
   width: 520px;
   max-width: 90%;
-  border-radius: 20px;
+  border-radius: calc(var(--feat-radius) + 4px);
   box-shadow: 0 10px 30px rgba(0,0,0,.12);
 }
-
 .glassGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
   gap: 20px;
   width: 400px;
   max-width: 90%;
+  text-align: var(--feat-text-align);
 }
-
 .glassCard {
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(var(--feat-glass-blur));
   background: rgba(255,255,255,0.55);
   border: 1px solid rgba(255,255,255,0.25);
-  border-radius: 16px;
+  border-radius: var(--feat-radius);
   padding: 24px 20px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+  box-shadow: var(--feat-card-shadow);
   transition: transform .3s ease;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  justify-content: flex-start;
 }
-
 .glassCard:hover { transform: translateY(-6px); }
 
-.diagonalWrapper {
-  width: 100%;
-  overflow: hidden;
-}
-
-.diagonalRow {
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  flex-wrap: wrap;
-  transform: skewX(-10deg);
-}
-
-.diagonalCard {
-  flex: 1 1 200px;
-  max-width: 220px;
-  background: #fff;
-  border-radius: 14px;
-  padding: 26px 18px;
-  box-shadow: 0 6px 22px rgba(0,0,0,.08);
-  transform: skewX(10deg);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  transition: transform .3s ease;
-}
-
-.diagonalCard:hover { transform: skewX(10deg) translateY(-6px); }
-
-.diagonalCard svg { color: var(--tertiary-color); margin-bottom: 12px; }
-
-.featureText { outline: none; }
-
-@media (max-width: 768px) {
-  .twoColLayout       { flex-direction: column; text-align: center; }
-  .glassWrapper       { gap: 40px; }
-  .diagonalRow        { transform: none; }
-  .diagonalCard       { transform: none; }
-}
-
-
+/* ===== לייאאוט Fancy ===== */
 .fancyWrapper {
   position: relative;
   width: 100%;
@@ -199,18 +185,16 @@
   align-items: center;
   gap: 60px;
   padding: 60px 24px 180px;
-  margin-bottom: 60px;  
+  margin-bottom: 60px;
 }
-
 .fancyHero {
   position: relative;
   width: 100%;
   max-width: 820px;
-  border-radius: 28px;
+  border-radius: calc(var(--feat-radius) + 12px);
   overflow: hidden;
   box-shadow: 0 16px 40px rgba(0,0,0,.15);
 }
-
 .fancyHero::before {
   content: "";
   position: absolute;
@@ -218,61 +202,57 @@
   background: radial-gradient(circle at 80% 20%, rgba(30,144,255,.45), rgba(30,144,255,.15) 60%, transparent 80%);
   animation: pulse 8s ease-in-out infinite;
 }
-
 @keyframes pulse {
-  0%,100% { transform: scale(1); }
-  50%     { transform: scale(1.08); }
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
 }
-
 .fancyImage {
   width: 100%;
   height: auto;
   display: block;
 }
-
 .fancyCards {
   position: absolute;
-  bottom: -90px;
+  bottom: -120px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 28px;
+  gap: 32px;
   flex-wrap: wrap;
   justify-content: center;
-  perspective: 1000px;
+  perspective: 1200px;
 }
-
 .fancyCard {
-  width: 180px;
-  background: #ffffff;
-  border-radius: 18px;
-  padding: 26px 20px;
-  box-shadow: 0 12px 28px rgba(0,0,0,.12);
+  width: 200px;
+  background: #fff;
+  border-radius: var(--feat-radius);
+  padding: 30px 24px;
+  box-shadow: 0 14px 34px rgba(0,0,0,.12);
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  transform: rotateY(var(--tilt));
+  gap: 12px;
+  align-items: flex-start;
+  text-align: left;
+  transform: rotateY(var(--tilt)) translateY(0);
   transition: transform .4s ease, box-shadow .4s ease;
 }
-
 .fancyCard:hover {
-  box-shadow: 0 18px 40px rgba(0,0,0,.18);
-  transform: rotateY(var(--tilt)) translateY(-10px);
+  box-shadow: 0 20px 46px rgba(0,0,0,.18);
+  transform: rotateY(var(--tilt)) translateY(-18px) scale(1.05);
 }
-
 .fancyCard svg {
-  font-size: 26px;
+  font-size: 24px;
   color: var(--tertiary-color);
-  margin-bottom: 12px;
+  margin-top: 2px;
 }
 
+/* ===== רספונסיב ===== */
 @media (max-width: 768px) {
-  .fancyWrapper      { padding-bottom: 220px; }
-  .fancyCards        { bottom: -110px; gap: 20px; }
-  .fancyCard         { width: 46%; --tilt: 0deg; }
+  .twoColLayout { flex-direction: column; text-align: center; }
+  .glassWrapper { gap: 40px; }
+  .fancyWrapper { padding-bottom: 220px; }
+  .fancyCards { bottom: -110px; gap: 20px; }
+  .fancyCard { width: 46%; --tilt: 0deg; }
 }
-
 @media (max-width: 480px) {
   .fancyCard { width: 90%; --tilt: 0deg; }
 }

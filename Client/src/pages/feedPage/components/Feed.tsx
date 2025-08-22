@@ -4,7 +4,6 @@ import "./Feed.css";
 import { useAuth } from "../../../context/AuthContext";
 import { toast } from "react-toastify";
 import MyCampaigns from "../../Campaigns/MyCampaigns";
-import CampaignDetailsPopup from "../../Campaigns/CampaignDetailsPopup";
 import { config } from "../../../config";
 import { ToastContainer } from "react-toastify";
 
@@ -66,11 +65,6 @@ const Feed: React.FC<{ className?: string }> = ({ className }) => {
     }
   };
 
-  const handleDeleteCampaign = (campaignId: string) => {
-    console.log("Campaign deleted:", campaignId);
-    setRefreshFeed(true); // Trigger refresh after deletion
-  };
-
   const handleSelectCampaign = (campaign: any) => {
     setSelectedCampaign(campaign);
   };
@@ -89,39 +83,6 @@ const Feed: React.FC<{ className?: string }> = ({ className }) => {
         pauseOnHover
       />
       <div>
-        <button
-          onClick={() => setShowPopup(true)}
-          style={{
-            background: "linear-gradient(135deg, #4f46e5, #3b82f6)",
-            color: "#fff",
-            border: "none",
-            padding: "12px 24px",
-            fontSize: "1rem",
-            borderRadius: "12px",
-            cursor: "pointer",
-            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-            transition: "all 0.3s ease",
-            marginBottom: "2rem",
-            display: "inline-block",
-          }}
-          onMouseOver={(e) => {
-            e.currentTarget.style.transform = "translateY(-2px)";
-            e.currentTarget.style.boxShadow = "0 6px 16px rgba(0, 0, 0, 0.2)";
-          }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.transform = "none";
-            e.currentTarget.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.15)";
-          }}
-          onMouseDown={(e) => {
-            e.currentTarget.style.transform = "scale(0.98)";
-          }}
-          onMouseUp={(e) => {
-            e.currentTarget.style.transform = "translateY(-2px)";
-          }}
-        >
-          קמפיין חדש
-        </button>
-
         <MyCampaigns onSelectCampaign={handleSelectCampaign} key={refreshKey} />
       </div>
       <CampaignPopup
@@ -129,14 +90,6 @@ const Feed: React.FC<{ className?: string }> = ({ className }) => {
         onClose={() => setShowPopup(false)}
         onSubmit={handleCampaignSubmit}
       />
-      {selectedCampaign && (
-        <CampaignDetailsPopup
-          campaign={selectedCampaign}
-          onClose={() => setSelectedCampaign(null)}
-          onSubmit={handleCampaignSubmit}
-          onDelete={handleDeleteCampaign}
-        />
-      )}
     </div>
   );
 };

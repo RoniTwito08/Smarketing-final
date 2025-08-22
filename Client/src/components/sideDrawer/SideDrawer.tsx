@@ -3,7 +3,7 @@ import { extendTheme } from "@mui/material/styles";
 import { AppProvider, Navigation, Router } from "@toolpad/core/AppProvider";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { PageContainer } from "@toolpad/core/PageContainer";
-import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
+// import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
 import SettingsIcon from "@mui/icons-material/Settings";
 import AnalysisIcon from "@mui/icons-material/Analytics";
@@ -15,8 +15,10 @@ import { BusinessSetting } from "../../pages/businessProfileScreen/BusinessSetti
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useAuth } from "../../context/AuthContext";
 import MainFeed from "../../pages/feedPage/MainFeed";
+import CampaignPopup from "../../pages/LandingPageGenerator/CampaignForm/CampaignForm";
 //import { User } from "../../types/user";
 import { GoogleAdsAnalytics } from "../GoogleAdsAnalytics/GoogleAdsAnalytics";
+import AddToQueueIcon from '@mui/icons-material/AddToQueue';
 
 export default function DashboardLayoutBasic(props: any) {
   const { window } = props;
@@ -45,15 +47,20 @@ export default function DashboardLayoutBasic(props: any) {
       icon: <ContactsOutlinedIcon />,
     },
     {
+      segment: "new-campaign",
+      title: "",
+      icon: <AddToQueueIcon />,
+    },
+    {
       segment: "analytics",
       title: "",
       icon: <AnalysisIcon />,
     },
-    {
-      segment: "chats",
-      title: "",
-      icon: <CalendarTodayOutlinedIcon />,
-    },
+    // {
+    //   segment: "chats",
+    //   title: "",
+    //   icon: <CalendarTodayOutlinedIcon />,
+    // },
     {
       kind: "divider",
     },
@@ -145,6 +152,7 @@ export default function DashboardLayoutBasic(props: any) {
     "/settings": <AccountSettings />,
     "/feed": <MainFeed />,
     "/chats": user && accessToken ? <UserLeads /> : <p> asd</p>,
+    "/new-campaign": <CampaignPopup open={true} onClose={() => {}} onSubmit={() => {}} />,
   };
 
   const CurrentComponent = routeComponents[router.pathname];

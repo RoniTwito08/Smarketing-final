@@ -1,79 +1,104 @@
-import aboutUsStyles from './aboutUs.module.css';
-import { useState } from 'react';
-import ActionsButtons from '../../LandingPageActions/ActionsButtons/ActionsButtons';
-import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+"use client";
+import { useMemo, useRef, useState } from "react";
+import { FaPalette, FaTrash } from "react-icons/fa";
+import s from "./aboutUs.module.css";
+import t from "../Services/Services.module.css"
+import AboutUsPopup, { AboutUsOptions } from "./AboutUsPopup";
+import V1 from "./Variants/V1";
+import V2 from "./Variants/V2";
+import V3 from "./Variants/V3";
+import V4 from "./Variants/V4";
 
-interface AboutUsProps {
-  content: string;
+export interface AboutUsProps {
+  content: string | string[];
+  title?: string;
+  mission?: string;
+  image?: string;
+  phone?: string;
+  whatsappNumber?: string;
+  bullets?: string[];
+  stats?: { icon?: "clock"|"users"|"star"|"done"; label: string; value: string }[];
+  tagline?: string;
   onDelete?: () => void;
 }
 
-const AboutUs = ({ content, onDelete }: AboutUsProps) => {
+const VARIANTS = [V1, V2, V3, V4];
+
+export default function AboutUs(props: AboutUsProps) {
+  const { content, title, mission, image, phone, whatsappNumber, bullets, stats, tagline, onDelete } = props;
+
   const [isHovered, setIsHovered] = useState(false);
-  const [text, setText] = useState(content);
-  const [templateIndex, setTemplateIndex] = useState(0);
+  const [openPop, setOpenPop] = useState(false);
+  const editBtnRef = useRef<HTMLButtonElement>(null);
 
-  const handleBlur = (e: React.FocusEvent<HTMLParagraphElement>) => {
-    setText(e.currentTarget.innerText);
-  };
+  const [opts, setOpts] = useState<AboutUsOptions>({
+    template: 3,
+    fontSize: "M",
+    columns: "single",
+    showStats: true,
+  });
 
-  const templates = [
-  <p
-    key="template1"
-    className={`${aboutUsStyles.aboutUsText} ${aboutUsStyles.template1}`}
-    contentEditable
-    suppressContentEditableWarning
-    onBlur={handleBlur}
-  >
-    {text}
-  </p>,
-  <p
-    key="template2"
-    className={`${aboutUsStyles.aboutUsText} ${aboutUsStyles.template2}`}
-    contentEditable
-    suppressContentEditableWarning
-    onBlur={handleBlur}
-  >
-    <strong>About Our Team:</strong><br />
-    {text}
-  </p>,
-  <p
-    key="template3"
-    className={`${aboutUsStyles.aboutUsText} ${aboutUsStyles.template3}`}
-    contentEditable
-    suppressContentEditableWarning
-    onBlur={handleBlur}
-  >
-    🌟 {text} 🌟
-  </p>
-];
+  const lines = useMemo<string[]>(() => {
+    if (!content) return [];
+    if (Array.isArray(content)) return content.map((l) => `${l}`.trim()).filter(Boolean);
+    return (content as string).split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+  }, [content]);
 
+  const paragraph = useMemo(() => (Array.isArray(content) ? "" : (content || "").toString().trim()), [content]);
 
-  const handleNext = () => setTemplateIndex((templateIndex + 1) % templates.length);
-  const handlePrev = () => setTemplateIndex((templateIndex - 1 + templates.length) % templates.length);
+  const ActiveVariant = VARIANTS[Math.max(0, Math.min(VARIANTS.length - 1, opts.template))] as any;
 
   return (
     <section
-      className={aboutUsStyles.aboutUsSection}
+      className={s.aboutUsSection}
+      dir="rtl"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
+      {/* טולבר – תמיד ב־DOM, נגלה/נסתר ב־CSS למניעת הבהוב */}
       {isHovered && (
-        <div className={aboutUsStyles.arrowButtons}>
-          <button onClick={handlePrev}><FaArrowRight /></button>
-          <button onClick={handleNext}><FaArrowLeft /></button>
+        <div className={t.toolbar}>
+          <button
+            ref={editBtnRef}
+            className={t.iconBtn}
+            onClick={() => setOpenPop(true)}
+            title="התאמה"
+            aria-haspopup="dialog"
+            aria-expanded={openPop}
+          >
+            <FaPalette size={14} />
+          </button>
+          {onDelete && (
+            <button className={`${t.iconBtn} ${t.trashBtn}`} onClick={onDelete} title="מחק סקשן">
+              <FaTrash size={13} />
+            </button>
+          )}
         </div>
       )}
-      
-      {templates[templateIndex]}
 
-      {isHovered && onDelete && (
-        <div className={aboutUsStyles.actionBar}>
-          <ActionsButtons onDelete={onDelete} sectionName="aboutUs" />
-        </div>
-      )}
+      {title && <h2 className={s.heading}>{title}</h2>}
+      {mission && <p className={s.mission}>{mission}</p>}
+
+      <ActiveVariant
+        lines={lines}
+        paragraph={paragraph}
+        heading={title}
+        tagline={tagline}
+        bullets={bullets}
+        stats={stats}
+        imageUrl={image}
+        phone={phone}
+        whatsappNumber={whatsappNumber}
+      />
+
+      <AboutUsPopup
+        open={openPop}
+        options={opts}
+        onChange={setOpts}
+        onClose={() => setOpenPop(false)}
+        anchorRef={editBtnRef}
+        dir="rtl"
+      />
     </section>
   );
-};
-
-export default AboutUs;
+}

@@ -1,0 +1,197 @@
+:root{
+  --primary-color:#ffffff;
+  --secondary-color:#ffffff;
+  --tertiary-color:#1e90ff;
+  --text-color:#0f172a;
+  --muted:#64748b;
+}
+
+/* ====== SECTION WRAPPER ====== */
+.hiwSection{
+  position:relative;
+  padding: clamp(36px, 6vw, 64px) 16px;
+  width:100%;
+  margin:0;
+  font-family:var(--font, "Segoe UI", system-ui, sans-serif);
+  color:var(--text-color);
+  background:none;
+}
+
+/* Toolbar */
+.toolbar{
+  position:absolute;
+  top:12px;
+  inset-inline-end:12px;
+  display:flex;
+  gap:8px;
+  z-index:6;
+}
+.iconBtn{
+  width:36px;height:36px;border-radius:999px;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:color-mix(in oklab,var(--text-color) 28%,transparent);
+  color:#fff;
+  border:1px solid color-mix(in oklab,var(--text-color) 24%,transparent);
+  box-shadow:0 6px 18px -8px color-mix(in oklab,var(--text-color) 32%,transparent);
+  cursor:pointer;
+  transition: background .15s ease, transform .15s ease, box-shadow .15s ease;
+}
+.iconBtn:hover{ background:color-mix(in oklab,var(--text-color) 38%,transparent); transform: translateY(-2px); }
+.trashBtn{ background:color-mix(in oklab,#d90429 45%,transparent); border-color:color-mix(in oklab,#d90429 35%,transparent); }
+.trashBtn:hover{ background:color-mix(in oklab,#d90429 60%,transparent); }
+
+/* Header */
+.header{ text-align:center; margin-bottom: clamp(18px, 3.2vw, 28px); }
+.heading{
+  font-size: clamp(22px, 4.8vw, 36px);
+  font-weight: 900;
+  margin:0 0 8px;
+}
+.subtitle{
+  color: color-mix(in oklab, var(--text-color) 68%, transparent);
+  margin: 0 auto;
+  max-width: 780px;
+}
+
+/* === Common step parts === */
+.grid{
+  display:grid;
+  gap: var(--gap, 18px);
+}
+.columns-auto{ grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.columns-1{ grid-template-columns: 1fr; }
+.columns-2{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+.columns-3{ grid-template-columns: repeat(3, minmax(0,1fr)); }
+
+.compact  { --pad:12px; --gap:14px; --num:28px; --icon:26px; }
+.normal   { --pad:16px; --gap:18px; --num:34px; --icon:28px; }
+.spacious { --pad:22px; --gap:22px; --num:40px; --icon:32px; }
+
+.card{
+  position:relative;
+  background:#fff;
+  border:1px solid color-mix(in oklab, var(--text-color) 10%, transparent);
+  border-radius:16px;
+  padding: var(--pad);
+  box-shadow: 0 12px 28px -18px rgba(0,0,0,.16);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.card:hover{ transform: translateY(-2px); box-shadow:0 18px 40px rgba(15,23,42,.10); }
+
+.row{
+  display:flex; align-items:flex-start; gap:10px;
+}
+
+.num{
+  width: var(--num); height: var(--num);
+  min-width: var(--num);
+  display:inline-grid; place-items:center;
+  border-radius:999px;
+  background: color-mix(in oklab, var(--tertiary-color) 75%, var(--secondary-color));
+  color:#fff; font-weight:900;
+  box-shadow: 0 10px 26px -16px color-mix(in oklab,var(--tertiary-color) 70%,transparent);
+}
+
+.icon{
+  width: var(--icon); height: var(--icon);
+  min-width: var(--icon);
+  display:inline-grid; place-items:center;
+  border-radius:10px;
+  background: color-mix(in oklab, var(--primary-color) 95%, transparent);
+  border:1px solid color-mix(in oklab, var(--text-color) 10%, transparent);
+}
+
+.title{
+  font-weight:900; margin:0 0 4px; font-size: clamp(16px, 2vw, 18px);
+}
+.text{
+  margin:0; color: color-mix(in oklab, var(--text-color) 80%, transparent);
+  line-height: 1.8;
+}
+
+/* connector line for vertical lists */
+.connector{
+  position:absolute; inset-inline-start: calc(var(--num)/2); top: calc(var(--num) + 6px);
+  width:2px; height: calc(100% - var(--num) - 12px);
+  background: linear-gradient(180deg, color-mix(in oklab, var(--tertiary-color) 45%, transparent), transparent 100%);
+  transform: translateX(-50%);
+  pointer-events:none;
+  border-radius:2px;
+}
+
+/* ===== Variant 1: Vertical timeline cards ===== */
+.v1Wrap{
+  --gap: 16px;
+}
+.v1Item {
+  position: relative;
+  padding: var(--pad);
+}
+
+.v1Badge {
+  position: static; /* לא absolute */
+  margin-inline-end: 12px; /* רווח מהטקסט */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* ===== Variant 2: Grid cards with icons & subtle tilt ===== */
+.v2Wrap{ --gap: 16px; }
+.v2Card{ transform: rotate(-.25deg); }
+.v2Card:hover{ transform: translateY(-2px) rotate(0deg); }
+.v2Head{ display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+
+/* ===== Variant 3: Numbered pills with gradient rail ===== */
+.v3Wrap{
+  position:relative;
+  padding-block: 6px;
+}
+.v3Rail{
+  position:absolute; inset-inline: 12px; top:0; bottom:0;
+  border-radius: 999px;
+  background: radial-gradient(60% 60% at 50% 0%, color-mix(in oklab,var(--tertiary-color) 10%, transparent), transparent 70%);
+}
+.v3Item{
+  background: color-mix(in oklab, var(--primary-color) 98%, transparent);
+  border: 1px solid color-mix(in oklab, var(--text-color) 10%, transparent);
+  border-radius: 16px;
+  padding: var(--pad);
+  position:relative;
+}
+.v3Num{
+  box-shadow: 0 10px 24px -14px color-mix(in oklab, var(--tertiary-color) 65%, transparent);
+}
+
+/* ===== Variant 4: Horizontal progress with bar ===== */
+.v4Wrap{ --gap: 16px; }
+.v4Track{
+  position:relative;
+  height: 8px;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--text-color) 10%, transparent);
+  margin: 18px 6px 28px;
+  overflow: hidden;
+}
+.v4Progress{
+  position:absolute; inset-block:0; inset-inline-start:0;
+  background: linear-gradient(90deg, color-mix(in oklab, var(--tertiary-color) 70%, transparent), transparent 100%);
+  border-radius:inherit;
+  width: var(--progress, 0%);
+}
+.v4Row{
+  display:grid; gap: var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+.v4Card{ text-align: center; }
+.v4Num{ margin: 0 auto 8px; }
+.v4Icon{ margin: 0 auto; }
+
+/* Responsive */
+@media (max-width: 960px){
+  .columns-3{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+}
+@media (max-width: 680px){
+  .columns-2,.columns-3{ grid-template-columns: 1fr; }
+}

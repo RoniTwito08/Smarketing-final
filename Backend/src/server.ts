@@ -12,6 +12,7 @@ import businessInfoRoutes from "./routes/businessInfo_routes";
 import LandingPageGeneratorRoutes from "./routes/landing_page_builder_routes";
 import CampaignRoutes from "./routes/campaign_routes";
 import LeadsRoutes from "./routes/leads_routes";
+import aiRoutes from "./routes/aiRoutes";
 import swaggerJsDoc from "swagger-jsdoc";
 import swaggerUI from "swagger-ui-express";
 import cors from "cors";
@@ -22,6 +23,7 @@ import marketingRoutes from "./routes/marketingAnalysis_routes";
 import fs from "fs";
 import "./cron/cronJobs";
 import axios from "axios";
+import { Request, Response } from "express";
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -74,6 +76,7 @@ const initApp = (): Promise<Express> => {
   app.use("/business-info", businessInfoRoutes);
   app.use("/marketing", marketingRoutes);
   app.use("/leads", LeadsRoutes);
+  app.use("/ai", aiRoutes);
 
   app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
   app.use("/landing-page-generator", LandingPageGeneratorRoutes);
@@ -160,6 +163,55 @@ const initApp = (): Promise<Express> => {
       });
     });
   });
+
+  app.get("/api/pexels", async (req: Request, res: Response): Promise<void> => {
+  const key = process.env.PEXELS_API_KEY || "87nqmPyRkOfAMAhY7CyQ9xtOcB4k95GvexI5H8cek1ga6SgZLvecvrmN";
+  if (!key) {
+    res.status(500).json({ error: "Missing PEXELS_API_KEY env var" });
+    return;
+  }
+
+  const q = (req.query.q || "abstract gradient").toString();
+  const per_page = Number(req.query.per_page || 60);
+  const page = Number(req.query.page || 1);
+
+  const url =
+    `https://api.pexels.com/v1/search?` +
+    new URLSearchParams({
+      query: q,
+      orientation: "landscape",
+      size: "large",
+      per_page: String(per_page),
+      page: String(page),
+    }).toString();
+
+  try {
+    const upstream = await fetch(url, { headers: { Authorization: key } });
+    const ct = upstream.headers.get("content-type") || "";
+    const text = await upstream.text();
+
+    // אם upstream לא OK – מעבירים הלאה סטטוס ותוכן (JSON או טקסט)
+    if (!upstream.ok) {
+      res
+        .status(upstream.status)
+        .type(ct.includes("application/json") ? "application/json" : "text/plain")
+        .send(text);
+      return;
+    }
+
+    // אם זה לא JSON – מחזירים 502 כדי שהקליינט ידע שיש בעיה
+    if (!ct.includes("application/json")) {
+      res.status(502).type("text/plain").send(`Upstream returned non-JSON: ${ct}`);
+      return;
+    }
+
+    // JSON תקין
+    res.status(200).json(JSON.parse(text));
+  } catch (e: any) {
+    console.error("Error fetching from Pexels API:", e?.message || e);
+    res.status(500).json({ error: "Failed to fetch from Pexels API" });
+  }
+});
 
   app.use("/dist", express.static(path.join(__dirname, "../../Client/dist")));
   app.use("/src", express.static(path.join(__dirname, "../../Client/src")));

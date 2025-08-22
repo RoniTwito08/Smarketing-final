@@ -59,9 +59,32 @@ const defaultTheme = {
   tertiaryColor: "#ffffff",
   textColor: "#000000",
   font: "sans-serif",
+  overlayAlpha: 0.3,
+  gradients: {
+    primary: "none",
+    secondary: "none",
+    tertiary: "none",
+  },
 };
 
-const CampaignPopup: React.FC<CampaignPopupProps> = ({
+const initialForm: CampaignForm = {
+  creatorId: "1234567890",
+  campaignName: "קמפיין אביב 2025",
+  campaignContent:
+    "קמפיין מיוחד לעונת האביב עם הנחות בלעדיות למוצרים נבחרים!",
+  budget: 100,
+  marketingLevel: "גבוהה",
+  campaginPurpose: "הגברת מודעות למותג",
+  actionToCall: "הצטרפו עכשיו",
+  targetAudience: "לקוחות חדשים ומתעניינים",
+  targetGender: "שני המינים",
+  language: "עברית",
+  targetLocation: "ישראל",
+  targetAge: "25-45",
+  campaignImage: null,
+};
+
+export const CampaignPopup: React.FC<CampaignPopupProps> = ({
   open,
   onClose,
   onSubmit,
@@ -71,36 +94,24 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
     throw new Error("User is not authenticated or userId is missing");
   }
 
-  const [form, setForm] = useState<CampaignForm>({
-    creatorId: "1234567890",
-    campaignName: "קמפיין אביב 2025",
-    campaignContent:
-      "קמפיין מיוחד לעונת האביב עם הנחות בלעדיות למוצרים נבחרים!",
-    budget: 100,
-    marketingLevel: "גבוה",
-    campaginPurpose: "הגברת מודעות למותג",
-    actionToCall: "הצטרפו עכשיו",
-    targetAudience: "לקוחות חדשים ומתעניינים",
-    targetGender: "שני המינים",
-    language: "עברית",
-    targetLocation: "ישראל",
-    targetAge: "25-45",
-    campaignImage: null,
-  });
-
+  const [form, setForm] = useState<CampaignForm>(initialForm);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [landingPageData, setLandingPageData] = useState<any[] | null>(null);
+
   const [colors, setColors] = useState(defaultTheme);
   const [userFont, setUserFont] = useState(defaultTheme.font);
+
   const [removedSections, setRemovedSections] = useState<RemovedSection[]>([]);
   const [responsiveView, setResponsiveView] = useState<
     "desktop" | "tablet" | "mobile" | ""
   >("");
+
   const landingPageRef = useRef<HTMLDivElement>(
     null
   ) as MutableRefObject<HTMLDivElement | null>;
+
   const [showMobilePopup, setShowMobilePopup] = useState(false);
   const [showTabletPopup, setShowTabletPopup] = useState(false);
   const [showDesktopPopup, setShowDesktopPopup] = useState(false);
@@ -108,54 +119,40 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
   const [tourStep, setTourStep] = useState(0);
   const [showTour, setShowTour] = useState(true);
 
+  // הכנתי רפרנסים גם לסקשנים עתידיים
   const sectionRefs = {
+    header: useRef<HTMLDivElement>(null),
     hero: useRef<HTMLDivElement>(null),
     features: useRef<HTMLDivElement>(null),
-    reviews: useRef<HTMLDivElement>(null),
-    aboutUs: useRef<HTMLDivElement>(null),
-    footer: useRef<HTMLDivElement>(null),
-    header: useRef<HTMLDivElement>(null),
-    contactUs: useRef<HTMLDivElement>(null),
+    services: useRef<HTMLDivElement>(null),
+    howItWorks: useRef<HTMLDivElement>(null),
+    pricing: useRef<HTMLDivElement>(null),
+    trust: useRef<HTMLDivElement>(null),
+    faq: useRef<HTMLDivElement>(null),
+    socialProof: useRef<HTMLDivElement>(null),
+    ctaVariants: useRef<HTMLDivElement>(null),
     gallery: useRef<HTMLDivElement>(null),
-  };
-  const tourSteps = [
-    {
-      ref: sectionRefs.hero,
-      title: "סקשן כותרת ראשית",
-      description: "כאן תוכל לערוך את הכותרת הראשית והכותרת המשנית.",
-    },
-    {
-      ref: sectionRefs.features,
-      title: "סקשן פיצ'רים",
-      description: "כאן אפשר לשנות את היתרונות והשירותים שלך.",
-    },
-    {
-      ref: sectionRefs.reviews,
-      title: "סקשן ביקורות",
-      description: "כאן תוכל לשנות ביקורות מלקוחות מרוצים.",
-    },
-    {
-      ref: sectionRefs.aboutUs,
-      title: "סקשן אודותינו",
-      description: "כאן תוכל לשנות מידע על העסק שלך.",
-    },
-    {
-      ref: sectionRefs.gallery,
-      title: "סקשן גלריה",
-      description: "כאן תוכל להוסיף תמונות נוספות מהגלריה שלך ולשנות את מיקומם",
-    },
-    {
-      ref: sectionRefs.contactUs,
-      title: "סקשן צור קשר",
-      description: "כאן הלקוחות יכולים להשאיר פרטים ליצירת קשר.",
-    },
+    contactUs: useRef<HTMLDivElement>(null),
+    footer: useRef<HTMLDivElement>(null),
+    seo: useRef<HTMLDivElement>(null),
+  } as const;
 
-    {
-      ref: sectionRefs.footer,
-      title: "סקשן תחתון",
-      description: "מכאן הלקחות ישלחו את הפרטים אליך",
-    },
+  const tourSteps = [
+    { ref: sectionRefs.hero, title: "סקשן כותרת ראשית", description: "כאן תוכל לערוך את הכותרת הראשית והכותרת המשנית." },
+    { ref: sectionRefs.features, title: "סקשן פיצ'רים", description: "כאן אפשר לשנות את היתרונות והשירותים שלך." },
+    // { ref: sectionRefs.reviews, title: "סקשן ביקורות", description: "כאן תוכל לשנות ביקורות מלקוחות מרוצים." },
+    // { ref: sectionRefs.aboutUs, title: "סקשן אודותינו", description: "כאן תוכל לשנות מידע על העסק שלך." },
+    { ref: sectionRefs.gallery, title: "סקשן גלריה", description: "כאן תוכל להוסיף תמונות נוספות מהגלריה שלך ולשנות את מיקומן." },
+    { ref: sectionRefs.contactUs, title: "סקשן צור קשר", description: "כאן הלקוחות יכולים להשאיר פרטים ליצירת קשר." },
+    { ref: sectionRefs.footer, title: "סקשן תחתון", description: "מכאן הלקוחות ישלחו את הפרטים אליך." },
   ];
+
+  // נעילת גלילה במסך מלא
+  useEffect(() => {
+    if (open) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "";
+    return () => { document.body.style.overflow = ""; };
+  }, [open]);
 
   useEffect(() => {
     if (landingPageRef.current) {
@@ -164,51 +161,43 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
   }, [userFont]);
 
   const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    setForm((prev) => {
+      if (name === "budget") {
+        const num = Number(value);
+        return { ...prev, [name]: isNaN(num) ? prev.budget : num };
+      }
+      return { ...prev, [name]: value };
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setError("");
-    const businessInfo = await fetch(
-      `${config.apiUrl}/business-info/${user._id}`,
-      {
+
+    try {
+      // מידע עסקי
+      const businessInfoRes = await fetch(`${config.apiUrl}/business-info/${user._id}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
-      }
-    );
-    if (!businessInfo.ok) {
-      setError("שגיאה בהבאת מידע עסקי");
-      return;
-    }
-    const BusinessData = await businessInfo.json();
-    if (!BusinessData) {
-      setError("שגיאה בהבאת מידע עסקי");
-      return;
-    }
-    console.log("Business Data:", BusinessData);
-    const userEmail = await fetch(`${config.apiUrl}/users/${user._id}`, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    });
-    if (!userEmail.ok) {
-      setError("שגיאה בהבאת מידע עסקי");
-      return;
-    }
-    const userEmailData = await userEmail.json();
-    if (!userEmailData) {
-      setError("שגיאה בהבאת מידע עסקי");
-      return;
-    }
-    document.body.style.overflow = "auto";
-    console.log("User Email Data:", userEmailData.email);
-    try {
+      });
+      if (!businessInfoRes.ok) throw new Error("שגיאה בהבאת מידע עסקי");
+      const businessData = await businessInfoRes.json();
+      if (!businessData) throw new Error("שגיאה בהבאת מידע עסקי");
+
+      // מייל משתמש
+      const userRes = await fetch(`${config.apiUrl}/users/${user._id}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!userRes.ok) throw new Error("שגיאה בהבאת מידע משתמש");
+      const userJson = await userRes.json();
+      if (!userJson?.email) throw new Error("לא נמצא אימייל משתמש");
+
+      // בקשת יצירת הקשר לדף הנחיתה
       const response = await fetch(
         `${config.apiUrl}/landing-page-generator/generateLandingPageContext`,
         {
@@ -216,46 +205,62 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             campaignInfo: form,
-            BusinessData: BusinessData,
-            UserEmailData: userEmailData.email,
+            BusinessData: businessData,
+            UserEmailData: { email: userJson.email }, // ✅ תיקון: אובייקט ולא מחרוזת
           }),
         }
       );
       if (!response.ok) throw new Error("שגיאה ביצירת דף הנחיתה");
-      const data = await response.json();
-      console.log("Landing Page Data:", data);
 
-      if (data) {
-        const sectionsArray = Object.keys(data).map((key) => data[key]);
-        setLandingPageData(sectionsArray);
-        setSubmitted(true);
+      const data = await response.json();
+
+      // הפיכת האובייקט למערך סקשנים—רק מה שיש לו sectionName נשמר לסדר
+      const sectionsArray = Object.values(data)
+        .filter((v: any) => v && typeof v === "object" && "sectionName" in v)
+        .map((s: any) => ({ id: s.id ?? crypto.randomUUID(), ...s }));
+      setLandingPageData(sectionsArray);
+
+      setLandingPageData(sectionsArray);
+      setSubmitted(true);
+
+      // צבעים/פונטים מתוך colorAndFont או colorAndFontPrompt
+      const palette = (data.colorAndFont || data.colorAndFontPrompt || {}) as any;
+      if (palette?.primary || palette?.primaryColor) {
+        const primary = (palette.primary || palette.primaryColor || defaultTheme.primaryColor).trim?.() || defaultTheme.primaryColor;
+        const secondary = (palette.secondary || palette.secondaryColor || defaultTheme.secondaryColor).trim?.() || defaultTheme.secondaryColor;
+        const tertiary = (palette.tertiary || palette.tertiaryColor || defaultTheme.tertiaryColor).trim?.() || defaultTheme.tertiaryColor;
+        const text = (palette.text || palette.textColor || defaultTheme.textColor).trim?.() || defaultTheme.textColor;
+        const font = (palette.font || defaultTheme.font).trim?.() || defaultTheme.font;
+        const overlayAlpha = typeof palette.overlayAlpha === "number" ? palette.overlayAlpha : defaultTheme.overlayAlpha;
+        const gradients = {
+          primary: palette.gradients?.primary || "none",
+          secondary: palette.gradients?.secondary || "none",
+          tertiary: palette.gradients?.tertiary || "none",
+        };
+
+        setColors({
+          primaryColor: primary,
+          secondaryColor: secondary,
+          tertiaryColor: tertiary,
+          textColor: text,
+          font,
+          overlayAlpha,
+          gradients,
+        });
+        setUserFont(font);
+      } else {
+        // ברירת מחדל
+        setColors(defaultTheme);
+        setUserFont(defaultTheme.font);
       }
-    } catch (err) {
-      if (err instanceof Error) setError(err.message || "שגיאה בלתי צפויה");
-      else setError("שגיאה בלתי צפויה");
+    } catch (err: any) {
+      setError(err?.message || "שגיאה בלתי צפויה");
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    if (!landingPageData) return;
-    const theme = landingPageData[8]; // Make sure this index exists and contains a valid theme
-
-    if (theme && theme.primaryColor) {
-      setColors({
-        primaryColor: theme.primaryColor.trim(),
-        secondaryColor: theme.secondaryColor.trim(),
-        tertiaryColor: theme.tertiaryColor.trim(),
-        textColor: "#333333", // or any other color you prefer
-        font: theme.font.trim(),
-      });
-      setUserFont(theme.font.trim());
-    } else {
-      console.error("Invalid theme data");
-    }
-  }, [landingPageData]);
-
+  // לוג דיבוג
   useEffect(() => {
     if (landingPageData) {
       console.log("Landing Page Data:", landingPageData);
@@ -263,8 +268,8 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
   }, [landingPageData]);
 
   const onDragEnd = (result: DropResult) => {
-    if (!result.destination) return;
-    const newSections = Array.from(landingPageData || []);
+    if (!result.destination || !landingPageData) return;
+    const newSections = Array.from(landingPageData);
     const [removed] = newSections.splice(result.source.index, 1);
     newSections.splice(result.destination.index, 0, removed);
     setLandingPageData(newSections);
@@ -276,68 +281,122 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
     tertiaryColor: string,
     textColor: string
   ) => {
-    setColors({
+    setColors((prev: any) => ({
+      ...prev,
       primaryColor,
       secondaryColor,
       tertiaryColor,
       textColor,
-      font: userFont,
-    });
+    }));
   };
 
   useEffect(() => {
-    document.documentElement.style.setProperty(
-      "--primary-color",
-      colors.primaryColor
-    );
-    document.documentElement.style.setProperty(
-      "--secondary-color",
-      colors.secondaryColor
-    );
-    document.documentElement.style.setProperty(
-      "--tertiary-color",
-      colors.tertiaryColor
-    );
-    document.documentElement.style.setProperty(
-      "--text-color",
-      colors.textColor
-    );
-    document.documentElement.style.setProperty("--font", userFont);
-  }, [colors, userFont]);
+      const root = document.documentElement;
+
+      root.style.setProperty("--primary-color", colors.primaryColor);
+      root.style.setProperty("--secondary-color", colors.secondaryColor);
+      root.style.setProperty("--tertiary-color", colors.tertiaryColor);
+      root.style.setProperty("--text-color", colors.textColor);
+      root.style.setProperty("--font", userFont);
+      root.style.setProperty("--overlay-alpha", String(colors.overlayAlpha ?? 0.3));
+
+      // ❌ אל תיגע כאן בגרדיאנטים יותר
+      // root.style.setProperty("--primary-gradient",  ... );
+      // root.style.setProperty("--secondary-gradient", ... );
+      // root.style.setProperty("--tertiary-gradient",  ... );
+    }, [colors, userFont]);
 
   const handleFontChange = (font: string) => {
     document.documentElement.style.setProperty("--font", font);
     setUserFont(font);
+    setColors((prev: any) => ({ ...prev, font }));
   };
 
-  const cleanForProduction = (root: HTMLElement) => {
-    root
-      .querySelectorAll(
-        '.actionButtonsContainer, .actionBar, [data-resize-handle], [class*="arrowButtons"]'
-      )
+  // Drop-in replacement
+// Drop-in replacement
+const cleanForProduction = (root: HTMLElement) => {
+  // 1) להסיר אלמנטים של עריכה/טולבר/”שלוש נקודות”
+  const removeSelectors = [
+    // כלים פנימיים/גנריים
+    '.actionButtonsContainer',
+    '.actionBar',
+    '[data-resize-handle]',
+    '[class*="arrowButtons"]',
+
+    // טולבר כללי (כולל CSS-Modules)
+    '[class*="toolbar"]',
+    '[class*="_toolbar_"]',
+
+    // כפתורי אייקון/עריכה/אשפה (כולל CSS-Modules)
+    '[class*="iconBtn"]',
+    '[class*="_iconBtn_"]',
+    '[class*="editBtn"]',
+    '[class*="_editBtn_"]',
+    '[class*="trashBtn"]',
+    '[class*="_trashBtn_"]',
+
+    // “שלוש נקודות” ליד כפתורי CTA (כולל CSS-Modules)
+    '[class*="ctaEditLink"]',
+    '[class*="_ctaEditLink_"]',
+
+    // כפתורי מחיקת CTA (כולל CSS-Modules)
+    '[class*="ctaRemove"]',
+    '[class*="_ctaRemove"]',
+    '[class*="ctaRemoveIn"]',
+    '[class*="_ctaRemoveIn_"]',
+
+    // כפתור “X” למחיקת כרטיסים בביקורות וכו׳
+    '[class*="closeCardBtn"]',
+    '[class*="_closeCardBtn_"]',
+  ].join(',');
+  root.querySelectorAll(removeSelectors).forEach((el) => el.remove());
+  root
+      .querySelectorAll('section[data-gallery][data-has-images="false"]')
       .forEach((el) => el.remove());
-    [
-      "data-rbd-draggable-id",
-      "data-rbd-draggable-context-id",
-      "data-rbd-drag-handle-draggable-id",
-      "data-rbd-drag-handle-context-id",
-      "draggable",
-      "tabindex",
-      "role",
-      "aria-describedby",
-    ].forEach((attr) =>
-      root
-        .querySelectorAll(`[${attr}]`)
-        .forEach((el) => el.removeAttribute(attr))
-    );
+  // 1a) ללכוד "שלוש נקודות" גם אם אין מחלקה ידועה (⋯ … ⋮ ︙ •••) – כפתורים/לינקים בלבד
+  const ELLIPSIS = new Set(['⋯','…','⋮','︙','•••','...']);
+  root.querySelectorAll('button, a').forEach((el) => {
+    const txt = (el.textContent || '').trim();
+    const t = (el.getAttribute('title') || el.getAttribute('aria-label') || '').trim();
+    const isEllipsis = ELLIPSIS.has(txt) || /^[\u22EF\u2026\u22EE\uFE19.]{1,3}$/.test(txt);
+    const isEditorHint = ['התאמה','עריכת קישור','הגדרת קישור','הוסף כפתור','מחק כפתור','מחק סקשן']
+      .some((hint) => t.includes(hint));
+    if (isEllipsis || isEditorHint) el.remove();
+  });
 
-    root
-      .querySelectorAll("[contenteditable]")
-      .forEach((el) => el.removeAttribute("contenteditable"));
-    root
-      .querySelectorAll("[suppresscontenteditablewarning]")
-      .forEach((el) => el.removeAttribute("suppresscontenteditablewarning"));
-  };
+  // 2) ניקוי אטריביוטים זמניים של דראג/עריכה/ARIA
+  [
+    'data-rbd-draggable-id',
+    'data-rbd-draggable-context-id',
+    'data-rbd-drag-handle-draggable-id',
+    'data-rbd-drag-handle-context-id',
+    'data-react-beautiful-dnd-draggable',
+    'data-react-beautiful-dnd-droppable',
+    'data-draggable',
+    'draggable',
+    'tabindex',
+    'role',
+    'aria-describedby',
+    'aria-grabbed',
+    'aria-dropeffect',
+    'aria-expanded',
+    'aria-pressed',
+  ].forEach((attr) => {
+    root.querySelectorAll(`[${attr}]`).forEach((el) => el.removeAttribute(attr));
+  });
+
+  // 3) ביטול contenteditable + האזהרה שלו
+  root.querySelectorAll('[contenteditable]').forEach((el) => el.removeAttribute('contenteditable'));
+  root.querySelectorAll('[suppresscontenteditablewarning]').forEach((el) =>
+    el.removeAttribute('suppresscontenteditablewarning')
+  );
+
+  // 4) אם נשארו עטיפות טולבר ריקות – ניקוי
+  root.querySelectorAll('[class*="toolbar"], [class*="_toolbar_"]').forEach((el) => {
+    if (!el.children.length) el.remove();
+  });
+};
+
 
   const handleSaveLandingPage = async () => {
     setIsSidebarOpen(false);
@@ -347,9 +406,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
 
       const clone = landingPageRef.current.cloneNode(true) as HTMLElement;
       cleanForProduction(clone);
-      clone
-        .querySelectorAll("[data-resize-handle]")
-        .forEach((el) => el.remove());
+      clone.querySelectorAll("[data-resize-handle]").forEach((el) => el.remove());
       const landingPageHTML = clone.innerHTML;
 
       const completeHTML = `
@@ -358,8 +415,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
           <head>
             <meta charset="UTF-8">
             <title>Landing Page</title>
-            <link rel="stylesheet" href="${config.apiUrl}/dist/assets/index-iSbiMuwa.css">
-
+            <link rel="stylesheet" href="${config.apiUrl}/dist/assets/index-BD9ZavSr.css">
             <style>
               :root {
                 --primary-color: ${colors.primaryColor};
@@ -370,6 +426,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
                 --primary-gradient: ${getComputedStyle(document.documentElement).getPropertyValue("--primary-gradient")};
                 --secondary-gradient: ${getComputedStyle(document.documentElement).getPropertyValue("--secondary-gradient")};
                 --tertiary-gradient: ${getComputedStyle(document.documentElement).getPropertyValue("--tertiary-gradient")};
+                --overlay-alpha: ${getComputedStyle(document.documentElement).getPropertyValue("--overlay-alpha")};
               }
               html, body {
                 height: 100%;
@@ -385,10 +442,10 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
           </head>
           <body style="background-color: ${colors.primaryColor};">
             ${landingPageHTML}
-
             <script>
               document.addEventListener("DOMContentLoaded", function () {
                 const form = document.querySelector("form");
+                if (!form) return;
                 const fullNameInput = form.querySelector("input[name='fullName']");
                 const emailInput = form.querySelector("input[name='email']");
                 const phoneInput = form.querySelector("input[name='phone']");
@@ -403,34 +460,30 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
                 form.addEventListener("submit", async function (e) {
                   e.preventDefault();
                   statusBox.textContent = "שולח...";
-
                   try {
                     const response = await fetch("${config.apiUrl}/leads/createLead", {
                       method: "POST",
                       headers: { "Content-Type": "application/json" },
                       body: JSON.stringify({
-                        name: fullNameInput.value,
-                        email: emailInput.value,
-                        phone: phoneInput.value,
-                        message: messageInput.value,
-                        userId: userIdInput.value
+                        name: fullNameInput?.value || "",
+                        email: emailInput?.value || "",
+                        phone: phoneInput?.value || "",
+                        message: messageInput?.value || "",
+                        userId: userIdInput?.value || "",
                       }),
                     });
-
                     if (!response.ok) throw new Error("שליחה נכשלה");
-                    setTimeout(() => {
-                      statusBox.textContent = "";
-                    }, 3000); // Clear status after 3 seconds
+                    setTimeout(() => { statusBox.textContent = ""; }, 3000);
                     statusBox.textContent = "✅ הפרטים נשלחו בהצלחה!";
-                    form.reset();
+                    (form as HTMLFormElement).reset();
                   } catch (error) {
                     console.error("שגיאה בשליחה:", error);
                     statusBox.textContent = "❌ שגיאה בשליחת הפרטים";
                   }
                 });
+
                 const scrollButton = document.getElementById("headerButtonContainer");
                 const contactTarget = document.getElementById("contact-us-root") || document.querySelector(".contactUs");
-
                 if (scrollButton && contactTarget) {
                   scrollButton.addEventListener("click", () => {
                     contactTarget.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -440,26 +493,23 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
             </script>
           </body>
         </html>
-        `;
+      `;
 
       try {
-        const saveResponse = await fetch(
-          `${config.apiUrl}/api/saveLandingPage`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              html: completeHTML,
-              userPrimaryColor: colors.primaryColor,
-              userSecondaryColor: colors.secondaryColor,
-              userTertiaryColor: colors.tertiaryColor,
-              userTextColor: colors.textColor,
-              userFont: userFont,
-            }),
-          }
-        );
+        const saveResponse = await fetch(`${config.apiUrl}/api/saveLandingPage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            html: completeHTML,
+            userPrimaryColor: colors.primaryColor,
+            userSecondaryColor: colors.secondaryColor,
+            userTertiaryColor: colors.tertiaryColor,
+            userTextColor: colors.textColor,
+            userFont: userFont,
+          }),
+        });
         if (!saveResponse.ok) {
-          toast.success("בעיה בשמירת דף הנחיתה!");
+          toast.error("בעיה בשמירת דף הנחיתה!");
           return;
         }
 
@@ -487,14 +537,8 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
         toast.success("קמפיין ודף נחיתה נשמרו בהצלחה!");
 
         setTimeout(() => {
-          if (onSubmit) {
-            onSubmit(form);
-          }
-
-          if (onClose) {
-            onClose();
-          }
-
+          onSubmit?.(form);
+          onClose?.();
           handleClose();
         }, 2000);
       } catch (error) {
@@ -508,7 +552,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
     setRemovedSections((prev) => [...prev, { section, index }]);
     setLandingPageData((prev) => {
       if (!prev) return [];
-      return prev.filter((_, i) => i !== index); // Ensure that you remove the section correctly
+      return prev.filter((_, i) => i !== index);
     });
   };
 
@@ -522,21 +566,23 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
     setRemovedSections((prev) => prev.filter((rs) => rs !== item));
   };
 
-  const handleResponsiveChange = (
-    view: "desktop" | "tablet" | "mobile" | ""
-  ) => {
+  const handleResponsiveChange = (view: "desktop" | "tablet" | "mobile" | "") => {
     setResponsiveView(view);
   };
 
   const handleClose = () => {
-    setForm({ ...form, campaignName: "", campaignContent: "" });
+    setForm(initialForm);
     setLandingPageData(null);
     setSubmitted(false);
     setShowMobilePopup(false);
     setShowTabletPopup(false);
     setShowDesktopPopup(false);
-    window.location.reload();
-    onClose();
+    setRemovedSections([]);
+    setIsSidebarOpen(false);
+    setResponsiveView("");
+    setTourStep(0);
+    setShowTour(true);
+    onClose?.();
   };
 
   if (!open) return null;
@@ -549,7 +595,7 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
   } as any;
 
   return (
-    <div>
+    <div className="campaign-page" dir="rtl">
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -561,54 +607,47 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
         draggable
         pauseOnHover
       />
-      {error && <p className="text-red-500">❌ {error}</p>}
 
       {submitted && landingPageData ? (
-        <div className="popup-overlay">
-          <div
-            className="popup popup-landing"
-            dir="rtl"
-            style={{
-              maxHeight: "90vh",
-              overflowY: "auto",
-              width: "95%",
-            }}
-          >
-            {showTour && (
-              <TourPopup
-                step={tourStep}
-                totalSteps={tourSteps.length}
-                title={tourSteps[tourStep].title}
-                description={tourSteps[tourStep].description}
-                targetRef={tourSteps[tourStep].ref}
-                onNext={() => setTourStep((prev) => prev + 1)}
-                onBack={() => setTourStep((prev) => prev - 1)}
-                onSkip={() => setShowTour(false)}
-              />
-            )}
-
-            <div className="popup-header">
-              <p className="promptText">האם אתה מעוניין לשגר את דף הנחיתה?</p>
-              <div className="buttonGroup">
-                <button className="cancelBtn" onClick={handleClose}>
-                  <MdCancel className="icon" />
-                  <span>ביטול</span>
-                </button>
-                <button className="launchBtn" onClick={handleSaveLandingPage}>
-                  <IoRocketOutline className="icon" />
-                  <span>שגר קמפיין</span>
-                </button>
-              </div>
+        <div className="builder-shell">
+          {/* כותרת דביקה בראש המקטע */}
+          <div className="page-header">
+            <p className="promptText">האם אתה מעוניין לשגר את דף הנחיתה?</p>
+            <div className="buttonGroup">
+              <button className="cancelBtn" onClick={handleClose}>
+                <MdCancel className="icon" />
+                <span>ביטול</span>
+              </button>
+              <button className="launchBtn" onClick={handleSaveLandingPage}>
+                <IoRocketOutline className="icon" />
+                <span>שגר קמפיין</span>
+              </button>
             </div>
+          </div>
 
+          {showTour && (
+            <TourPopup
+              step={tourStep}
+              totalSteps={tourSteps.length}
+              title={tourSteps[tourStep].title}
+              description={tourSteps[tourStep].description}
+              targetRef={tourSteps[tourStep].ref}
+              onNext={() => setTourStep((prev) => prev + 1)}
+              onBack={() => setTourStep((prev) => prev - 1)}
+              onSkip={() => setShowTour(false)}
+            />
+          )}
+
+          {/* תוכן הבילדר עם גלילה פנימית */}
+          <div className="builder-content">
             <div className={styles.landingPageLayout}>
               <DragDropContext onDragEnd={onDragEnd}>
                 <Droppable droppableId="sections">
                   {(provided) => (
                     <div
-                      className={`${styles.sectionsContainer} ${isSidebarOpen ? styles.withSidebar : ""} ${
-                        responsiveView ? styles[responsiveView] : ""
-                      }`}
+                      className={`${styles.sectionsContainer} ${
+                        isSidebarOpen ? styles.withSidebar : ""
+                      } ${responsiveView ? styles[responsiveView] : ""}`}
                       ref={(node) => {
                         if (node) {
                           landingPageRef.current = node;
@@ -618,9 +657,10 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
                       {...provided.droppableProps}
                       style={containerStyle}
                     >
-                      {landingPageData.map((section, index) => (
+                      {landingPageData.map((section: any, index: number) => (
                         <Draggable
-                          draggableId={section.sectionName + index}
+                          key={section.id || `${section.sectionName}-${index}`}
+                          draggableId={section.id || `${section.sectionName}-${index}`}
                           index={index}
                           isDragDisabled={["header", "hero", "footer"].includes(
                             section.sectionName || ""
@@ -634,10 +674,8 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
                             >
                               <SectionRenderer
                                 section={section}
-                                onDeleteSection={() =>
-                                  handleDelete(index, section)
-                                }
-                                refMap={sectionRefs}
+                                onDeleteSection={() => handleDelete(index, section)}
+                                refMap={sectionRefs as any}
                               />
                             </div>
                           )}
@@ -696,153 +734,236 @@ const CampaignPopup: React.FC<CampaignPopupProps> = ({
           </div>
         </div>
       ) : (
-        <div className="popup-overlay-form">
-          <div className="popup-form" dir="rtl">
-            <h2>צור קמפיין חדש</h2>
-            <form onSubmit={handleSubmit}>
-              <div className="form-grid">
+        <div className="form-shell">
+          <div className="form-hero">
+            <h2 className="form-hero__title">צור קמפיין חדש</h2>
+            <p className="form-hero__subtitle">
+              בחר פרטים, הגדר מטרות ושגר דף נחיתה מעוצב בלחיצה אחת.
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="form-card" noValidate>
+            <div className="form-grid">
+              {/* שם הקמפיין */}
+              <div className="field">
                 <input
+                  id="campaignName"
                   name="campaignName"
                   placeholder="שם הקמפיין"
                   value={form.campaignName}
                   onChange={handleChange}
+                  className="control"
+                  type="text"
+                  autoComplete="off"
                 />
+                <label htmlFor="campaignName" className="fl-label">
+                  שם הקמפיין
+                </label>
+              </div>
 
-                <div className="form-group">
-                  <label>תקציב יומי: {Math.round(form.budget)} ₪</label>
-                  <input
-                    type="range"
-                    name="budget"
-                    min="0"
-                    max="100"
-                    step="10"
-                    value={Math.round(form.budget)}
-                    onChange={handleChange}
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label>רמת שיווק</label>
-                  <select
-                    name="marketingLevel"
-                    value={form.marketingLevel}
-                    onChange={handleChange}
-                  >
-                    <option value="">בחר רמה</option>
-                    <option value="נמוכה">נמוכה</option>
-                    <option value="בינונית">בינונית</option>
-                    <option value="גבוהה">גבוהה</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label>מטרת הקמפיין</label>
-                  <select
-                    name="campaginPurpose"
-                    value={form.campaginPurpose}
-                    onChange={handleChange}
-                  >
-                    <option value="">בחר מטרה</option>
-                    <option value="הגברת מודעות למותג">
-                      הגברת מודעות למותג
-                    </option>
-                    <option value="השגת לידים">השגת לידים</option>
-                    <option value="קידום מכירות">קידום מכירות</option>
-                  </select>
-                </div>
-
+              {/* קריאה לפעולה */}
+              <div className="field">
                 <input
+                  id="actionToCall"
                   name="actionToCall"
                   placeholder="קריאה לפעולה"
                   value={form.actionToCall}
                   onChange={handleChange}
+                  className="control"
+                  type="text"
+                  autoComplete="off"
                 />
+                <label htmlFor="actionToCall" className="fl-label">
+                  קריאה לפעולה
+                </label>
+              </div>
 
-                <div className="form-group">
-                  <label>קהל יעד</label>
-                  <select
-                    name="targetAudience"
-                    value={form.targetAudience}
-                    onChange={handleChange}
-                  >
-                    <option value="">בחר קהל</option>
-                    <option value="לקוחות חדשים">לקוחות חדשים</option>
-                    <option value="לקוחות קיימים">לקוחות קיימים</option>
-                    <option value="עסקים">עסקים</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label>מין קהל היעד</label>
-                  <select
-                    name="targetGender"
-                    value={form.targetGender}
-                    onChange={handleChange}
-                  >
-                    <option value="">בחר מין</option>
-                    <option value="גברים">גברים</option>
-                    <option value="נשים">נשים</option>
-                    <option value="שני המינים">שני המינים</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label>שפה</label>
-                  <select
-                    name="language"
-                    value={form.language}
-                    onChange={handleChange}
-                  >
-                    <option value="">בחר שפה</option>
-                    <option value="עברית">עברית</option>
-                    <option value="אנגלית">אנגלית</option>
-                    <option value="ערבית">ערבית</option>
-                  </select>
-                </div>
-
+              {/* מיקום יעד */}
+              <div className="field">
                 <input
+                  id="targetLocation"
                   name="targetLocation"
                   placeholder="מיקום יעד"
                   value={form.targetLocation}
                   onChange={handleChange}
+                  className="control"
+                  type="text"
+                  autoComplete="off"
                 />
+                <label htmlFor="targetLocation" className="fl-label">
+                  מיקום יעד
+                </label>
+              </div>
 
+              {/* גיל יעד */}
+              <div className="field">
                 <input
+                  id="targetAge"
                   name="targetAge"
-                  placeholder="גיל יעד (למשל 25-45)"
+                  placeholder="למשל 25-45"
                   value={form.targetAge}
                   onChange={handleChange}
+                  className="control"
+                  type="text"
+                  autoComplete="off"
                 />
+                <label htmlFor="targetAge" className="fl-label">
+                  גיל יעד
+                </label>
+              </div>
 
+              {/* רמת שיווק */}
+              <div className="field select-field">
+                <select
+                  id="marketingLevel"
+                  name="marketingLevel"
+                  value={form.marketingLevel}
+                  onChange={handleChange}
+                  className="control"
+                >
+                  <option value="">בחר רמה</option>
+                  <option value="נמוכה">נמוכה</option>
+                  <option value="בינונית">בינונית</option>
+                  <option value="גבוהה">גבוהה</option>
+                </select>
+                <label htmlFor="marketingLevel" className="fl-label">
+                  רמת שיווק
+                </label>
+              </div>
+
+              {/* מטרת הקמפיין */}
+              <div className="field select-field">
+                <select
+                  id="campaginPurpose"
+                  name="campaginPurpose"
+                  value={form.campaginPurpose}
+                  onChange={handleChange}
+                  className="control"
+                >
+                  <option value="">בחר מטרה</option>
+                  <option value="הגברת מודעות למותג">הגברת מודעות למותג</option>
+                  <option value="השגת לידים">השגת לידים</option>
+                  <option value="קידום מכירות">קידום מכירות</option>
+                </select>
+                <label htmlFor="campaginPurpose" className="fl-label">
+                  מטרת הקמפיין
+                </label>
+              </div>
+
+              {/* קהל יעד */}
+              <div className="field select-field">
+                <select
+                  id="targetAudience"
+                  name="targetAudience"
+                  value={form.targetAudience}
+                  onChange={handleChange}
+                  className="control"
+                >
+                  <option value="">בחר קהל</option>
+                  <option value="לקוחות חדשים">לקוחות חדשים</option>
+                  <option value="לקוחות קיימים">לקוחות קיימים</option>
+                  <option value="עסקים">עסקים</option>
+                </select>
+                <label htmlFor="targetAudience" className="fl-label">
+                  קהל יעד
+                </label>
+              </div>
+
+              {/* מין קהל יעד */}
+              <div className="field select-field">
+                <select
+                  id="targetGender"
+                  name="targetGender"
+                  value={form.targetGender}
+                  onChange={handleChange}
+                  className="control"
+                >
+                  <option value="">בחר מין</option>
+                  <option value="גברים">גברים</option>
+                  <option value="נשים">נשים</option>
+                  <option value="שני המינים">שני המינים</option>
+                </select>
+                <label htmlFor="targetGender" className="fl-label">
+                  מין קהל היעד
+                </label>
+              </div>
+
+              {/* שפה */}
+              <div className="field select-field">
+                <select
+                  id="language"
+                  name="language"
+                  value={form.language}
+                  onChange={handleChange}
+                  className="control"
+                >
+                  <option value="">בחר שפה</option>
+                  <option value="עברית">עברית</option>
+                  <option value="אנגלית">אנגלית</option>
+                  <option value="ערבית">ערבית</option>
+                </select>
+                <label htmlFor="language" className="fl-label">
+                  שפה
+                </label>
+              </div>
+
+              {/* תקציב (Range) */}
+              <div className="field range-field">
+                <label htmlFor="budget" className="range-label">
+                  תקציב: <b>{Math.round(form.budget)} ₪</b>
+                </label>
+                <input
+                  id="budget"
+                  type="range"
+                  name="budget"
+                  min="1"
+                  max="100"
+                  step="10"
+                  value={Math.round(form.budget)}
+                  onChange={handleChange}
+                  className="range-control"
+                />
+                <div className="range-scale" aria-hidden="true">
+                  <span>1</span><span>25</span><span>50</span><span>75</span><span>100</span>
+                </div>
+              </div>
+
+              {/* תיאור הקמפיין */}
+              <div className="field field--textarea">
                 <textarea
+                  id="campaignContent"
                   name="campaignContent"
-                  placeholder="תיאור הקמפיין"
+                  placeholder="תיאור קצר על הקמפיין, מבצעים, USP וכד׳…"
                   value={form.campaignContent}
                   onChange={handleChange}
+                  className="control"
+                  rows={5}
                 />
+                <label htmlFor="campaignContent" className="fl-label">
+                  תיאור הקמפיין
+                </label>
               </div>
+            </div>
 
-              <div className="popup-actions">
-                <button
-                  className="cancel-btn"
-                  type="button"
-                  onClick={handleClose}
-                >
-                  ביטול
-                </button>
-                <button className="submit-btn" type="submit" disabled={loading}>
-                  {loading ? (
-                    <div className="btn-loader-wrapper">
-                      <span className="loader loader-in-btn"></span>
-                      טוען...
-                    </div>
-                  ) : (
-                    "צור קמפיין"
-                  )}
-                </button>
-              </div>
-            </form>
-          </div>
+            <div className="page-actions">
+              <button className="cancel-btn" type="button" onClick={handleClose}>
+                ❌ ביטול
+              </button>
+
+              <button className="submit-btn btn-gradient" type="submit" disabled={loading}>
+                {loading ? (
+                  <div className="btn-loader-wrapper">
+                    <span className="loader loader-in-btn" />
+                    טוען...
+                  </div>
+                ) : (
+                  <>🚀 צור קמפיין</>
+                )}
+              </button>
+            </div>
+
+            {error && <p className="text-red-500">❌ {error}</p>}
+          </form>
         </div>
       )}
     </div>

@@ -1,397 +1,184 @@
-.contactSection {
-  position: relative;
-  max-width: 1000px;
-  margin: 60px auto;
-  padding: 20px;
-  text-align: center;
-  font-family: var(--font-family, "Segoe UI", sans-serif);
-  color: var(--text-color, #333);
+:root{
+  --text:#0f172a;
+  --muted:#6b7280;
+  --panel:#ffffff;
+  --soft:#f8fafc;
+  --shadow:0 18px 50px -20px rgba(0,0,0,.22);
+  --ring: 0 0 0 3px color-mix(in oklab, var(--accent) 20%, transparent);
+  --accent:#1a73e8;
 }
 
-.arrowButtons {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  transform: translateY(-50%);
-  padding: 0 12px;
-  pointer-events: none;
+/* ====== Accent themes ====== */
+.accentBlue { --accent:#1a73e8; }
+.accentEmerald { --accent:#10b981; }
+.accentViolet { --accent:#7c3aed; }
+.accentOrange { --accent:#f97316; }
+
+/* ====== Section / toolbar ====== */
+.contactSection{
+  position:relative;
+  padding: clamp(36px, 6vw, 68px) 16px;
+  container-type: inline-size;
+}
+.contactSection > *{ max-width: 1100px; margin-inline:auto; }
+
+/* ====== Titles ====== */
+.title{
+  margin:0 0 10px; font-weight:900; color:var(--text);
+  font-size: clamp(22px, 4.6vw, 32px);
+  letter-spacing:.2px;
+}
+.subtitle{
+  margin:0 0 18px; color: color-mix(in oklab, var(--text) 75%, transparent);
+  font-size: clamp(14px, 2.6vw, 16px);
 }
 
-.arrowButtons button {
-  pointer-events: auto;
-  background-color: black;
-  border: 2px solid var(--primary-color, #007bff);
-  color: var(--primary-color, #007bff);
+/* ====== Cards & tones ====== */
+.card{
+  background: var(--panel);
+  border: 1px solid color-mix(in oklab, var(--text) 10%, transparent);
+  padding: clamp(20px, 4vw, 28px);
+  box-shadow: var(--shadow);
+}
+.rMd{ border-radius: 12px; }
+.rLg{ border-radius: 16px; }
+.rXl{ border-radius: 22px; }
+.rFull{ border-radius: 28px; }
+
+.toneSolid .card{ background: #fff; }
+.toneSoft .card{ background: color-mix(in oklab, #fff 92%, var(--soft)); }
+.toneGlass .card{ background: color-mix(in oklab, #fff 55%, transparent); backdrop-filter: blur(14px); }
+
+/* ====== V1 ====== */
+.v1{
+  position:relative;
+  display:grid; place-items:center;
+}
+.v1 .card{ position:relative; z-index:2; width:min(720px, 100%); }
+.blob{
+  position:absolute; inset:auto -10% -10% auto; width:min(42cqw, 520px); aspect-ratio:1/1;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
+  background: color-mix(in oklab, var(--accent) 22%, transparent);
+  filter: blur(40px); opacity:.65;
+}
+.ring{
+  position:absolute; inset: 8% auto auto 2%;
+  width:min(52cqw, 620px); aspect-ratio:1/1; border-radius: 999px;
+  box-shadow: 0 0 0 120px color-mix(in oklab, var(--accent) 8%, transparent) inset;
+  filter: blur(30px); opacity:.55;
 }
 
-.arrowButtons button:hover {
-  background-color: var(--primary-color, #007bff);
-  color: white;
+/* ====== V2 ====== */
+.v2{
+  display:grid; grid-template-columns: 1.15fr 1fr; gap: clamp(18px, 3vw, 28px);
+  align-items:center; position:relative; padding: clamp(16px, 2.4vw, 20px);
+  border:1px solid color-mix(in oklab, var(--text) 10%, transparent);
+  background: #fff; box-shadow: var(--shadow);
+}
+.v2Left{ padding-inline: clamp(6px, 2vw, 12px); }
+.bullets{ margin: 10px 0 0; padding: 0 1rem; color: color-mix(in oklab, var(--text) 80%, transparent); line-height:1.9; }
+.ribbon{
+  position:absolute; inset: -10% auto auto -12%;
+  width:min(48cqw, 600px); height:min(48cqw, 600px);
+  background: radial-gradient(ellipse at 30% 40%, color-mix(in oklab, var(--accent) 20%, transparent), transparent 70%);
+  transform: rotate(-8deg);
+  pointer-events:none;
+  filter: blur(20px);
+  opacity:.6;
+}
+@container (max-width: 900px){
+  .v2{ grid-template-columns: 1fr; }
 }
 
-.title {
-  font-size: 28px;
-  font-weight: 800;
-  margin-bottom: 12px;
-  color: var(--text-color, #333);
+/* ====== V3 (glass hero) ====== */
+.v3{
+  position:relative; display:grid; place-items:center; min-height: 360px;
 }
-
-.description {
-  font-size: 18px;
-  margin-bottom: 24px;
-  line-height: 1.5;
-  color: var(--text-color, #333);
-
-}
-
-.formRounded input,
-.formRounded textarea {
-  border-radius: 30px;
-  border: 1px solid #ccc;
-}
-
-.formOutlined input,
-.formOutlined textarea {
-  border: none;
-  border-bottom: 2px solid #ccc;
-  border-radius: 0;
-}
-
-.formFilled input,
-.formFilled textarea {
-  background-color: #f5f5f5;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-}
-
-.contactForm {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.contactForm input,
-.contactForm textarea {
-  width: 100%;
-  padding: 12px 16px;
-  font-size: 16px;
-  transition: 0.3s ease;
-  color: var(--text-color, #333);
-}
-
-.contactForm textarea {
-  resize: none;
-  height: 120px;
-}
-
-.submitButton {
-  padding: 14px;
-  font-size: 18px;
-  font-weight: 600;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s ease, transform 0.3s ease;
-  background-color: var(--tertiary-color);
-  background-image: var(--tertiary-gradient);
-  color: var(--text-color, #fff);
-  margin-top: 10px;
-}
-
-.submitButton:hover {
-  background-color: var(--secondary-color);
-  background-image: var(--secondary-gradient);
-  transform: translateY(-2px);
-}
-
-.submitButton:active {
-  transform: translateY(1px);
-}
-
-.error {
-  color: red;
-  font-size: 14px;
-}
-
-.splitSection {
-  display: flex;
-  gap: 40px;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: flex-start;
-  text-align: left;
-}
-
-.leftText {
-  flex: 1;
-  min-width: 280px;
-  color: var(--text-color, #333);
-
-}
-
-.rightForm {
-  flex: 1;
-  min-width: 300px;
-  color: var(--text-color, #333);
-
-}
-
-.template1 {
-  padding: 40px;
-  border-radius: 20px;
-  max-width: 700px;
-  margin: auto;
-  
-}
-
-.template1 .title {
-  font-size: 30px;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin-bottom: 16px;  
-
-}
-
-.template1 .description {
-  font-size: 17px;
-  color: #555;
-  margin-bottom: 32px;
-  line-height: 1.6;
-}
-
-.template2 {
-  display: flex;
-  gap: 40px;
-  border-radius: 24px;
-  padding: 40px 50px;
-  align-items: center;
-  justify-content: space-between;
-  max-width: 950px;
-  margin: auto;
-
-}
-
-.template2 .leftText {
-  flex: 1;
-  color: var(--text-color, #333);
-
-}
-
-.template2 .leftText .title {
-  font-size: 28px;
-  font-weight: 800;
-  color: #2c3e50;
-  margin-bottom: 14px;
-  color: var(--text-color, #333);
-}
-
-.template2 .leftText .description {
-  font-size: 16px;
-  line-height: 1.6;
-  color: #555;
-  color: var(--text-color, #333);
-
-}
-
-.template2 .rightForm {
-  flex: 1;
-  max-width: 450px;
-}
-
-.template3 .card {
-  padding: 48px 36px;
-  border-radius: 20px;
-  max-width: 600px;
-  margin: auto;
-  text-align: center;
-}
-
-.template3 .card .title {
-  font-size: 28px;
-  font-weight: 700;
-  color: #1f3b66;
-  margin-bottom: 12px;
-}
-
-.template3 .card .description {
-  font-size: 16px;
-  color: #2e2e2e;
-  margin-bottom: 30px;
-  line-height: 1.5;
-}
-
-@media screen and (max-width: 768px) {
-  .contactSection {
-    padding: 20px;
-  }
-  .title {
-    font-size: 24px;
-  }
-  .description {
-    font-size: 16px;
-  }
-  .splitSection {
-    flex-direction: column;
-    text-align: center;
-  }
-}
-
-@media screen and (max-width: 768px) {
-  .template2 {
-    flex-direction: column;
-    padding: 30px 20px;
-    text-align: center;
-  }
-
-  .template2 .leftText {
-    text-align: center;
-  }
-
-  .template2 .rightForm {
-    width: 100%;
-  }
-
-  .template2 .leftText .title {
-    font-size: 24px;
-  }
-
-  .template2 .leftText .description {
-    font-size: 15px;
-  }
-
-  .contactForm input,
-  .contactForm textarea {
-    font-size: 15px;
-    padding: 10px 14px;
-  }
-
-  .submitButton {
-    font-size: 16px;
-    padding: 12px;
-  }
-}
-
-@container (max-width: 768px) {
-  .template2 {
-    flex-direction: column;
-    padding: 30px 20px;
-    text-align: center;
-  }
-
-  .template2 .leftText {
-    text-align: center;
-  }
-
-  .template2 .rightForm {
-    width: 100%;
-  }
-
-  .template2 .leftText .title {
-    font-size: 24px;
-  }
-
-  .template2 .leftText .description {
-    font-size: 15px;
-  }
-
-  .contactForm input,
-  .contactForm textarea {
-    font-size: 15px;
-    padding: 10px 14px;
-  }
-
-  .submitButton {
-    font-size: 16px;
-    padding: 12px;
-  }
-}
-
-.contactForm input,
-.contactForm textarea {
-  transition: border .25s ease, background .25s ease, box-shadow .25s ease;
-}
-
-.contactForm input:focus,
-.contactForm textarea:focus {
-  border-color: var(--tertiary-color);
-  box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.15);
-  outline: none;
-}
-
-.template1 {
-  background: #ffffff;
-  border-radius: 26px;
-  box-shadow: 0 14px 42px rgba(0, 0, 0, 0.08);
-  padding: 60px 50px;
-}
-
-.template1::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 26px;
-  pointer-events: none;
-}
-
-.template2 {
-  position: relative;
-  overflow: hidden;
-}
-
-.template2::after {
-  content: "";
-  position: absolute;
-  left: -120px;
-  top: -60px;
-  width: 240px;
-  height: 140%;
-  opacity: 0.15;
-  transform: rotate(-12deg);
-  pointer-events: none;
-}
-
-.template3 .card {
+.glass{
+  position:relative;
+  width:min(720px, 100%);
+  background: color-mix(in oklab, #fff 40%, transparent);
+  border:1px solid color-mix(in oklab, #fff 50%, transparent);
+  box-shadow: 0 18px 42px -24px rgba(0,0,0,.28);
   backdrop-filter: blur(14px);
-  background: rgba(255, 255, 255, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.1);
-  position: relative;
+  padding: clamp(20px, 4vw, 28px);
+}
+.gradientBg{
+  position:absolute; inset: -20% -12% auto -12%;
+  height: 80%; filter: blur(28px);
+  background:
+    radial-gradient(60% 60% at 30% 40%, color-mix(in oklab, var(--accent) 24%, transparent), transparent 60%),
+    radial-gradient(50% 50% at 70% 60%, color-mix(in oklab, var(--accent) 16%, transparent), transparent 60%);
+  z-index:0; opacity:.9;
+}
+.floatingDots{
+  position:absolute; inset: auto 12% -6% auto; width: 160px; height: 160px;
+  background-image: radial-gradient(color-mix(in oklab, var(--accent) 22%, transparent) 2px, transparent 2px);
+  background-size: 12px 12px; opacity:.35; filter: blur(.2px);
 }
 
-.template3 .card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
+/* ====== Form ====== */
+.form{
+  display:flex; flex-direction:column; gap: 12px; margin-top: 8px;
+}
+.row{ display:block; }
+.input{
+  width:100%; font-size: 16px; color: var(--text);
+  background:#fff; border:1px solid color-mix(in oklab, var(--text) 12%, transparent);
+  padding: 12px 14px; border-radius: 12px; transition: .2s;
+}
+.textarea{ resize: vertical; min-height: 110px; }
+.input:focus{ outline: none; box-shadow: var(--ring); border-color: color-mix(in oklab, var(--accent) 60%, transparent); }
+
+/* Styles */
+.formRounded .input{ border-radius: 26px; }
+.formOutlined .input{
+  background: #fff; border: none; border-bottom: 2px solid color-mix(in oklab, var(--text) 22%, transparent);
+  border-radius: 10px 10px 0 0; padding: 12px 2px;
+}
+.formOutlined .input:focus{ box-shadow: none; border-color: var(--accent); }
+.formFilled .input{
+  background: #f4f6fb; border:1px solid color-mix(in oklab, var(--text) 10%, transparent);
+  border-radius: 14px;
 }
 
-.submitButton {
-  transition: background .3s ease, transform .3s ease, box-shadow .3s ease;
+/* Consent & submit */
+.consent{
+  display:flex; align-items:center; gap:8px; font-size: 13px; color: color-mix(in oklab, var(--text) 80%, transparent);
 }
-
-.submitButton:hover {
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 10px 22px rgba(0,0,0,.12);
+.submit{
+  margin-top: 6px; border:none; cursor:pointer; color:#fff;
+  background: var(--accent);
+  padding: 12px 16px; border-radius: 999px; font-weight:800; letter-spacing:.15px;
+  display:inline-flex; align-items:center; gap:8px;
+  box-shadow: 0 16px 42px -20px color-mix(in oklab, var(--accent) 60%, transparent);
+  transition: .18s ease;
 }
+.submit:hover{ transform: translateY(-2px); filter: saturate(1.05) brightness(1.02); }
+.submit:active{ transform: translateY(0); }
 
-.submitButton:active {
-  transform: translateY(0);
-  box-shadow: 0 6px 16px rgba(0,0,0,.12);
+/* Messages */
+.msgOk{ color: #14b8a6; font-weight: 700; margin-top: 6px; }
+.msgError{ color: #ef4444; font-weight: 700; margin-top: 6px; }
+
+/* Alt contacts */
+.alt{
+  margin-top: 10px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;
+  color: color-mix(in oklab, var(--text) 70%, transparent);
 }
+.altLink{
+  display:inline-flex; align-items:center; gap:6px; padding: 6px 10px;
+  border-radius: 999px; border:1px solid color-mix(in oklab, var(--text) 12%, transparent);
+  background: color-mix(in oklab, #fff 92%, transparent);
+  text-decoration: none; color: var(--text);
+  transition: .18s ease;
+}
+.altLink:hover{ border-color: color-mix(in oklab, var(--accent) 60%, transparent); }
+.dot{ width:6px;height:6px;border-radius:50%; background: color-mix(in oklab, var(--text) 30%, transparent); }
 
-.arrowButtons { z-index: 6; }
+/* Responsiveness */
+@container (max-width: 760px){
+  .ring{ display:none; }
+  .blob{ width: 68cqw; }
+  .v2{ padding: 16px; }
+}

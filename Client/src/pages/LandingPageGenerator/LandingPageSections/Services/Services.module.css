@@ -1,0 +1,179 @@
+:root{
+  --primary-color:#ffffff;
+  --secondary-color:#ffffff;
+  --tertiary-color:#1e90ff;
+  --text-color:#0f172a;
+  --muted:#64748b;
+}
+
+/* ====== WRAPPER ====== */
+.servicesSection {
+  position: relative;
+  padding: clamp(36px, 6vw, 64px) 16px;
+  width: 100%; /* יתפוס את כל הרוחב */
+  margin: 0;
+  background: none; /* ביטול צבע רקע */
+  border-radius: 0; /* אם רוצים קצוות ישרים */
+  color: var(--text-color);
+}
+
+
+/* Toolbar (כמו ב־AboutUs) */
+.toolbar{
+  position:absolute;
+  top:12px;
+  inset-inline-end:12px;
+  display:flex;
+  gap:8px;
+  z-index:6;
+}
+.iconBtn{
+  width:36px;height:36px;border-radius:999px;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:color-mix(in oklab,var(--text-color) 28%,transparent);
+  color:#fff;
+  border:1px solid color-mix(in oklab,var(--text-color) 24%,transparent);
+  box-shadow:0 6px 18px -8px color-mix(in oklab,var(--text-color) 32%,transparent);
+  cursor:pointer;
+  transition: background .15s ease, transform .15s ease, box-shadow .15s ease;
+}
+.iconBtn:hover{ background:color-mix(in oklab,var(--text-color) 38%,transparent); transform: translateY(-2px); }
+.trashBtn{ background:color-mix(in oklab,#d90429 45%,transparent); border-color:color-mix(in oklab,#d90429 35%,transparent); }
+.trashBtn:hover{ background:color-mix(in oklab,#d90429 60%,transparent); }
+
+/* Heading */
+.heading{
+  font-size: clamp(22px, 4.5vw, 36px);
+  font-weight: 900;
+  text-align: center;
+  margin: 0 0 22px;
+}
+
+/* ====== GRID ====== */
+.grid{
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+}
+@media(max-width: 990px){
+  .grid{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+}
+@media(max-width: 640px){
+  .grid{ grid-template-columns: 1fr; }
+}
+
+/* ====== CARD BASE ====== */
+.card {
+  position: relative;
+  max-width: var(--services-card-max, 340px);
+  width: 100%;
+  margin: 0 auto;
+  padding: var(--services-pad, 20px);
+  border-radius: var(--services-radius, 16px);
+  text-align: var(--services-text-align, right);
+  border: 1px solid color-mix(in oklab, var(--text-color) 10%, transparent);
+  background: none; /* ביטול רקע לבן */
+  box-shadow: none; /* אם רוצים לבטל צל */
+  backdrop-filter: blur(var(--services-blur, 0px));
+}
+.cardTitle{
+  margin: 0;
+  font-weight: 900;
+  font-size: 18px;
+  letter-spacing: .01em;
+}
+.cardText{
+  margin: 8px 0 0;
+  color: color-mix(in oklab, var(--text-color) 80%, transparent);
+  line-height: 1.7;
+  font-size: 15px;
+}
+.cardHead{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.cardIcon{
+  color: color-mix(in oklab, var(--tertiary-color) 75%, #000);
+  font-size: 18px;
+}
+
+/* ====== VARIANT 1 — Neon Edge ====== */
+.cardNeon{
+  background: color-mix(in oklab, var(--secondary-color) 92%, transparent);
+  box-shadow: 0 8px 24px rgba(0,0,0,.08);
+}
+.cardNeon::before{
+  content:"";
+  position:absolute; inset:-6px; border-radius:inherit;
+  background: conic-gradient(
+    from 180deg at 50% 50%,
+    var(--tertiary-color) 0deg,
+    color-mix(in oklab,var(--primary-color) 80%,var(--tertiary-color)) 120deg,
+    var(--secondary-color) 240deg,
+    var(--tertiary-color) 360deg
+  );
+  filter: blur(18px);
+  z-index: -1;
+  opacity: .5;
+}
+
+/* ====== VARIANT 2 — Paper Tilt + Ribbon ====== */
+.cardPaper{
+  transform: skewX(-1.2deg) rotate(-.4deg);
+  border-left: 8px solid var(--tertiary-color);
+  box-shadow:
+    0 18px 35px rgba(0,0,0,.12),
+    0 4px 12px rgba(0,0,0,.06);
+  background: linear-gradient(180deg, #fff, #f7f9fc);
+}
+.ribbon{
+  position: absolute;
+  inset-inline-start: -6px;
+  top: 12px;
+  background: color-mix(in oklab, #ff6a00 85%, #fff);
+  color: #fff;
+  font-weight: 800;
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 0 8px 8px 0;
+  box-shadow: 0 8px 14px -10px rgba(255,106,0,.7);
+}
+
+/* ====== VARIANT 3 — Glass ====== */
+.cardGlass{
+  background: color-mix(in oklab, var(--tertiary-color) 12%, transparent);
+  border: 1px solid color-mix(in oklab, var(--primary-color) 40%, transparent);
+  backdrop-filter: blur(calc(var(--services-blur, 0px) + 6px));
+  box-shadow:
+    inset 0 0 18px color-mix(in oklab, var(--primary-color) 40%, transparent),
+    0 10px 30px rgba(0,0,0,.06);
+}
+
+/* ====== VARIANT 4 — Split ====== */
+.cardSplit{
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  padding: 0;
+  overflow: hidden;
+}
+.cardSplitA{
+  background: radial-gradient(80% 80% at 50% 0%, color-mix(in oklab, var(--tertiary-color) 45%, transparent), transparent 70%);
+}
+.cardSplitB{
+  padding: var(--services-pad, 20px);
+}
+
+/* גורם לדפדפן לבחור כיוון לפי התוכן ומונע “היפוך” תחת הורה RTL */
+.editableAuto{
+  unicode-bidi: plaintext;
+  direction: inherit;
+  outline: 2px dashed transparent;
+  border-radius: 6px;
+  transition: background .15s ease, outline-color .15s ease;
+}
+.editableAuto:focus,
+.editableAuto:hover{
+  cursor: text;
+  outline-color: color-mix(in oklab, #0f172a 22%, transparent);
+}

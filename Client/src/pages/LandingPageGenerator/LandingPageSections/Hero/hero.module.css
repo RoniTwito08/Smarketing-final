@@ -3,196 +3,371 @@
   --secondary-color: #ffffff;
   --tertiary-color: #1e90ff;
   --text-color: #000000;
+
   --primary-gradient: none;
   --secondary-gradient: none;
   --tertiary-gradient: none;
+
+  --hero-image: none;
+  --overlay-alpha: .35;
+  --overlay-tint: var(--primary-color);
+
+  --hero-radius: 0px;
+  --panel-blur: 6px;
+  --pad-y: 120px;
+  --pad-x: 32px;
+  --text-align: right;
 }
 
-.wrapper {
-  position: relative;
+/* ===== בסיס כפתורים (משותף) ===== */
+.ctaRow{ display:flex; flex-wrap:wrap; gap:12px; margin-top:28px; }
+.ctaWrap{ position:relative; display:inline-flex; }
+.cta,.ctaAlt{
+  position:relative; display:inline-flex; align-items:center; justify-content:center;
+  border:1px solid color-mix(in oklab, var(--secondary-color) 45%, transparent);
+  border-radius:12px; padding:14px 32px; font-size:15px; font-weight:700; line-height:1; cursor:pointer; overflow:visible;
+  background:var(--secondary-color); color:var(--text-color);
+  box-shadow:0 10px 28px -14px color-mix(in oklab, var(--tertiary-color) 55%, transparent);
+  transition:transform .15s ease, box-shadow .18s ease, background .18s ease, translate .2s ease;
+}
+.ctaAlt{ background:var(--primary-color); color:var(--text-color); }
+.cta:hover,.ctaAlt:hover{
+  transform:translateY(-2px);
+  box-shadow:0 16px 40px -14px color-mix(in oklab, var(--tertiary-color) 55%, transparent);
+}
+.cta:active,.ctaAlt:active{ transform:none; }
+.ctaGlow{
+  content:""; position:absolute; inset:-2px; border-radius:inherit; z-index:-1;
+  background:radial-gradient(60% 60% at 50% 0%, color-mix(in oklab, var(--tertiary-color) 30%, transparent) 0%, transparent 70%);
+  filter:blur(14px); opacity:.6; transition:opacity .25s ease;
+}
+.cta:hover .ctaGlow,.ctaAlt:hover .ctaGlow{ opacity:.85; }
+.ctaRemoveIn{
+  position:absolute; top:-8px; inset-inline-end:-8px; width:22px; height:22px;
+  display:flex; align-items:center; justify-content:center; font-size:14px; line-height:1; border-radius:50%;
+  background:var(--primary-color); color:var(--tertiary-color);
+  border:1px solid color-mix(in oklab, var(--tertiary-color) 40%, transparent);
+  box-shadow:0 6px 18px -8px color-mix(in oklab, var(--tertiary-color) 45%, transparent);
+  cursor:pointer; opacity:0; transform:scale(.9); pointer-events:none;
+  transition:opacity .18s ease, transform .18s ease;
+}
+.cta:hover .ctaRemoveIn,.cta:focus-within .ctaRemoveIn,.ctaAlt:hover .ctaRemoveIn,.ctaAlt:focus-within .ctaRemoveIn{
+  opacity:1; transform:scale(1); pointer-events:auto;
 }
 
+/* ===== מעטפת ורשיון ל-container queries ===== */
+.wrap { position:relative; isolation:isolate; container-type:inline-size; }
 
-.heroContainer {
+/* ===== אנימציות גלובליות מאוחדות ===== */
+@keyframes k-fadeIn      { from{opacity:0} to{opacity:1} }
+@keyframes k-fadeUp      { 0%{opacity:0; transform:translateY(24px)} 100%{opacity:1; transform:translateY(0)} }
+@keyframes k-zoomSlow    { 0%{transform:scale(1.05)} 100%{transform:scale(1.15)} }
+@keyframes k-diagonal    { 0%{background-position:0 0} 100%{background-position:80px 80px} }
+@keyframes k-rotateDots  { 0%{transform:translate(50%,-50%) rotate(0)} 100%{transform:translate(50%,-50%) rotate(360deg)} }
+@keyframes k-zoomIn      { 0%{transform:scale(.92); opacity:0} 100%{transform:scale(1); opacity:1} }
+
+/* ================= hero1 – Split / Highlight bar ================= */
+.hero1{
+  display:grid; grid-template-columns:1fr 520px; align-items:center;
+  gap:clamp(32px,6vw,80px); padding:var(--pad-y) var(--pad-x);
+  position:relative; overflow:hidden; isolation:isolate;
+  transition:background .6s ease, transform .4s ease;
+}
+.hero1::after{
+  content:""; position:absolute; inset:0;
+  pointer-events:none; z-index:0; animation:k-fadeIn 1.2s ease;
+}
+.hero1::before{
+  content:""; position:absolute; top:8%; right:22%; width:160px; height:160px;
+  background-image:repeating-radial-gradient(#000 0 1px, transparent 0 11px);
+  opacity:.12; filter:blur(1px); pointer-events:none; z-index:0; animation:k-rotateDots 20s linear infinite;
+}
+.hero1Img{ width:100%; height:auto; object-fit:contain; transform:translateX(22px); pointer-events:none; transition:transform .4s ease; z-index:1; }
+.hero1Img:hover{ transform:translateX(28px) scale(1.02); }
+.hero1 .title{
+  font-size:clamp(26px,6vw,40px); line-height:1.05; font-weight:900; letter-spacing:-.015em;
+  background:linear-gradient(90deg, var(--text-color) 0%, var(--tertiary-color) 40%, color-mix(in oklab, var(--tertiary-color) 40%, var(--secondary-color)) 85%);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  text-shadow:0 4px 24px color-mix(in oklab, var(--tertiary-color) 50%, transparent);
+  transition:text-shadow .3s ease;
+}
+.hero1 .title:hover{ text-shadow:0 6px 30px var(--tertiary-color); }
+.hero1 .text{
+  margin-top:20px; font-size:clamp(16px,1.6vw,20px); line-height:1.7; max-width:560px;
+  color:color-mix(in oklab, var(--text-color) 78%, transparent);
+  position:relative; padding-inline-start:26px;
+}
+.hero1 .text::before{
+  content:""; position:absolute; inset-inline-start:0; top:2px; width:8px; height:calc(100% - 4px);
+  border-radius:4px; background:var(--tertiary-color); opacity:.85;
+}
+.hero1 > div{ align-self:start; text-align:var(--text-align); z-index:1; animation:k-fadeUp 0.8s ease; }
+
+/* ================= hero2 – Cinematic Background ================= */
+.hero2{
+  position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:var(--pad-y) var(--pad-x); min-height:560px; border-radius:var(--hero-radius); overflow:hidden; text-align:center; color:#fff; isolation:isolate;
+  transition:transform .4s ease, box-shadow .4s ease; box-shadow:0 10px 40px rgba(0,0,0,.25);
+}
+.hero2::after{
+  content:""; position:absolute; inset:0; background:var(--hero-image); background-size:cover; background-position:center;
+  filter:brightness(.5) saturate(1.1); z-index:0; transform:scale(1.05); animation:k-zoomSlow 25s ease-in-out infinite alternate;
+}
+.hero2::before{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(to bottom right, rgba(0,0,0,.45), rgba(0,0,0,.25)); backdrop-filter:blur(3px); z-index:0;
+}
+.hero2Title{
+  font-size:clamp(34px,6vw,68px); line-height:1.1; font-weight:900; margin:0 0 24px; color:var(--primary-color);
+  position:relative; z-index:1; text-shadow:0 4px 20px rgba(0,0,0,.5); animation:k-fadeUp 0.6s ease;
+}
+.hero2 .text{
+  font-size:clamp(16px,1.6vw,20px); line-height:1.7; max-width:760px; margin:0 0 28px;
+  color:color-mix(in oklab, var(--primary-color) 85%, transparent); z-index:1; animation:k-fadeUp 0.8s ease;
+}
+.hero2 .ctaRow{ z-index:1; justify-content:center; animation:k-fadeUp 1s ease; }
+
+/* ================= hero3 – Circular Portrait ================= */
+.hero3{
+  display:grid; grid-template-columns:1fr 460px; align-items:center; gap:clamp(32px,6vw,80px);
+  padding:var(--pad-y) var(--pad-x); border-radius:var(--hero-radius);
+  position:relative; overflow:hidden; isolation:isolate; transition:transform .4s ease;
+}
+.hero3::before{
+  content:""; position:absolute; inset:0;
+  background:repeating-linear-gradient(-25deg, color-mix(in oklab, var(--text-color) 6%, transparent) 0 8px, transparent 8px 32px);
+  opacity:.12; pointer-events:none; z-index:0; animation:k-diagonal 18s linear infinite alternate;
+}
+.hero3::after{
+  content:""; position:absolute; top:8%; right:19%; width:140px; height:140px;
+  background-image:repeating-radial-gradient(color-mix(in oklab, var(--text-color) 12%, transparent) 0 1px, transparent 0 11px);
+  opacity:.35; filter:blur(.5px); transform:translate(50%,-50%); pointer-events:none; z-index:0;
+}
+.hero3Title{ font-size:clamp(32px,6vw,56px); font-weight:900; line-height:1.1; margin:0 0 16px; color:var(--text-color); z-index:1; text-shadow:0 2px 12px rgba(0,0,0,.08); animation:k-fadeUp .6s ease; }
+.hero3Text{ font-size:clamp(16px,1.6vw,18px); line-height:1.7; max-width:520px; margin:0 0 24px; color:color-mix(in oklab, var(--text-color) 78%, transparent); z-index:1; animation:k-fadeUp .8s ease; }
+.hero3Fig{
+  width:min(360px,100%); aspect-ratio:1/1; border-radius:50%; overflow:hidden; margin-inline:auto; position:relative; z-index:1;
+  box-shadow:0 12px 36px rgba(0,0,0,.2); transform:translateY(0); transition:transform .3s ease; animation:k-zoomIn 1s ease;
+}
+.hero3Fig:hover{ transform:translateY(-6px) scale(1.02); }
+.hero3Fig img{ width:100%; height:100%; object-fit:cover; object-position:center; filter:brightness(1) contrast(1.05); }
+.hero3 .ctaRow{ z-index:1; animation:k-fadeUp 1s ease; }
+
+/* ================= hero4 – Glassmorphism Card on BG ================= */
+.hero4{
+  position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:var(--pad-y) var(--pad-x); min-height:540px; border-radius:var(--hero-radius); overflow:hidden; text-align:center; color:#fff; isolation:isolate;
+  box-shadow:0 12px 48px rgba(0,0,0,.1); animation:k-fadeIn .6s ease;
+}
+.hero4::after{
+  content:""; position:absolute; inset:0; background:var(--hero-image); background-size:cover; background-position:center;
+  filter:brightness(.55) saturate(1.05); z-index:0; transform:scale(1.05); animation:k-zoomSlow 22s ease-in-out infinite alternate;
+}
+.hero4::before{
+  content:""; position:absolute; inset:0; background:rgba(0,0,0,.35); backdrop-filter:blur(3px); z-index:0;
+}
+.hero4Text{
+  font-size:clamp(16px,1.6vw,20px); line-height:1.8; max-width:680px; margin:0 0 24px;
+  color:color-mix(in oklab, var(--primary-color) 85%, transparent); z-index:1; animation:k-fadeUp .6s ease;
+}
+.hero4Title{
+  font-size:clamp(30px,6vw,60px); line-height:1.15; font-weight:900; margin:0 0 18px;
+  color:var(--primary-color); z-index:1; width:min(760px, 90%); text-shadow:0 4px 20px rgba(0,0,0,.4); animation:k-fadeUp .8s ease;
+}
+.hero4 .ctaRow{ z-index:1; justify-content:center; animation:k-fadeUp 1s ease; }
+
+/* ================= hero5 – Full BG + Left Gradient Panel ================= */
+.hero5{
+  position:relative; display:flex; align-items:center; justify-content:flex-start;
+  padding:var(--pad-y) var(--pad-x); min-height:520px; border-radius:var(--hero-radius); overflow:hidden; isolation:isolate;
+  color:#fff; animation:k-fadeIn .5s ease; transition:transform .3s ease;
+}
+.hero5::after{
+  content:""; position:absolute; inset:0; background:var(--hero-image); background-size:cover; background-position:center;
+  filter:brightness(.7) saturate(1.05); z-index:0; transform:scale(1.05); animation:k-zoomSlow 25s ease-in-out infinite alternate;
+}
+.hero5::before{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(90deg, rgba(0,0,0,.65) 0%, rgba(0,0,0,.45) 35%, rgba(0,0,0,.25) 60%, transparent 85%);
+  z-index:0;
+}
+.hero5Inner{
+  position:relative; z-index:1; max-width:580px; color:#fff; text-align:left; animation:k-fadeUp .6s ease;
+}
+.hero5Title{ font-size:clamp(32px,6vw,58px); line-height:1.15; font-weight:900; margin:0 0 18px; color:#fff; text-shadow:0 4px 20px rgba(0,0,0,.4); }
+.hero5Text{ font-size:clamp(16px,1.6vw,20px); line-height:1.8; margin:0 0 24px; color:rgba(255,255,255,.92); }
+.hero5 .ctaRow{ z-index:1; animation:k-fadeUp .9s ease; }
+
+/* ================= hero6 – Product Spotlight Card ================= */
+.hero6{
+  position:relative; display:flex; flex-direction:column; align-items:center;
+  padding:var(--pad-y) var(--pad-x); border-radius:var(--hero-radius);
+  text-align:center; overflow:hidden; isolation:isolate; animation:k-fadeIn .5s ease;
+}
+.hero6Img{
+  width:min(260px,40vw); height:auto; margin-bottom:32px; z-index:1;
+  animation:k-fadeUp .6s ease; filter:drop-shadow(0 4px 20px rgba(0,0,0,.2)); transition:transform .3s ease;
+}
+.hero6Tag{
+  font-size:13px; letter-spacing:.1em; font-weight:700; text-transform:uppercase; color:var(--tertiary-color);
+  margin-bottom:12px; z-index:1; animation:k-fadeIn .6s ease;
+}
+.hero6Title{
+  font-size:clamp(28px,6vw,46px); line-height:1.15; font-weight:900; margin:0 0 16px; color:var(--text-color);
+  text-shadow:0 2px 12px rgba(0,0,0,.05); z-index:1; animation:k-fadeUp .7s ease;
+}
+.hero6Text{
+  font-size:clamp(15px,1.6vw,18px); line-height:1.7; max-width:540px; margin:0 0 28px;
+  color:color-mix(in oklab, var(--text-color) 75%, transparent); z-index:1; animation:k-fadeUp .8s ease;
+}
+.hero6 .ctaRow{ justify-content:center; z-index:1; animation:k-fadeUp .9s ease; }
+
+/* ================= hero7 – Offset Panel Over Image ================= */
+.hero7{
+  position:relative; display:grid; grid-template-columns:60% 40%; align-items:center; min-height:560px;
+  background:var(--primary-color); overflow:hidden; border-radius:var(--hero-radius); isolation:isolate;
+}
+.hero7Img{
+  position:absolute; inset:0; width:70%; height:100%; object-fit:cover; z-index:0; filter:brightness(.78);
+  transform:scale(1); transition:transform 6s ease;
+}
+.hero7Panel{
+  margin-right: 30%;
+  grid-column:1 / -1; position:relative; z-index:2;
+  background:color-mix(in oklab, var(--primary-color) 85%, transparent);
+  -webkit-backdrop-filter:blur(var(--panel-blur)); backdrop-filter:blur(var(--panel-blur));
+  padding:clamp(24px,4vw,32px); width:100%; max-width:800px; height:auto;
+  border-radius:calc(var(--hero-radius) + 8px);
+  box-shadow:0 12px 32px rgba(0,0,0,.14);
+  animation:k-fadeUp .7s ease;
+}
+.hero7Line{ width:64px; height:4px; background: var(--tertiary-color); margin-bottom:18px; border-radius:4px; }
+.hero7Title{ font-size:clamp(32px,5vw,56px); line-height:1.15; font-weight:900; margin:0 0 16px; color:#1c1c1c; }
+.hero7Text{ font-size:clamp(16px,1.5vw,19px); line-height:1.8; color:#4c4c4c; margin:0 0 20px; }
+.hero7 .ctaRow{ margin-top:8px; }
+
+/* ===== סרגל כלים (משותף) ===== */
+.toolbar{
+  position:absolute; inset-inline-end:8px; top:8px; display:flex; gap:8px; z-index:5;
+  opacity:0; transform:translateY(-4px); transition:opacity .18s ease, transform .18s ease; pointer-events:none;
+}
+.wrap:hover .toolbar,.wrap:focus-within .toolbar{ opacity:1; transform:translateY(0); pointer-events:auto; }
+.editBtn{
+  width:36px; height:36px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center;
+  background:color-mix(in oklab, var(--primary-color) 92%, transparent); color:var(--text-color);
+  border:2px solid color-mix(in oklab, var(--tertiary-color) 60%, transparent);
+  box-shadow:0 6px 18px -8px color-mix(in oklab, var(--tertiary-color) 45%, transparent);
+  cursor:pointer; transition:background .15s ease, transform .15s ease, box-shadow .15s ease;
+}
+.editBtn:hover{
+  background:color-mix(in oklab, var(--tertiary-color) 100%, transparent);
+  transform:translateY(-2px);
+  box-shadow:0 10px 24px -10px color-mix(in oklab, var(--tertiary-color) 50%, transparent);
+}
+.editBtn:active{ transform:translateY(0) }
+
+/* ===== מובייל / טבלט ===== */
+@media (max-width: 900px){
+  .hero1,.hero2,.hero4,.hero6{ grid-template-columns:1fr; }
+  .hero1Img{ order:-1; }
+  .hero7{ grid-template-columns:1fr; }
+  .hero7Panel{ margin-right:0; border-radius:0; }
+}
+
+/* --- Buttons row + buttons --- */
+.btnRow {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 60px 20px;
-  text-align: center;
-}
-
-.heroContent {
-  max-width: 800px;
-}
-
-.heroTitle {
-  font-size: 48px;
-  font-weight: bold;
-  margin-bottom: 20px;
-  color: var(--text-color);
-}
-
-.heroTitle:focus {
-  outline: 2px solid rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.6);
-}
-
-.heroText {
-  font-size: 18px;
-  margin-bottom: 25px;
-  color: var(--text-color);
-}
-
-
-.heroText:focus {
-  outline: 2px solid rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.6);
-}
-
-.heroButton {
-  background-color: var(--tertiary-color);
-  color: var(--text-color);
-  padding: 12px 24px;
-  font-size: 16px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.heroButton:hover {
-  opacity: 0.9;
-}
-
-.splitLayout {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 40px;
-  padding: 60px;
   flex-wrap: wrap;
-  
+  gap: 8px;
 }
 
-.splitLeft {
-  flex: 1;
-  min-width: 300px;
-  
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--btn-border, #e5e7eb);
+  background: var(--btn-bg, #fff);
+  color: var(--btn-fg, #111827);
+  text-decoration: none;
+  font-weight: 600;
+  transition: transform .06s ease, box-shadow .2s ease, background .2s ease, color .2s ease;
 }
+.btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,0,0,.06); }
+.btn:active { transform: translateY(0); }
 
-.splitRight {
-  flex: 1;
-  min-height: 300px;
-  border-radius: 16px;
-  background: linear-gradient(to right, #ddd, var(--tertiary-color));
-  
+.btnPrimary {
+  border-color: transparent;
+  background:var(--secondary-color);
+  color: #fff;
 }
+.btnPrimary:hover { box-shadow: 0 8px 24px rgba(17,24,39,.25); }
 
-.overlayHero {
-  background: url('/your-image.jpg') center/cover no-repeat;
-  padding: 100px 20px;
-  position: relative;
-  text-align: center;
-  border-radius: 12px;
-  color: var(--text-color);
-}
-
-.overlayContent {
-  padding: 40px;
-  border-radius: 12px;
-  max-width: 800px;
-  margin: auto;
-}
-
-.overlayTitle {
-  font-size: 48px;
-  margin-bottom: 20px;
-}
-
-.overlayText {
-  font-size: 18px;
-  margin-bottom: 25px;
-}
-
-.overlayButton {
-  background-color: var(--tertiary-color);
-  color: white;
-  padding: 12px 24px;
-  border: none;
-  font-size: 16px;
+/* --- Small icon buttons (⋯ / ×) --- */
+.iconBtn, .iconBtnDanger {
+  width: 32px;
+  height: 32px;
   border-radius: 8px;
+  border: 1px solid var(--border, #e5e7eb);
+  background: #fff;
+  display: grid;
+  place-items: center;
   cursor: pointer;
+  line-height: 1;
+}
+.iconBtnDanger {
+  width: 28px;
+  height: 28px;
+  border-color: #fca5a5;
+  color: #b91c1c;
+  background: #fff5f5;
 }
 
-.overlayButton:hover {
-  opacity: 0.9;
-}
-
-@media (max-width: 768px) {
-  .heroTitle,
-  .overlayTitle {
-    font-size: 32px;
-  }
-
-  .heroText,
-  .overlayText {
-    font-size: 16px;
-  }
-
-  .splitLayout {
-    flex-direction: column;
-  }
-
-  .splitRight {
-    min-height: 200px;
-  }
-
-  .overlayHero {
-    padding: 60px 20px;
-  }
-}
-
-/* חצים – עיצוב אחיד כמו בגלריה */
-.arrowButtons {
+/* --- Popover --- */
+.popover {
   position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: space-between;
-  transform: translateY(-50%);
-  padding: 0 12px;
-  pointer-events: none;
-  z-index: 4;
+  z-index: 20;
+  top: 110%;
+  inset-inline-start: 0;
+  padding: 10px;
+  background: #fff;
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 10px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.08);
+  min-width: 280px;
+  display: grid;
+  gap: 8px;
 }
 
-.arrowButtons button {
-  pointer-events: auto;
-  width: 40px;
-  height: 40px;
+.input {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border, #e5e7eb);
+  font: inherit;
+}
+
+/* עטיפת הכפתורים (למיקום הפופאובר) */
+.btnWrap { position: relative; display: inline-flex; align-items: center; gap: 6px; }
+
+/* ברירת מחדל – לבן */
+.ctaEditLink {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid #fff !important;
+  background: transparent !important;
+  color: #fff;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
-  background: black;
-  border: 2px solid var(--primary-color);
-  color: var(--primary-color);
-  border-radius: 50%;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  opacity: 0;
-  transform: scale(0.9);
-  transition: opacity 0.25s ease, transform 0.25s ease;
-  cursor: pointer;
 }
 
-.wrapper:hover .arrowButtons button {
-  opacity: 1;
-  transform: scale(1);
-}
-
-.arrowButtons button:hover {
-  background: var(--primary-color);
-  color: #ffffff;
-  transform: scale(1.1);
+/* בטמפלטים hero1, hero3, hero6 – צבע של tertiary */
+.hero1 .ctaEditLink,
+.hero3 .ctaEditLink,
+.hero6 .ctaEditLink {
+  border-color: var(--tertiary-color) !important;
+  color: var(--tertiary-color);
 }

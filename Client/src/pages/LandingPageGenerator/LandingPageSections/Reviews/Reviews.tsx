@@ -1,147 +1,196 @@
-import reviewsStyles from "./reviews.module.css";
-import { FaStar, FaStarHalfAlt, FaArrowLeft, FaArrowRight } from "react-icons/fa";
-import { useEffect, useState } from "react";
-import ActionsButtons from "../../LandingPageActions/ActionsButtons/ActionsButtons";
+// src/components/LandingPageSections/Reviews/Reviews.tsx
+"use client";
+import { useEffect, useMemo, useRef, useState } from "react";
+import styles from "./reviews.module.css";
+import { FaPalette, FaTrash, FaPlus, FaUser } from "react-icons/fa";
+import ReviewsPopup, { ReviewsOptions } from "./ReviewsLayoutPopUp";
+import V1 from "./Variants/V1";
+import V2 from "./Variants/V2";
+import V3 from "./Variants/V3";
 
-interface ReviewsProps {
-  content: string[];
+export interface ReviewsProps {
+  content?: string[] | string;            // יכול להגיע מערך או מחרוזת – נטפל בפנים
+  title?: string;
+  subtitle?: string;
+  ratingSummary?: { average: number; count: number };
   onDelete?: () => void;
 }
 
-const Reviews = ({ content, onDelete }: ReviewsProps) => {
-  const [randomIndex, setRandomIndex] = useState<number | null>(null);
-  const [isHovered, setIsHovered] = useState(false);
-  const [reviews, setReviews] = useState<string[]>([]);
-  const [templateIndex, setTemplateIndex] = useState(0);
+const VARIANTS = [V1, V2, V3] as const;
 
-  useEffect(() => {
-    const cleaned = content
-      .slice(2, content.length - 3)
-      .map(r => r.replace(/['",]/g, "").trim());
-    setReviews(cleaned);
-  }, [content]);
+export default function Reviews({
+  content,
+  title = "לקוחות מספרים",
+  subtitle,
+  ratingSummary,
+  onDelete,
+}: ReviewsProps) {
+  const [hover, setHover] = useState(false);
+  const [openPop, setOpenPop] = useState(false);
+  const [useRealImages, setUseRealImages] = useState(false);
+  const editBtnRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => {
-    if (reviews.length) setRandomIndex(Math.floor(Math.random() * reviews.length));
-  }, [reviews]);
+  // אפשרויות עיצוב
+  const [opts, setOpts] = useState<ReviewsOptions>({
+    template: 0,              // 0..2
+    radius: 16,
+    blur: 0,
+    textAlign: "right",
+    padding: "M",
+    showStars: true,
+    maxCards: 6,
+  });
 
-  const handleBlur = (i: number, e: React.FocusEvent<HTMLParagraphElement>) => {
-    const newText = e.currentTarget.innerText;
-    setReviews(prev => {
-      const copy = [...prev];
-      copy[i] = newText;
-      return copy;
-    });
-  };
+  // ניקוי + נרמול תוכן נכנס
+  const baseReviews = useMemo(() => {
+    const toArray = (val?: string[] | string): string[] => {
+      if (!val) return [];
+      if (Array.isArray(val)) return val;
+      // מפרקים במעברי שורה או פסיקים – למקרה שהתקבל טקסט ארוך
+      return String(val)
+        .split(/\r?\n|,/)
+        .map((s) => s.trim())
+        .filter(Boolean);
+    };
 
-  const renderStars = (i: number) =>
-    i === randomIndex
-      ? (
-        <>
-          <FaStar /><FaStar /><FaStar /><FaStar /><FaStarHalfAlt />
-        </>
-      ) : (
-        <>
-          <FaStar /><FaStar /><FaStar /><FaStar /><FaStar />
-        </>
+    // ניקוי: הסרת גרשיים, רווחים כפולים, כפילויות, ואורך מינימלי
+    const clean = (arr: string[]): string[] =>
+      Array.from(
+        new Set(
+          arr
+            .map((t) =>
+              t
+                .replace(/^["'\s]+|["'\s]+$/g, "")
+                .replace(/\s{2,}/g, " ")
+                .trim()
+            )
+            .filter((t) => t.length >= 6)
+        )
       );
 
-  const templates = [
-    <div className={reviewsStyles.gridContainer} key="grid">
-      {reviews.map((txt, i) => (
-        <div className={`${reviewsStyles.reviewCardBase} ${reviewsStyles.gridCard}`} key={i}>
-          <img
-            src={i % 2 ? "/src/assets/womenReviewer.png" : "/src/assets/menReviewer.png"}
-            className={reviewsStyles.pic}
-            alt="Reviewer"
-          />
-          <p
-            className={reviewsStyles.reviewText}
-            contentEditable
-            suppressContentEditableWarning
-            onBlur={e => handleBlur(i, e)}
-          >
-            {txt}
-          </p>
-          <div className={reviewsStyles.stars}>{renderStars(i)}</div>
-        </div>
-      ))}
-    </div>,
+    const cleaned = clean(toArray(content));
+    if (cleaned.length) return cleaned.slice(0, 12); // שומרים תקרה סבירה לפני maxCards
+    // דיפולט – אם לא הגיע כלום
+    return [
+      "מקצועיות ברמה גבוהה והסבר ברור בכל שלב.",
+      "שירות אדיב, תגובה מהירה ותוצאה מצוינת.",
+      "עמדו בזמנים והפתיעו לטובה באיכות.",
+      "תהליך נוח ושקוף – ממליץ בחום.",
+    ];
+  }, [content]);
 
-    <div className={reviewsStyles.mediaContainer} key="media">
-      {reviews.map((txt, i) => (
-        <div className={`${reviewsStyles.reviewCardBase} ${reviewsStyles.mediaCard}`} key={i}>
-          <img
-            src={i % 2 ? "/src/assets/womenReviewer.png" : "/src/assets/menReviewer.png"}
-            className={reviewsStyles.pic}
-            alt="Reviewer"
-          />
-          <div>
-            <p
-              className={reviewsStyles.reviewText}
-              contentEditable
-              suppressContentEditableWarning
-              onBlur={e => handleBlur(i, e)}
-            >
-              {txt}
+  // סטייט של רשימת חוות דעת לעריכה חיה
+  const [reviews, setReviews] = useState<string[]>(baseReviews);
+
+  // סנכרון אם content משתנה מבחוץ
+  useEffect(() => setReviews(baseReviews), [baseReviews]);
+
+  // אינדקס אקראי לחצי כוכב (אם רוצים גיוון קל)
+  const [randomIndex, setRandomIndex] = useState<number | null>(null);
+  useEffect(() => {
+    if (!reviews.length) return setRandomIndex(null);
+    setRandomIndex(Math.floor(Math.random() * reviews.length));
+  }, [reviews]);
+
+  // הוספה/מחיקה/עדכון
+  const addCard = () =>
+    setReviews((p) =>
+      p.length >= opts.maxCards ? p : [...p, "הוספת חוות דעת חדשה…"]
+    );
+
+  const delCard = (i: number) =>
+    setReviews((p) => p.filter((_, j) => j !== i));
+
+  const updateCard = (i: number, txt: string) =>
+    setReviews((p) => {
+      const c = [...p];
+      c[i] = txt;
+      return c;
+    });
+
+  // הגבלה לפי maxCards
+  const visible = useMemo(() => reviews.slice(0, opts.maxCards), [reviews, opts.maxCards]);
+
+  // קומפוננטת הווריאנט הפעיל
+  const ActiveVariant = VARIANTS[Math.max(0, Math.min(VARIANTS.length - 1, opts.template))];
+
+  return (
+    <section
+      className={styles.reviewsSection}
+      dir="rtl"
+      style={{
+        borderRadius: opts.radius,
+        backdropFilter: `blur(${opts.blur}px)`,
+        textAlign: opts.textAlign,
+        padding: opts.padding === "S" ? "24px" : opts.padding === "L" ? "64px" : "40px",
+      }}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+    >
+      {hover && (
+        <div className={styles.toolbar}>
+          {visible.length < opts.maxCards && (
+            <button className={styles.iconBtn} onClick={addCard} title="הוסף כרטיס">
+              <FaPlus size={14} />
+            </button>
+          )}
+          <button
+            className={styles.iconBtn}
+            onClick={() => setUseRealImages((p) => !p)}
+            title="החלף בין תמונות אמיתיות לאייקונים"
+          >
+            <FaUser size={14} />
+          </button>
+          <button
+            ref={editBtnRef}
+            className={styles.iconBtn}
+            onClick={() => setOpenPop(true)}
+            title="ערוך עיצוב"
+          >
+            <FaPalette size={14} />
+          </button>
+          {onDelete && (
+            <button className={`${styles.iconBtn} ${styles.trashBtn}`} onClick={onDelete} title="מחק סקשן">
+              <FaTrash size={13} />
+            </button>
+          )}
+        </div>
+      )}
+
+      {(title || subtitle || ratingSummary) && (
+        <header className={styles.header}>
+          {title && <h2 className={styles.heading}>{title}</h2>}
+          {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
+          {ratingSummary && Number.isFinite(ratingSummary.average) && Number.isFinite(ratingSummary.count) && (
+            <p className={styles.agg}>
+              דירוג ממוצע: <b>{ratingSummary.average.toFixed(1)}</b> ·
+              <span> {ratingSummary.count} חוות דעת</span>
             </p>
-            <div className={reviewsStyles.stars}>{renderStars(i)}</div>
-          </div>
-        </div>
-      ))}
-    </div>,
+          )}
+        </header>
+      )}
 
-    <div className={reviewsStyles.stackedContainer} key="stacked">
-      {reviews.map((txt, i) => (
-        <div className={`${reviewsStyles.reviewCardBase} ${reviewsStyles.stackedCard}`} key={i}>
-          <img
-            src={i % 2 ? "/src/assets/womenReviewer.png" : "/src/assets/menReviewer.png"}
-            className={reviewsStyles.pic}
-            alt="Reviewer"
-          />
-          <p
-            className={reviewsStyles.reviewText}
-            contentEditable
-            suppressContentEditableWarning
-            onBlur={e => handleBlur(i, e)}
-          >
-            {txt}
-          </p>
-          <div className={reviewsStyles.stars}>{renderStars(i)}</div>
-        </div>
-      ))}
-    </div>,
-  ];
-
-  const prevTemplate = () =>
-    setTemplateIndex(prev => (prev - 1 + templates.length) % templates.length);
-  const nextTemplate = () =>
-    setTemplateIndex(prev => (prev + 1) % templates.length);
-
-
-return (
-  <section
-    className={reviewsStyles.reviewsSection}
-    onMouseEnter={() => setIsHovered(true)}
-    onMouseLeave={() => setIsHovered(false)}
-  >
-    <div className={reviewsStyles.wrapper}>
-      <div className={reviewsStyles.arrowButtons}>
-        <button onClick={prevTemplate}><FaArrowRight /></button>
-        <button onClick={nextTemplate}><FaArrowLeft /></button>
+      <div className={styles.wrapper}>
+        <ActiveVariant
+          items={visible}
+          randomIndex={randomIndex}
+          useRealImages={useRealImages}
+          onDeleteCard={delCard}
+          onChangeText={updateCard}
+          showStars={opts.showStars}
+        />
       </div>
 
-      {templates[templateIndex]}
-    </div>
-
-    {isHovered && onDelete && (
-      <div className={reviewsStyles.actionBar}>
-        <ActionsButtons onDelete={onDelete} sectionName="reviews" />
-      </div>
-    )}
-  </section>
-);
-
-};
-
-export default Reviews;
+      {openPop && (
+        <ReviewsPopup
+          open={openPop}
+          options={opts}
+          onChange={setOpts}
+          onClose={() => setOpenPop(false)}
+          anchorRef={editBtnRef}
+          dir="rtl"
+        />
+      )}
+    </section>
+  );
+}

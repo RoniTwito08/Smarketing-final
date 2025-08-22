@@ -1,0 +1,139 @@
+:root{
+  --text-color:#0f172a;
+  --muted:#64748b;
+  --primary-color:#1e293b;   /* בסיס */
+  --tertiary-color:#1e90ff;  /* דגש */
+  --neutral:#e5e7eb;
+  --border: color-mix(in oklab,var(--text-color) 12%, transparent);
+}
+
+.ctaSection{
+  position:relative;
+  padding: clamp(28px, 5vw, 48px) 16px;
+  font-family: var(--font, "Segoe UI", system-ui, sans-serif);
+  color:var(--text-color);
+  container-type: inline-size;
+}
+.ctaSection > *{ max-width: 1100px; margin-inline:auto; }
+
+/* Toolbar */
+.toolbar{
+  position:absolute; top:12px; inset-inline-end:12px; display:flex; gap:8px; z-index:6;
+}
+.iconBtn{
+  width:36px;height:36px;border-radius:999px; display:inline-flex;align-items:center;justify-content:center;
+  background:color-mix(in oklab,var(--text-color) 28%,transparent); color:#fff;
+  border:1px solid color-mix(in oklab,var(--text-color) 24%,transparent);
+  box-shadow:0 6px 18px -8px color-mix(in oklab,var(--text-color) 32%,transparent);
+  cursor:pointer; transition:.15s;
+}
+.iconBtn:hover{ transform: translateY(-2px); background:color-mix(in oklab,var(--text-color) 38%,transparent); }
+.trashBtn{ background:color-mix(in oklab,#d90429 45%,transparent); }
+.trashBtn:hover{ background:color-mix(in oklab,#d90429 60%,transparent); }
+
+/* Header */
+.header{ text-align:center; margin-bottom: clamp(16px, 3vw, 24px); }
+.heading{
+  font-size: clamp(20px, 4vw, 28px);
+  font-weight: 900; margin: 0 0 6px;
+}
+.subtitle{
+  color: color-mix(in oklab, var(--text-color) 70%, transparent);
+  margin: 0 auto; max-width: 780px;
+}
+
+/* Layouts */
+.wrap{
+  display:flex; flex-wrap: wrap; gap: 12px;
+  justify-content: center;
+}
+.column{ display:flex; flex-direction: column; gap: 14px; }
+.grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+
+.alignStart{ justify-content: flex-start; }
+.alignCenter{ justify-content: center; }
+.alignEnd{ justify-content: flex-end; }
+.alignJustify{ justify-content: space-between; }
+
+.gapTight{ gap: 8px; }
+.gapNormal{ gap: 12px; }
+.gapLoose{ gap: 16px; }
+
+/* Buttons base */
+.btn, .chip{
+  display:inline-flex; align-items:center; gap:8px;
+  text-decoration:none; cursor:pointer; user-select:none;
+  border-radius: 999px; /* יוחלף במחלקות rounded */
+  border:1px solid transparent;
+  transition: transform .12s ease, box-shadow .12s ease, background .12s ease, color .12s ease, border-color .12s ease;
+  will-change: transform;
+}
+.btn:hover, .chip:hover{ transform: translateY(-1px); }
+.btn:active, .chip:active{ transform: translateY(0); }
+
+/* per-item wrapper for X button */
+.btnWrap, .chipWrap{ position: relative; display: inline-block; }
+.closeBtn{
+  position:absolute; inset-block-start:-8px; inset-inline-start:-8px;
+  width:22px;height:22px;border-radius:50%; background:rgba(0,0,0,.35); color:#fff; border:none;
+  font-size:13px; display:flex; align-items:center; justify-content:center;
+  cursor:pointer; opacity:0; pointer-events:none; transition:.2s;
+}
+.btnWrap:hover .closeBtn, .chipWrap:hover .closeBtn{ opacity:1; pointer-events:auto; }
+.closeBtn:hover{ background: rgba(0,0,0,.55); }
+
+/* Sizes */
+.sizeSm{ font-size: 13px; padding: 8px 12px; }
+.sizeMd{ font-size: 14px; padding: 10px 14px; }
+.sizeLg{ font-size: 16px; padding: 14px 18px; }
+
+.btnLabel{ white-space: nowrap; }
+
+/* Rounded */
+.roundPill{ border-radius: 999px; }
+.roundMd{ border-radius: 10px; }
+.roundNone{ border-radius: 6px; }
+
+/* Solid styles */
+.solidPrimary{ background: var(--tertiary-color); color:#fff; box-shadow: 0 10px 28px -16px color-mix(in oklab, var(--tertiary-color) 60%, transparent); }
+.solidPrimary:hover{ filter: saturate(1.05) brightness(1.02); }
+.solidNeutral{ background: #0f172a; color:#fff; box-shadow: 0 10px 28px -16px rgba(15,23,42,.45); }
+.solidAccent{ background: #16a34a; color:#fff; box-shadow: 0 10px 28px -16px rgba(22,163,74,.45); }
+
+/* Outline styles */
+.outlinePrimary{ background: #fff; color: var(--tertiary-color); border-color: color-mix(in oklab, var(--tertiary-color) 70%, transparent); }
+.outlinePrimary:hover{ background: color-mix(in oklab, var(--tertiary-color) 8%, #fff); }
+.outlineNeutral{ background: #fff; color: var(--text-color); border-color: var(--border); }
+.outlineAccent{ background: #fff; color: #16a34a; border-color: color-mix(in oklab, #16a34a 70%, transparent); }
+
+/* Ghost styles */
+.ghostPrimary{ background: color-mix(in oklab, var(--tertiary-color) 10%, transparent); color: var(--tertiary-color); }
+.ghostNeutral{ background: color-mix(in oklab, var(--text-color) 6%, transparent); color: var(--text-color); }
+.ghostAccent{ background: color-mix(in oklab, #16a34a 10%, transparent); color: #16a34a; }
+
+/* Chips (קומפקטיים יותר) */
+.chip{ box-shadow: 0 8px 18px -16px rgba(0,0,0,.18); }
+.chipSolidPrimary{ background: var(--tertiary-color); color:#fff; }
+.chipSolidNeutral{ background: #111827; color:#fff; }
+.chipSolidAccent{ background: #16a34a; color:#fff; }
+
+.chipOutlinePrimary{ background:#fff; color: var(--tertiary-color); border-color: color-mix(in oklab, var(--tertiary-color) 70%, transparent); }
+.chipOutlineNeutral{ background:#fff; color: var(--text-color); border-color: var(--border); }
+.chipOutlineAccent{ background:#fff; color:#16a34a; border-color: color-mix(in oklab, #16a34a 70%, transparent); }
+
+.chipGhostPrimary{ background: color-mix(in oklab, var(--tertiary-color) 10%, transparent); color: var(--tertiary-color); }
+.chipGhostNeutral{ background: color-mix(in oklab, var(--text-color) 6%, transparent); color: var(--text-color); }
+.chipGhostAccent{ background: color-mix(in oklab, #16a34a 10%, transparent); color: #16a34a; }
+
+/* Emphasized main CTA */
+.emphasized{ transform: translateY(0); box-shadow: 0 16px 42px -18px color-mix(in oklab,var(--tertiary-color) 55%, transparent); }
+.emphasized:hover{ transform: translateY(-2px); }
+
+/* Align helpers for mobile */
+.stackMobile .btn, .stackMobile .chip{
+  width: auto;
+}
+@container (max-width: 640px){
+  .stackMobile{ display:grid; grid-template-columns: 1fr; }
+  .stackMobile .btn, .stackMobile .chip{ width: 100%; justify-content: center; }
+}
