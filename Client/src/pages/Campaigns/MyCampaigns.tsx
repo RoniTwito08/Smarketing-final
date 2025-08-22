@@ -98,6 +98,16 @@ const MyCampaigns: React.FC<MyCampaignsProps> = ({ onSelectCampaign, onDeleteCam
     onSelectCampaign?.(c);
   };
 
+  // כפתור חדש: פתיחת דף הנחיתה בלשונית חדשה דרך הראוט שסיפקת
+  const openLandingPage = (campaign: Campaign) => {
+    if (!campaign.landingPage) {
+      toast.info("אין דף נחיתה זמין לקמפיין זה");
+      return;
+    }
+    const url = `${config.apiUrl}/landing-page/${campaign.landingPage}`;
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
+
   return (
     <div className={styles.wrapper}>
       <ToastContainer rtl autoClose={3000}/>
@@ -122,17 +132,63 @@ const MyCampaigns: React.FC<MyCampaignsProps> = ({ onSelectCampaign, onDeleteCam
 
             {/* buttons under details */}
             <div className={styles.actionBtns}>
-              <button className={styles.actBtn} data-type="preview" onClick={() => setShowFullPreview(true)}><FaRegEye/></button>
-              <button className={styles.actBtn} data-type="send"    onClick={() => launchCampaign(selectedCampaign._id)}><IoIosSend/></button>
-              <button className={styles.actBtn} data-type="pause"   onClick={() => pauseCampaign(selectedCampaign._id)}><FaRegCirclePause/></button>
-              <button className={styles.actBtn} data-type="delete"  onClick={() => handleDeleteCampaign(selectedCampaign)}><MdDeleteOutline/></button>
+              <button
+                className={styles.actBtn}
+                data-type="preview"
+                onClick={() => setShowFullPreview(true)}
+                title="תצוגה מקדימה"
+              >
+                <FaRegEye/>
+              </button>
+
+              <button
+                className={styles.actBtn}
+                data-type="send"
+                onClick={() => launchCampaign(selectedCampaign._id)}
+                title="שליחת קמפיין"
+              >
+                <IoIosSend/>
+              </button>
+
+              <button
+                className={styles.actBtn}
+                data-type="pause"
+                onClick={() => pauseCampaign(selectedCampaign._id)}
+                title="השהיית קמפיין"
+              >
+                <FaRegCirclePause/>
+              </button>
+
+              <button
+                className={styles.actBtn}
+                data-type="delete"
+                onClick={() => handleDeleteCampaign(selectedCampaign)}
+                title="מחיקת קמפיין"
+              >
+                <MdDeleteOutline/>
+              </button>
+
+              {/* כפתור חדש: מעבר לדף הנחיתה */}
+              <button
+                className={styles.actBtn}
+                data-type="page"
+                onClick={() => openLandingPage(selectedCampaign)}
+                title="פתיחת דף הנחיתה"
+                disabled={!selectedCampaign.landingPage}
+                aria-label="פתיחת דף הנחיתה"
+              >
+                📄
+              </button>
             </div>
           </Box>
 
           {/* iframe */}
           <Box className={styles.iframePane}>
             {selectedCampaign.landingPage ? (
-              <iframe src={`${config.apiUrl}/landingPages/${selectedCampaign.landingPage}`} title="Landing preview" />
+              <iframe
+                src={`${config.apiUrl}/landing-page/${selectedCampaign.landingPage}`}
+                title="Landing preview"
+              />
             ) : (
               <Box height="100%" display="flex" alignItems="center" justifyContent="center">
                 <Typography variant="h6" color="text.secondary">אין דף נחיתה זמין</Typography>
@@ -190,7 +246,7 @@ const MyCampaigns: React.FC<MyCampaignsProps> = ({ onSelectCampaign, onDeleteCam
           <button className={styles.closeX} onClick={() => setShowFullPreview(false)}>&times;</button>
           <iframe
             className={styles.fullIframe}
-            src={`${config.apiUrl}/landingPages/${selectedCampaign.landingPage}`}
+            src={`${config.apiUrl}/landing-page/${selectedCampaign.landingPage}`}
             title="Landing Page Fullscreen"
             onClick={e => e.stopPropagation()}
           />

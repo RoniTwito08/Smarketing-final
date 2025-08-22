@@ -52,6 +52,27 @@ type GeminiPlan = {
   done?: boolean;
 };
 
+/** מנקה כל טקסט בסוגריים (כולל אנגלית ברשימות), ומיישר רווחים */
+function sanitizeQuestion(text: string): string {
+  if (!text) return "";
+  let t = String(text);
+
+  // מסיר כל מקטע בסוגריים עגולים או מרובעים: ( ... ) או [ ... ]
+  t = t.replace(/\s*[\(\[][^()\[\]]*[\)\]]/g, "");
+
+  // במקרה שנשארו סוגריים בודדים בשל RTL, ננקה אותם
+  t = t.replace(/[()]/g, "");
+
+  // מנקה רווחים כפולים/בסיומות
+  t = t.replace(/\s{2,}/g, " ").trim();
+
+  // מסיר נקודתיים/מקף בסוף אם נשארו אחרי הניקוי
+  t = t.replace(/\s*[:\-–]\s*$/, "");
+
+  return t;
+}
+
+
 /** Fallback לוגיקה שמונעת הסתבכויות בשאלת "אחר" ועוד תנאי קצה */
 function fallbackPlanner(
   qa: { questions: string[]; answers: string[] },
@@ -229,7 +250,8 @@ const ChatBusinessWizard: React.FC = () => {
         return;
       }
 
-      const q = (plan.question || "").trim() || "מעולה, פרט/י עוד בבקשה.";
+      const rawQ = (plan.question || "").trim() || "מעולה, פרט/י עוד בבקשה.";
+      const q = sanitizeQuestion(rawQ);
       setQuestions((prev) => [...prev, q]);
     } finally {
       setLoading(false);
