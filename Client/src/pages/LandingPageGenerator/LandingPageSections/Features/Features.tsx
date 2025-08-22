@@ -6,7 +6,7 @@ import FeaturesLayoutPopUp, { FeaturesLayoutOptions } from "./FeaturesLayoutPopU
 import FeaturesBackgroundChoosen from "./FeaturesBackgroundChoosen";
 import { businessInfoService } from "../../../../services/besinessInfo.service";
 import { useAuth } from "../../../../context/AuthContext";
-
+import t from "../Services/Services.module.css"
 // Variants
 import V1 from "./Variants/V1";
 import V2 from "./Variants/V2";
@@ -159,11 +159,10 @@ export default function Features({ content, image, onDelete }: FeaturesProps) {
     >
       {/* טולבר */}
       {isHovered && (
-        <div className={s.toolbar}>
+        <div className={t.toolbar}>
           <button
             ref={editBtnRef}
-            type="button"
-            className={s.iconBtn}
+            className={t.iconBtn}
             onClick={() => setOpenEditor(true)}
             title="התאמה"
             aria-haspopup="dialog"
@@ -174,8 +173,7 @@ export default function Features({ content, image, onDelete }: FeaturesProps) {
 
           <button
             ref={imgBtnRef}
-            type="button"
-            className={s.iconBtn}
+            className={t.iconBtn}
             onClick={() => setOpenImgPicker(true)}
             title="בחר תמונת פיצ'רים"
             aria-haspopup="dialog"
@@ -185,8 +183,7 @@ export default function Features({ content, image, onDelete }: FeaturesProps) {
           </button>
 
           <button
-            type="button"
-            className={`${s.iconBtn} ${atLimit ? s.iconBtnDisabled : ""}`}
+            className={`${t.iconBtn} ${atLimit ? t.iconBtnDisabled : ""}`}
             onClick={addService}
             title={atLimit ? "מקסימום 6 שורות" : "הוסף שורה"}
             aria-disabled={atLimit}
@@ -197,8 +194,7 @@ export default function Features({ content, image, onDelete }: FeaturesProps) {
 
           {onDelete && (
             <button
-              type="button"
-              className={`${s.iconBtn} ${s.trashBtn}`}
+              className={`${t.iconBtn} ${t.trashBtn}`}
               onClick={onDelete}
               title="מחק סקשן"
               aria-label="מחק סקשן"

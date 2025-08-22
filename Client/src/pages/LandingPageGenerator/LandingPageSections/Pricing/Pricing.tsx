@@ -4,7 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import { FaPalette, FaTrash } from "react-icons/fa";
 import s from "./pricing.module.css";
 import PricingPopup, { PricingOptions } from "./PricingPopUp";
-
+import t from "../Services/Services.module.css"
 import V1 from "./Variants/V1";
 import V2 from "./Variants/V2";
 import V3 from "./Variants/V3";
@@ -107,22 +107,20 @@ export default function Pricing({
       onMouseLeave={() => setHovered(false)}
     >
       {hovered && (
-        <div className={s.toolbar}>
+        <div className={t.toolbar}>
           <button
             ref={editBtnRef}
-            className={s.iconBtn}
+            className={t.iconBtn}
             title="ערוך"
             onClick={() => setOpenPop(true)}
-            type="button"
           >
             <FaPalette size={14} />
           </button>
           {onDelete && (
             <button
-              className={`${s.iconBtn} ${s.trashBtn}`}
+              className={`${t.iconBtn} ${t.trashBtn}`}
               title="מחק"
               onClick={onDelete}
-              type="button"
             >
               <FaTrash size={13} />
             </button>

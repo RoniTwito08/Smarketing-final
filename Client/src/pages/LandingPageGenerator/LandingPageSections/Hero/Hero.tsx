@@ -5,6 +5,7 @@ import s from "./hero.module.css";
 import LayoutPopUp, { LayoutOptions } from "./LayoutPopUp/LayoutPopUp";
 import BackgroundPickerPopUp from "./backgroundPickerPopUp/backgroundPickerPopUp";
 import { clean, inferDir, defaults } from "./hero.shared";
+import t from "../Services/Services.module.css"
 
 // Variants
 import V1 from "./Variants/V1";
@@ -132,11 +133,10 @@ export default function Hero({
   return (
     <div className={s.wrap}>
       {/* Toolbar */}
-      <div className={s.toolbar}>
+      <div className={t.toolbar}>
         <button
           ref={editBtnRef}
-          type="button"
-          className={s.editBtn}
+          className={t.iconBtn}
           onClick={() => setOpenEditor((v) => !v)}
           aria-haspopup="dialog"
           aria-expanded={openEditor}
@@ -147,8 +147,7 @@ export default function Hero({
 
         <button
           ref={imgBtnRef}
-          type="button"
-          className={s.editBtn}
+          className={t.iconBtn}
           onClick={() => setOpenBgPicker(true)}
           aria-haspopup="dialog"
           aria-expanded={openBgPicker}
@@ -159,8 +158,7 @@ export default function Hero({
         </button>
 
         <button
-          type="button"
-          className={s.editBtn}
+          className={t.iconBtn}
           onClick={addButton}
           title="הוסף כפתור CTA"
           aria-label="הוסף כפתור"

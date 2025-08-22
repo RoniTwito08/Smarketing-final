@@ -4,6 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import { FaPalette, FaTrash } from "react-icons/fa";
 import s from "./faq.module.css";
 import FAQPopup, { FAQOptions } from "./FAQPopup";
+import t from "../Services/Services.module.css"
 
 import V1 from "./Variants/V1";
 import V2 from "./Variants/V2";
@@ -68,23 +69,19 @@ export default function FAQ({
       onMouseLeave={() => setHovered(false)}
     >
       {hovered && (
-        <div className={s.toolbar}>
+        <div className={t.toolbar}>
           <button
             ref={editBtnRef}
-            className={s.iconBtn}
-            title="ערוך"
+            className={t.iconBtn}
             onClick={() => setOpenPop(true)}
-            type="button"
+            title="התאמה"
+            aria-haspopup="dialog"
+            aria-expanded={openPop}
           >
             <FaPalette size={14} />
           </button>
           {onDelete && (
-            <button
-              className={`${s.iconBtn} ${s.trashBtn}`}
-              title="מחק"
-              onClick={onDelete}
-              type="button"
-            >
+            <button className={`${t.iconBtn} ${t.trashBtn}`} onClick={onDelete} title="מחק סקשן">
               <FaTrash size={13} />
             </button>
           )}
