@@ -1,8 +1,8 @@
-// src/components/LandingPageSections/Pricing/Pricing.tsx
+//src/components/LandingPageSections/Pricing/Pricing.tsx
 "use client";
 import { useMemo, useRef, useState } from "react";
 import { FaPalette, FaTrash } from "react-icons/fa";
-import s from "./pricing.module.css";
+import s from "./Pricing.module.css";
 import PricingPopup, { PricingOptions } from "./PricingPopUp";
 import t from "../Services/Services.module.css"
 import V1 from "./Variants/V1";

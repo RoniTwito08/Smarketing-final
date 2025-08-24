@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import s from "../pricing.module.css";
+import s from "../Pricing.module.css";
 import type { PricingPlan } from "../Pricing";
 import { FaCheck } from "react-icons/fa";
 

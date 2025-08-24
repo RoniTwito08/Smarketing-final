@@ -2,7 +2,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import axios from "axios";
 import fs from "fs";
 import path from "path";
-import type { NextApiRequest, NextApiResponse } from "next";
+//import type { NextApiRequest, NextApiResponse } from "next";
 
 const MARKETING_GEMINI_API_KEY = process.env.MARKETING_GEMINI_API_KEY;
 if (!MARKETING_GEMINI_API_KEY) {

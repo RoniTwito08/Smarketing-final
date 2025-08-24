@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import s from "../howItWorks.module.css";
+import s from "../HowItWorks.module.css";
 import {
   FaSearch, FaCalendarAlt, FaPhoneAlt, FaWpforms, FaTools, FaTruck,
   FaCreditCard, FaCheck, FaUser, FaShieldAlt, FaBolt, FaStar

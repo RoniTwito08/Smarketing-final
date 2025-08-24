@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import type { ServiceItem } from "../Services";
-import s from "../services.module.css";
+import s from "../Services.module.css";
 
 const calcDir = (t: string) =>
   /[\u0590-\u05FF\u0600-\u06FF]/.test(t) ? "rtl" : "ltr";

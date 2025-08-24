@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useLayoutEffect } from "react";
 import { createPortal } from "react-dom";
-import styles from "./layoutPopup.module.css";
+import styles from "./LayoutPopUp.module.css";
 
 /* ---------- TYPES ---------- */
 export type Align = "top" | "center" | "bottom";

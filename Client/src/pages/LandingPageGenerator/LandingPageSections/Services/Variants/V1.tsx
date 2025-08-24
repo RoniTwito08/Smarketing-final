@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import type { ServiceItem } from "../Services";
-import s from "../services.module.css";
+import s from "../Services.module.css";
 import { FaCheckCircle } from "react-icons/fa";
 
 // כיוון אוטומטי לפי תוכן

@@ -26,22 +26,22 @@ import PieChartIcon from "@mui/icons-material/PieChart";
 import RadarIcon from "@mui/icons-material/TrackChanges";
 import TimelineIcon from "@mui/icons-material/Timeline";
 
-// interface DailyStat {
-//   date: string;
-//   clicks: number;
-//   impressions: number;
-//   costMicros: number;
-//   conversions: number;
-// }
+interface DailyStat {
+  date: string;
+  clicks: number;
+  impressions: number;
+  costMicros: number;
+  conversions: number;
+}
 
-// interface CampaignStats {
-//   clicks: number;
-//   impressions: number;
-//   costMicros: number;
-//   conversions: number;
-//   ctr: number;
-//   dailyBreakdown?: DailyStat[];
-// }
+interface CampaignStats {
+  clicks: number;
+  impressions: number;
+  costMicros: number;
+  conversions: number;
+  ctr: number;
+  dailyBreakdown?: DailyStat[];
+}
 
 interface Campaign {
   _id: string;
