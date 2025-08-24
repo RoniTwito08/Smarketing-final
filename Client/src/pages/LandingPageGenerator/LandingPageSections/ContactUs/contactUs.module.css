@@ -153,6 +153,7 @@
   display:inline-flex; align-items:center; gap:8px;
   box-shadow: 0 16px 42px -20px color-mix(in oklab, var(--accent) 60%, transparent);
   transition: .18s ease;
+  color:var(--text)
 }
 .submit:hover{ transform: translateY(-2px); filter: saturate(1.05) brightness(1.02); }
 .submit:active{ transform: translateY(0); }
