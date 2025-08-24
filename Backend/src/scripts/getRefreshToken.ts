@@ -10,7 +10,7 @@ const port = 3000;
 
 const clientId = "120082169705-99f9502l5poulsg0iqtja7j356nbjena.apps.googleusercontent.com";
 const clientSecret = "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";
-const redirectUri =  'https://smarketing.cs.colman.ac.il/oauth2callback';
+const redirectUri = 'http://localhost:3000/oauth2callback';
 const scope = 'https://www.googleapis.com/auth/adwords';
 
 app.get('/start', async (req, res) => {
