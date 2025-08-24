@@ -35,9 +35,11 @@ type MyCampaignsProps = {
   onSelectCampaign?: (campaign: Campaign|null) => void;
   /** אופציונלי: הורה רוצה לדעת שנמחָק קמפיין (כדי לרענן) */
   onDeleteCampaign?: (campaignId: string) => void;
+  /** אופציונלי: פונקציה להפעלת קמפיין */
+  onLaunchCampaign?: (campaign: Campaign) => void;
 };
 
-const MyCampaigns: React.FC<MyCampaignsProps> = ({ onSelectCampaign, onDeleteCampaign }) => {
+const MyCampaigns: React.FC<MyCampaignsProps> = ({ onSelectCampaign, onDeleteCampaign, onLaunchCampaign }) => {
   const { user } = useAuth();
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null);
@@ -90,7 +92,13 @@ const MyCampaigns: React.FC<MyCampaignsProps> = ({ onSelectCampaign, onDeleteCam
   };
 
   /* --- actions --- */
-  const launchCampaign = (_id: string) => toast.info("🚀 שולח קמפיין...");
+  const launchCampaign = (campaign: Campaign) => {
+    if (onLaunchCampaign) {
+      onLaunchCampaign(campaign);
+    } else {
+      toast.info("🚀 שולח קמפיין...");
+    }
+  };
   const pauseCampaign  = (_id: string) => toast("⏸️ הקמפיין הושהה");
 
   const handleRowClick = (c: Campaign) => {
@@ -144,7 +152,7 @@ const MyCampaigns: React.FC<MyCampaignsProps> = ({ onSelectCampaign, onDeleteCam
               <button
                 className={styles.actBtn}
                 data-type="send"
-                onClick={() => launchCampaign(selectedCampaign._id)}
+                onClick={() => launchCampaign(selectedCampaign)}
                 title="שליחת קמפיין"
               >
                 <IoIosSend/>

@@ -25,20 +25,28 @@ const Feed: React.FC<{ className?: string }> = ({ className }) => {
     }
   }, [refreshFeed]);
 
-  const handleCampaignSubmit = async (_data: any) => {
+  const handleCampaignSubmit = async (campaignOrData: any) => {
     try {
-      console.log("Campaign submitted:", _data);
+      // Determine if this is a campaign object (from launch button) or form data
+      const campaign = campaignOrData._id ? campaignOrData : selectedCampaign;
+      
+      if (!campaign) {
+        toast.error("לא נבחר קמפיין להפעלה");
+        return;
+      }
+
+      console.log("Campaign submitted:", campaign);
       const response = await fetch(`${config.apiUrl}/campaigns/google-launch`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          businessName: selectedCampaign.campaignName,
-          objective: selectedCampaign.campaginPurpose,
+          businessName: campaign.campaignName,
+          objective: campaign.campaginPurpose,
           userId: user?._id,
-          campaignMongoId: selectedCampaign._id,
-          budget: selectedCampaign.budget,
+          campaignMongoId: campaign._id,
+          budget: campaign.budget,
         }),
       });
       console.log("Response from server:", response);
@@ -56,12 +64,16 @@ const Feed: React.FC<{ className?: string }> = ({ className }) => {
       console.log("Setting refreshFeed to true");
       setRefreshFeed(true); // Trigger refresh after submission
 
-      setTimeout(() => {
-        setShowPopup(false);
-        setSelectedCampaign(null);
-      }, 2000);
+      // Only close popup if it was opened from form submission
+      if (!campaignOrData._id) {
+        setTimeout(() => {
+          setShowPopup(false);
+          setSelectedCampaign(null);
+        }, 2000);
+      }
     } catch (error) {
       console.error("Error launching campaign:", error);
+      toast.error("שגיאה בהפעלת הקמפיין");
     }
   };
 
@@ -83,7 +95,11 @@ const Feed: React.FC<{ className?: string }> = ({ className }) => {
         pauseOnHover
       />
       <div>
-        <MyCampaigns onSelectCampaign={handleSelectCampaign} key={refreshKey} />
+        <MyCampaigns 
+          onSelectCampaign={handleSelectCampaign} 
+          onLaunchCampaign={handleCampaignSubmit}
+          key={refreshKey} 
+        />
       </div>
       <CampaignPopup
         open={showPopup}
