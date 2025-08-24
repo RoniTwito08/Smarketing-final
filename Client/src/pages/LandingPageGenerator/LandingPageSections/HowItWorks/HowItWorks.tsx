@@ -2,7 +2,7 @@
 "use client";
 import { useMemo, useRef, useState } from "react";
 import { FaPalette, FaTrash } from "react-icons/fa";
-import s from "./howItWorks.module.css";
+import s from "./HowItWorks.module.css";
 import HowItWorksPopup, { HowItWorksOptions } from "./HowItWorksPopup";
 import t from "../Services/Services.module.css"
 // Variants

@@ -1,6 +1,6 @@
 "use client";
 import React, { useMemo, useState } from "react";
-import s from "../pricing.module.css";
+import s from "../Pricing.module.css";
 import type { PricingPlan } from "../Pricing";
 
 export default function V4({

@@ -1,7 +1,7 @@
 "use client";
 import { useMemo, useRef, useState } from "react";
 import { FaPalette, FaTrash } from "react-icons/fa";
-import s from "./services.module.css";
+import s from "./Services.module.css";
 import ServicesPopup, { ServicesOptions } from "./ServicesPopup";
 
 // Variants
