@@ -183,3 +183,12 @@
   .blob{ width: 68cqw; }
   .v2{ padding: 16px; }
 }
+
+.v3 { position: relative; }
+.glass { position: relative; z-index: 2; pointer-events: auto; }
+
+.gradientBg,
+.floatingDots {
+  z-index: 1;          /* נמוך מהכרטיס */
+  pointer-events: none; /* לא חוסם קליקים */
+}

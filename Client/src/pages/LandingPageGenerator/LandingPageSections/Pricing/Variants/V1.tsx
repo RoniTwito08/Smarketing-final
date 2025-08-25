@@ -4,7 +4,7 @@ import s from "../Pricing.module.css";
 import type { PricingPlan } from "../Pricing";
 import { FaCheck } from "react-icons/fa";
 
-export default function V1({
+export default function V3({
   plans,
   options,
 }: {
@@ -21,42 +21,42 @@ export default function V1({
 }) {
   const [localPlans, setLocalPlans] = useState<PricingPlan[]>(plans);
   const [displayCurrency, setDisplayCurrency] = useState(options.currency);
-  const [ribbonText, setRibbonText] = useState("מומלץ");
+  const [ribbonText, setRibbonText] = useState("Best Value");
 
-  const onPlanName = (i:number) => (e:React.FormEvent<HTMLHeadingElement>)=>{
-    const v = (e.currentTarget as HTMLHeadingElement).innerText;
-    setLocalPlans(prev=>{const n=[...prev]; n[i]={...n[i], name:v}; return n;});
+  const onPlanName = (i:number)=>(e:React.FormEvent<HTMLHeadingElement>)=>{
+    const v=(e.currentTarget as HTMLHeadingElement).innerText;
+    setLocalPlans(p=>{const n=[...p]; n[i]={...n[i], name:v}; return n;});
   };
-  const onBadge = (i:number) => (e:React.FormEvent<HTMLSpanElement>)=>{
-    const v = (e.currentTarget as HTMLSpanElement).innerText;
-    setLocalPlans(prev=>{const n=[...prev]; n[i]={...n[i], badge:v}; return n;});
-  };
-  const onPrice = (i:number) => (e:React.FormEvent<HTMLSpanElement>)=>{
-    const v = (e.currentTarget as HTMLSpanElement).innerText;
-    setLocalPlans(prev=>{const n=[...prev]; n[i]={...n[i], price:v}; return n;});
-  };
-  const onPeriod = (i:number) => (e:React.FormEvent<HTMLSpanElement>)=>{
-    const v = (e.currentTarget as HTMLSpanElement).innerText.replace(/^\//,'');
-    setLocalPlans(prev=>{const n=[...prev]; n[i]={...n[i], period:v}; return n;});
-  };
-  const onOldPrice = (i:number) => (e:React.FormEvent<HTMLSpanElement>)=>{
-    const v = (e.currentTarget as HTMLSpanElement).innerText.replace(displayCurrency,'');
-    setLocalPlans(prev=>{const n=[...prev]; n[i]={...n[i], oldPrice:v}; return n;});
+  const onBadge = (i:number)=>(e:React.FormEvent<HTMLSpanElement>)=>{
+    const v=(e.currentTarget as HTMLSpanElement).innerText;
+    setLocalPlans(p=>{const n=[...p]; n[i]={...n[i], badge:v}; return n;});
   };
   const onCurrency = (e:React.FormEvent<HTMLSpanElement>)=>{
     setDisplayCurrency((e.currentTarget as HTMLSpanElement).innerText);
   };
-  const onFeat = (i:number, k:number) => (e:React.FormEvent<HTMLSpanElement>)=>{
-    const v = (e.currentTarget as HTMLSpanElement).innerText;
-    setLocalPlans(prev=>{
-      const n=[...prev]; const feats=[...(n[i].features||[])];
+  const onPrice = (i:number)=>(e:React.FormEvent<HTMLSpanElement>)=>{
+    const v=(e.currentTarget as HTMLSpanElement).innerText;
+    setLocalPlans(p=>{const n=[...p]; n[i]={...n[i], price:v}; return n;});
+  };
+  const onPeriod = (i:number)=>(e:React.FormEvent<HTMLSpanElement>)=>{
+    const v=(e.currentTarget as HTMLSpanElement).innerText.replace(/^\//,'');
+    setLocalPlans(p=>{const n=[...p]; n[i]={...n[i], period:v}; return n;});
+  };
+  const onOldPrice = (i:number)=>(e:React.FormEvent<HTMLSpanElement>)=>{
+    const v=(e.currentTarget as HTMLSpanElement).innerText.replace(displayCurrency,'');
+    setLocalPlans(p=>{const n=[...p]; n[i]={...n[i], oldPrice:v}; return n;});
+  };
+  const onFeat = (i:number,k:number)=>(e:React.FormEvent<HTMLSpanElement>)=>{
+    const v=(e.currentTarget as HTMLSpanElement).innerText;
+    setLocalPlans(p=>{
+      const n=[...p]; const feats=[...(n[i].features||[])];
       feats[k]=v; n[i]={...n[i], features:feats}; return n;
     });
   };
-  const onCtaLabel = (i:number, which:'primary'|'ghost') => (e:React.FormEvent<HTMLAnchorElement>)=>{
-    const v = (e.currentTarget as HTMLAnchorElement).innerText;
-    setLocalPlans(prev=>{
-      const n=[...prev];
+  const onCta = (i:number, which:'primary'|'ghost') => (e:React.FormEvent<HTMLAnchorElement>)=>{
+    const v=(e.currentTarget as HTMLAnchorElement).innerText;
+    setLocalPlans(p=>{
+      const n=[...p];
       if(which==='primary') n[i]={...n[i], ctaLabel:v};
       else n[i]={...n[i], secondaryCtaLabel:v as any};
       return n;
@@ -66,7 +66,7 @@ export default function V1({
   return (
     <div className={`${s.grid} ${densityCls(options.density)} ${columnsCls(options.columns)} ${options.equalHeights ? s.equalHeights : ""}`}>
       {localPlans.map((p, i) => (
-        <article key={i} className={`${s.card} ${p.highlight ? s.highlight : ""}`}>
+        <article key={i} className={`${s.card} ${s.glass} ${p.highlight ? s.highlight : ""}`}>
           {p.highlight && (
             <div
               className={s.ribbon}
@@ -160,18 +160,18 @@ export default function V1({
               href={p.ctaHref || "#"}
               contentEditable
               suppressContentEditableWarning
-              onInput={onCtaLabel(i,'primary')}
+              onInput={onCta(i,'primary')}
             >
-              {p.ctaLabel || "בחר חבילה"}
+              {p.ctaLabel || "התחל"}
             </a>
             <a
               className={`${s.btn} ${s.btnGhost}`}
               href={p.ctaHref || "#"}
               contentEditable
               suppressContentEditableWarning
-              onInput={onCtaLabel(i,'ghost')}
+              onInput={onCta(i,'ghost')}
             >
-              {"פרטים"}
+              {"עוד"}
             </a>
           </div>
         </article>
@@ -191,3 +191,4 @@ function columnsCls(cols:"auto"|"single"|"double"|"triple"){
 function densityCls(d:"compact"|"normal"|"spacious"){
   return d === "compact" ? s.compact : d === "spacious" ? s.spacious : s.normal;
 }
+

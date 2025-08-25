@@ -34,6 +34,9 @@ const API_BASE =
 
 const UPLOAD_ENDPOINT = "/api/upload-image"; // עדכן אם ה־endpoint שלך שונה
 
+// מצב השתקת שגיאות ב־UI
+const SILENCE_ERRORS = true;
+
 export default function Gallery({
   title = "מהעבודות שלנו",
   subtitle,
@@ -137,7 +140,9 @@ export default function Gallery({
   // בחירת קובץ: פריוויו מיידי -> העלאה -> החלפה ב־URL של השרת
   const handleFileSelect = async (index: number, file?: File | null) => {
     if (!file) return;
+    // לא מציגים שגיאה למשתמש — מאפסים בכל מקרה
     setErrorAt((p) => ({ ...p, [index]: null }));
+
     const preview = URL.createObjectURL(file);
     setImageAt(index, preview);
     setUploading((p) => ({ ...p, [index]: true }));
@@ -145,10 +150,12 @@ export default function Gallery({
       const serverUrl = await uploadFileToServer(file);
       setImageAt(index, serverUrl);
     } catch (e: any) {
-      setErrorAt((p) => ({
-        ...p,
-        [index]: e?.message || "שגיאת העלאה",
-      }));
+      // שקט ב־UI: רק לוג למפתחים
+      console.error("Upload failed at index", index, e);
+      // מבטלים סימון שגיאה כדי שלא יוצג בשום מקום
+      setErrorAt((p) => ({ ...p, [index]: null }));
+      // אופציונלי: להסיר את ה־preview במקרה כשל
+      // setImageAt(index, "");
     } finally {
       setUploading((p) => ({ ...p, [index]: false }));
     }
@@ -306,7 +313,8 @@ export default function Gallery({
             input?.click();
           }}
           uploading={uploading}
-          errors={errorAt}
+          /* משתק את שגיאות ה־UI ע"י העברת אובייקט ריק */
+          errors={SILENCE_ERRORS ? {} : errorAt}
         />
       )}
 

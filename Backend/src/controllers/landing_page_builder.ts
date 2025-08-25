@@ -147,7 +147,7 @@ async function getServicesFromLLM(businessName: string): Promise<ServiceItem[]> 
 }
 
 /* -------------------------------------------
-   Controller: Generate Landing Page Context
+   Controller: Generate Landing Page Context (Optimized with Parallelism)
 -------------------------------------------- */
 
 export const generateLandingPageContext = async (
@@ -170,223 +170,94 @@ export const generateLandingPageContext = async (
         ? business.customBusinessField
         : business.businessField;
 
-    // 1) מילת מפתח באנגלית לשימוש בחיפוש תמונה
-    const businessFieldKeyword = (
-      await generateContent(
-        `תרגם את התחום הבא למילת מפתח אחת באנגלית לחיפוש תמונות.
-החזר מילה אחת בלבד, ללא שום טקסט נוסף, ללא סימני ציטוט.
-${fieldToTranslate}`
-      )
-    )
-      .trim()
-      .replace(/["'\s]/g, "");
+    const brandTone =
+      campaignInfo?.marketingLevel
+        ? String(campaignInfo.marketingLevel)
+        : "רגוע, מקצועי ומזמין";
 
-    // נתיב שמירה לתמונת פיצ'רים/הרקע
-    const featureImgName = imageFileName(businessFieldKeyword);
-    const featureImgPath = path.join(
-      __dirname,
-      "../pexels_images",
-      featureImgName
-    );
+    // עוזר קטן לקיצור
+    const gen = (p: string) => generateContent(p);
 
-    /* -------------------------------------------
-       Brand voice / Tone
-    -------------------------------------------- */
-    const brandTone = campaignInfo?.marketingLevel
-      ? String(campaignInfo.marketingLevel)
-      : "רגוע, מקצועי ומזמין";
-
-    /* -------------------------------------------
-       HEADER
-    -------------------------------------------- */
-    const headerButtonText = (
-      await generateContent(
-        `כתוב קריאה לפעולה ממוקדת וקצרה עד 3 מילים לקמפיין שמטרתו: "${campaignInfo.campaginPurpose}".
+    // ---------- שלב 1: מפעילים במקביל כבר עכשיו כל מה שלא תלוי במילת המפתח ----------
+    const headerButtonTextPromise = gen(
+      `כתוב קריאה לפעולה ממוקדת וקצרה עד 3 מילים לקמפיין שמטרתו: "${campaignInfo.campaginPurpose}".
 החזר טקסט בעברית בלבד, ללא הסברים וללא סימני פיסוק מיותרים.`
-      )
-    ).trim();
+    ).then((s) => s.trim());
 
-    const headerSection = {
-      sectionName: "header",
-      businessName: business.businessName,
-      slogan: (
-        await generateContent(
-          `כתוב סלוגן קצר (עד 5 מילים) לעסק "${business.businessName}" בסגנון "${brandTone}".
+    const sloganPromise = gen(
+      `כתוב סלוגן קצר (עד 5 מילים) לעסק "${business.businessName}" בסגנון "${brandTone}".
 החזר טקסט בעברית בלבד.`
-        )
-      ).trim(),
-      buttonText: headerButtonText,
-      nav: extractJson<string[]>(
-        await generateContent(
-          `החזר מערך JSON של בדיוק 5 פריטי ניווט (מחרוזות קצרות בעברית) עבור דף נחיתה סטנדרטי (למשל: בית, שירותים, חבילות, לקוחות, צור קשר).
+    ).then((s) => s.trim());
+
+    const navPromise = gen(
+      `החזר מערך JSON של בדיוק 5 פריטי ניווט (מחרוזות קצרות בעברית) עבור דף נחיתה סטנדרטי (למשל: בית, שירותים, חבילות, לקוחות, צור קשר).
 החזר אך ורק את המערך.`
-        )
-      ),
-      socialLinks: {
-        facebook: business.socialMediaAccounts?.facebook || "",
-        instagram: business.socialMediaAccounts?.instagram || "",
-        tiktok: business.socialMediaAccounts?.tiktok || "",
-        linkedin: business.socialMediaAccounts?.linkedin || "",
-        youtube: business.socialMediaAccounts?.youtube || "",
-      },
-    };
+    );
 
-    /* -------------------------------------------
-       HERO
-    -------------------------------------------- */
-    const heroTitle = (
-      await generateContent(
-        `כתוב כותרת שיווקית חזקה וברורה לעסק "${business.businessName}" בתחום "${fieldToTranslate}".
+    const heroTitlePromise = gen(
+      `כתוב כותרת שיווקית חזקה וברורה לעסק "${business.businessName}" בתחום "${fieldToTranslate}".
 משפט אחד בעברית, ללא נקודה בסוף. טון: ${brandTone}.`
-      )
-    ).trim();
+    ).then((s) => s.trim());
 
-    const heroSubtitle = (
-      await generateContent(
-        `כתוב תת-כותרת קצרה (שורה אחת) שמחדדת את ערך המוצר/השירות של "${business.businessName}".
+    const heroSubtitlePromise = gen(
+      `כתוב תת-כותרת קצרה (שורה אחת) שמחדדת את ערך המוצר/השירות של "${business.businessName}".
 עברית בלבד, ללא נקודה בסוף. טון: ${brandTone}.`
-      )
-    ).trim();
+    ).then((s) => s.trim());
 
-    const heroBullets = extractJson<string[]>(
-      await generateContent(
-        `החזר מערך JSON של בדיוק 3 נקודות תועלת קצרות (עד 6 מילים כל אחת) עבור העסק "${business.businessName}".
+    const heroBulletsPromise = gen(
+      `החזר מערך JSON של בדיוק 3 נקודות תועלת קצרות (עד 6 מילים כל אחת) עבור העסק "${business.businessName}".
 עברית בלבד. ללא אמוג'י וללא קישוטים. החזר רק את המערך.`
-      )
     );
 
-    const heroImageName = imageFileName(`${businessFieldKeyword}_hero`);
-    const heroImagePath = path.join(
-      __dirname,
-      "../pexels_images",
-      heroImageName
-    );
-    const heroImage = await fetchPexelsImage(
-      businessFieldKeyword,
-      heroImagePath
-    );
-
-    const heroSection = {
-      sectionName: "hero",
-      title: heroTitle,
-      subtitle: heroSubtitle,
-      content: (
-        await generateContent(
-          `כתוב פסקה קצרה (עד 3 שורות) על "${business.businessName}" לשימוש כטקסט פתיחה בגיבור.
+    const heroContentPromise = gen(
+      `כתוב פסקה קצרה (עד 3 שורות) על "${business.businessName}" לשימוש כטקסט פתיחה בגיבור.
 כלול בטבעיות:
 - סוג עסק: ${business.businessType}
 - תחום: ${business.businessFieldDetails}
 - אזורי שירות: ${business.serviceAreas}
 - שירותים: ${business.serviceDescription}
 עברית בלבד, טון: ${brandTone}.`
-        )
-      ).trim(),
-      bullets: heroBullets,
-      primaryButtonText: headerButtonText,
-      secondaryButtonText: (
-        await generateContent(
-          `כתוב טקסט קצר לכפתור משני (עד 3 מילים) שמוביל לגלריה/פרויקטים.
-עברית בלבד, ללא הסברים.`
-        )
-      ).trim(),
-      image: heroImage,
-    };
+    ).then((s) => s.trim());
 
-    /* -------------------------------------------
-       FEATURES (יתרונות/מאפיינים)
-    -------------------------------------------- */
-    const featuresContent = extractJson<string[]>(
-      await generateContent(`
+    const secondaryBtnPromise = gen(
+      `כתוב טקסט קצר לכפתור משני (עד 3 מילים) שמוביל לגלריה/פרויקטים.
+עברית בלבד, ללא הסברים.`
+    ).then((s) => s.trim());
+
+    const featuresContentPromise = gen(`
 החזר מערך JSON עם בדיוק 4 מחרוזות, כל אחת מתארת יתרון שיווקי לעסק "${business.businessName}" (עד 6 מילים).
 דרישות:
 • ללא תווי קישוט/אמוג'י
 • עברית בלבד
-• החזר רק את המערך`)
-    );
+• החזר רק את המערך`);
 
-    const featuresSection = {
-      sectionName: "features",
-      title: (
-        await generateContent(
-          `כתוב כותרת קצרה (עד 4 מילים) לסקשן יתרונות, עברית בלבד.`
-        )
-      ).trim(),
-      content: featuresContent,
-      image: await fetchPexelsImage(businessFieldKeyword, featureImgPath),
-    };
+    const featuresTitlePromise = gen(
+      `כתוב כותרת קצרה (עד 4 מילים) לסקשן יתרונות, עברית בלבד.`
+    ).then((s) => s.trim());
 
-    /* -------------------------------------------
-       ABOUT US
-    -------------------------------------------- */
-    const aboutTextRaw = await generateContent(`
+    const aboutTextPromise = gen(`
 כתוב פסקה אחת רציפה וברורה בעברית על העסק "${business.businessName}" בלבד, בלי להמציא מידע.
 שלב בפסקה:
 • הייחוד: "${business.uniqueService}"
 • הטון/סגנון: "${business.designPreferences}"
 • קהל היעד והגילאים: "${campaignInfo.targetAge}"
 אל תחזיר JSON/קוד – רק את הטקסט עצמו, שורה אחת רציפה ללא שורות חדשות
-    `);
+    `).then((s) => s.trim());
 
-    const aboutUsSection = {
-      sectionName: "aboutUs",
-      title: "מי אנחנו",
-      content: aboutTextRaw.trim(), // מחרוזת רגילה (לא JSON)
-      mission: (
-        await generateContent(
-          `כתוב משפט אחד שמציג את החזון/משימה של "${business.businessName}" בעברית, ללא נקודה בסוף`
-        )
-      ).trim(),
-    };
+    const missionPromise = gen(
+      `כתוב משפט אחד שמציג את החזון/משימה של "${business.businessName}" בעברית, ללא נקודה בסוף`
+    ).then((s) => s.trim());
 
-    /* -------------------------------------------
-       SERVICES (פירוט שירותים) – גרסה יציבה
-    -------------------------------------------- */
-    const services: ServiceItem[] = await getServicesFromLLM(
-      business.businessName
-    );
+    const servicesPromise = getServicesFromLLM(business.businessName);
 
-    const servicesSection = {
-      sectionName: "services",
-      title: "השירותים שלנו",
-      items: services, // תמיד ServiceItem[]
-    };
-
-    /* -------------------------------------------
-       HOW IT WORKS (תהליך)
-    -------------------------------------------- */
-    type StepItem = { step: number; title: string; text: string };
-    const steps = requireArrayOfObjects<StepItem>(
-      extractJson(
-        await generateContent(
-          `החזר מערך JSON של בדיוק 4 אובייקטים המתארים תהליך עבודה ל-"${business.businessName}".
+    const howStepsPromise = gen(
+      `החזר מערך JSON של בדיוק 4 אובייקטים המתארים תהליך עבודה ל-"${business.businessName}".
 מבנה כל אובייקט: { "step": <מספר צעד 1-4>, "title": "<כותרת קצרה>", "text": "<משפט הסבר קצר>" }
 עברית בלבד. החזר רק את המערך.`
-        )
-      ),
-      ["step", "title", "text"],
-      "howItWorks"
     );
 
-    const howItWorksSection = {
-      sectionName: "howItWorks",
-      title: "איך זה עובד",
-      steps,
-    };
-
-    /* -------------------------------------------
-       PRICING (חבילות מחיר)
-    -------------------------------------------- */
-    type Plan = {
-      name: string;
-      priceMonthly: number;
-      features: string[];
-      cta: string;
-      highlight?: boolean;
-    };
-    const pricing = requireArrayOfObjects<Plan>(
-      extractJson(
-        await generateContent(
-          `עבור "${business.businessName}" החזר מערך JSON של בדיוק 3 חבילות מחיר.
+    const pricingPromise = gen(
+      `עבור "${business.businessName}" החזר מערך JSON של בדיוק 3 חבילות מחיר.
 מבנה:
 [
   {
@@ -404,240 +275,90 @@ ${fieldToTranslate}`
 • עברית בלבד לשמות/פיצ'רים/CTA
 • בדיוק 4 תכונות לכל חבילה
 • החזר רק את המערך`
-        )
-      ),
-      ["name", "priceMonthly", "features", "cta"],
-      "pricing"
     );
 
-    const pricingSection = {
-      sectionName: "pricing",
-      title: "חבילות ושירותים",
-      subtitle: (
-        await generateContent(
-          `כתוב שורת הסבר קצרה (עד 10 מילים) לפני טבלת החבילות.
+    const pricingSubtitlePromise = gen(
+      `כתוב שורת הסבר קצרה (עד 10 מילים) לפני טבלת החבילות.
 עברית בלבד.`
-        )
-      ).trim(),
-      plans: pricing.map((p, i) => ({
-        ...p,
-        highlight: i === 1 ? true : !!p.highlight, // מדגישים ברירת מחדל את האמצעית
-      })),
-      disclaimer: (
-        await generateContent(
-          `כתוב הערת הבהרה קצרה (עד 10 מילים) על המחירים (למשל לפני מע"מ/נתון לשינוי).
-עברית בלבד.`
-        )
-      ).trim(),
-    };
+    ).then((s) => s.trim());
 
-    /* -------------------------------------------
-       REVIEWS (חוות דעת)
-    -------------------------------------------- */
-    const reviewsArray = asStringArray(
-      extractJson(
-        await generateContent(`
+    const pricingDisclaimerPromise = gen(
+      `כתוב הערת הבהרה קצרה (עד 10 מילים) על המחירים (למשל לפני מע"מ/נתון לשינוי).
+עברית בלבד.`
+    ).then((s) => s.trim());
+
+    const reviewsPromise = gen(`
 כתוב 4 חוות דעת אותנטיות (2–3 משפטים כל אחת) על "${business.businessName}".
 כללים:
 • עברית בלבד, זמן הווה
 • בלי שמות פרטיים/תארים/אמוג'י
 • בלי מילים גנריות בלבד ("מצוין", "נהדר")
-החזר אך ורק מערך JSON של 4 מחרוזות.`)
-      ),
-      "reviews"
-    );
+החזר אך ורק מערך JSON של 4 מחרוזות.`);
 
-    const reviewsSection = {
-      sectionName: "reviews",
-      title: "לקוחות מספרים",
-      content: reviewsArray,
-      ratingSummary: {
-        average: Number(
-          (
-            await generateContent(
-              `בחר ממוצע דירוג ריאלי בין 4.2 ל-5.0 כמספר עשרוני (למשל 4.7).
+    const ratingAvgPromise = gen(
+      `בחר ממוצע דירוג ריאלי בין 4.2 ל-5.0 כמספר עשרוני (למשל 4.7).
 החזר מספר בלבד.`
-            )
-          ).trim()
-        ),
-        count: Number(
-          (
-            await generateContent(
-              `בחר מספר ריאלי של חוות דעת בין 24 ל-350 לעסק בתחום "${fieldToTranslate}".
-החזר מספר בלבד.`
-            )
-          ).trim()
-        ),
-      },
-    };
+    ).then((s) => Number(s.trim()));
 
-    /* -------------------------------------------
-       STATS / TRUST (אמון)
-    -------------------------------------------- */
-    type Stat = { label: string; value: string };
-    const stats = requireArrayOfObjects<Stat>(
-      extractJson(
-        await generateContent(
-          `החזר מערך JSON של בדיוק 4 סטטיסטיקות אמון ל-"${business.businessName}".
+    const ratingCountPromise = gen(
+      `בחר מספר ריאלי של חוות דעת בין 24 ל-350 לעסק בתחום "${fieldToTranslate}".
+החזר מספר בלבד.`
+    ).then((s) => Number(s.trim()));
+
+    const statsPromise = gen(
+      `החזר מערך JSON של בדיוק 4 סטטיסטיקות אמון ל-"${business.businessName}".
 מבנה כל פריט: { "label": "<תיאור קצר>", "value": "<מספר/אחוז/כמות קצרה>" }
 דוגמאות: "לקוחות מרוצים", "פרויקטים שבוצעו", "שנות ניסיון", "זמן תגובה ממוצע".
 עברית בלבד. החזר רק את המערך.`
-        )
-      ),
-      ["label", "value"],
-      "stats"
     );
 
-    const trustSection = {
-      sectionName: "trust",
-      title: "למה לבחור בנו",
-      stats,
-      badges: extractJson<string[]>(
-        await generateContent(
-          `החזר מערך JSON של בדיוק 4 תגים/אמירות אמון (ללא אמוג'י), לדוגמה: "אחריות מלאה", "צוות מקצועי".
+    const trustBadgesPromise = gen(
+      `החזר מערך JSON של בדיוק 4 תגים/אמירות אמון (ללא אמוג'י), לדוגמה: "אחריות מלאה", "צוות מקצועי".
 עברית בלבד, החזר רק את המערך.`
-        )
-      ),
-    };
+    );
 
-    /* -------------------------------------------
-       FAQ (שאלות נפוצות)
-    -------------------------------------------- */
-    type QA = { q: string; a: string };
-    const faqItems = requireArrayOfObjects<QA>(
-      extractJson(
-        await generateContent(
-          `החזר מערך JSON של בדיוק 6 שאלות ותשובות עבור "${business.businessName}".
+    const faqPromise = gen(
+      `החזר מערך JSON של בדיוק 6 שאלות ותשובות עבור "${business.businessName}".
 מבנה: { "q": "<שאלה קצרה>", "a": "<תשובה קצרה (משפט-שניים)>" }
 עברית בלבד. החזר רק את המערך.`
-        )
-      ),
-      ["q", "a"],
-      "faq"
     );
 
-    const faqSection = {
-      sectionName: "faq",
-      title: "שאלות נפוצות",
-      items: faqItems,
-    };
+    const contactSubtitlePromise = gen(
+      `כתוב משפט קצר המעודד השארת פרטים/יצירת קשר, טון ${brandTone}, עברית בלבד.`
+    ).then((s) => s.trim());
 
-    /* -------------------------------------------
-       GALLERY (גלריה)
-    -------------------------------------------- */
-    const gallerySection = {
-      sectionName: "gallery",
-      title: "מהעבודות שלנו",
-      cover: await fetchPexelsImage(
-        `${businessFieldKeyword}_portfolio`,
-        path.join(
-          __dirname,
-          "../pexels_images",
-          imageFileName(`${businessFieldKeyword}_gallery`)
-        )
-      ),
-    };
+    const submitTextPromise = gen(
+      `החזר טקסט קצר לכפתור שליחת טופס (עד 3 מילים), עברית בלבד.`
+    ).then((s) => s.trim());
 
-    /* -------------------------------------------
-       CONTACT (צור קשר)
-    -------------------------------------------- */
-    const contactUsSection = {
-      sectionName: "contactUs",
-      title: "צרו קשר",
-      subtitle: (
-        await generateContent(
-          `כתוב משפט קצר המעודד השארת פרטים/יצירת קשר, טון ${brandTone}, עברית בלבד.`
-        )
-      ).trim(),
-      fields: ["name", "phone", "email", "message"],
-      submitText: (
-        await generateContent(
-          `החזר טקסט קצר לכפתור שליחת טופס (עד 3 מילים), עברית בלבד.`
-        )
-      ).trim(),
-      successMessage: (
-        await generateContent(
-          `כתוב הודעת הצלחה קצרה לאחר שליחת טופס (משפט אחד), עברית בלבד.`
-        )
-      ).trim(),
-      contactInfo: {
-        email: userInfo.email,
-        phone: business.phone || "",
-        address: business.address || "",
-        whatsapp: business.whatsapp || "",
-      },
-      openingHours: extractJson<Record<string, string>>(
-        await generateContent(
-          `החזר אובייקט JSON של שעות פעילות סטנדרטיות ל-"${business.businessName}".
+    const successMessagePromise = gen(
+      `כתוב הודעת הצלחה קצרה לאחר שליחת טופס (משפט אחד), עברית בלבד.`
+    ).then((s) => s.trim());
+
+    const openingHoursPromise = gen(
+      `החזר אובייקט JSON של שעות פעילות סטנדרטיות ל-"${business.businessName}".
 מפתחות (keys) בעברית: "ראשון","שני","שלישי","רביעי","חמישי","שישי","שבת".
 ערכים: טווחי שעות קצרים (למשל "09:00–18:00" או "סגור").
 החזר רק את האובייקט.`
-        )
-      ),
-      mapQuery: (
-        await generateContent(
-          `החזר מחרוזת כתובת/Query קצרה לניווט במפה עבור "${business.businessName}" ב-${business.serviceAreas}.
+    );
+
+    const mapQueryPromise = gen(
+      `החזר מחרוזת כתובת/Query קצרה לניווט במפה עבור "${business.businessName}" ב-${business.serviceAreas}.
 החזר מחרוזת בלבד.`
-        )
-      ).trim(),
-    };
+    ).then((s) => s.trim());
 
-    /* -------------------------------------------
-       FOOTER
-    -------------------------------------------- */
-    const footerSection = {
-      sectionName: "footer",
-      socialMediaIcons: business.socialMediaAccounts,
-      contactInfo: userInfo.email,
-      copyRights: "©2025 כל הזכויות שמורות לצוות Smarketing",
-      smallPrint: (
-        await generateContent(
-          `כתוב הודעת זכויות/פרטיות קצרה (משפט אחד), עברית בלבד.`
-        )
-      ).trim(),
-    };
-
-    /* -------------------------------------------
-       CTA VARIANTS
-    -------------------------------------------- */
-    const ctas = extractJson<string[]>(
-      await generateContent(
-        `החזר מערך JSON של בדיוק 6 טקסטי CTA קצרים (2–3 מילים) עבור "${business.businessName}".
+    const ctasPromise = gen(
+      `החזר מערך JSON של בדיוק 6 טקסטי CTA קצרים (2–3 מילים) עבור "${business.businessName}".
 עברית בלבד, החזר רק את המערך.`
-      )
     );
 
-    const ctaSection = {
-      sectionName: "ctaVariants",
-      items: ctas,
-    };
-
-    /* -------------------------------------------
-       SOCIAL PROOF
-    -------------------------------------------- */
-    const socialProof = extractJson<string[]>(
-      await generateContent(
-        `החזר מערך JSON של בדיוק 6 שמות מותג/אתרים/גופים שמתאימים להמחשת "לקוחות/אזכורים" (דמה/כללי) בתחום "${fieldToTranslate}" בישראל.
+    const socialProofPromise = gen(
+      `החזר מערך JSON של בדיוק 6 שמות מותג/אתרים/גופים שמתאימים להמחשת "לקוחות/אזכורים" (דמה/כללי) בתחום "${fieldToTranslate}" בישראל.
 עברית בלבד. החזר רק את המערך.`
-      )
     );
 
-    const socialProofSection = {
-      sectionName: "socialProof",
-      title: "בין לקוחותינו",
-      brands: socialProof,
-    };
-
-    /* -------------------------------------------
-       SEO
-    -------------------------------------------- */
-    const seo = extractJson<{
-      title: string;
-      description: string;
-      keywords: string[];
-    }>(
-      await generateContent(
-        `החזר אובייקט JSON עבור SEO ל-"${business.businessName}".
+    const seoPromise = gen(
+      `החזר אובייקט JSON עבור SEO ל-"${business.businessName}".
 מבנה:
 {
   "title": "<עד 60 תווים>",
@@ -645,28 +366,10 @@ ${fieldToTranslate}`
   "keywords": ["מילת מפתח 1", "מילת מפתח 2", "..."] // בדיוק 8 מילות מפתח
 }
 עברית בלבד לכל השדות. החזר רק את האובייקט.`
-      )
     );
 
-    const seoSection = {
-      sectionName: "seo",
-      ...seo,
-    };
-
-    /* -------------------------------------------
-       COLOR & FONT PALETTE
-    -------------------------------------------- */
-    const colorAndFontPrompt = extractJson<{
-      primary: string;
-      secondary: string;
-      tertiary: string;
-      text: string;
-      font: string;
-      overlayAlpha: number;
-      gradients: { primary?: string; secondary?: string; tertiary?: string };
-    }>(
-      await generateContent(
-        `בחר פלטת צבעים וגופן ל-"${business.businessName}" (תחום: "${fieldToTranslate}") והחזר אובייקט JSON אחד:
+    const colorAndFontPromise = gen(
+      `בחר פלטת צבעים וגופן ל-"${business.businessName}" (תחום: "${fieldToTranslate}") והחזר אובייקט JSON אחד:
 דרישות:
 - "primary": HEX בהיר-בינוני, מודרני ונעים (לא צהוב/כתום/אדום/שחור/לבן/אפור טהור)
 - "secondary": HEX משלים/קומפלמנטרי עבור כפתורים/כותרות, שונה מה-primary
@@ -676,30 +379,328 @@ ${fieldToTranslate}`
 - "overlayAlpha": מספר עשרוני בין 0.15 ל-0.5 לשכבת כהות על תמונות רקע
 - "gradients": אובייקט עם מחרוזות CSS Linear-Gradient עבור primary/secondary/tertiary (אופציונלי)
 החזר רק את האובייקט, ללא טקסט נוסף.`
-      )
     );
 
-    /* -------------------------------------------
-       PAGE GOALS + Microcopy
-    -------------------------------------------- */
-    const goals = extractJson<string[]>(
-      await generateContent(
-        `החזר מערך JSON של בדיוק 4 יעדי המרה עסקיים עבור "${business.businessName}" ("לידים", "שיחת ייעוץ", "הזמנה", "רכישה", וכו').
+    const goalsPromise = gen(
+      `החזר מערך JSON של בדיוק 4 יעדי המרה עסקיים עבור "${business.businessName}" ("לידים", "שיחת ייעוץ", "הזמנה", "רכישה", וכו').
 עברית בלבד. החזר רק את המערך.`
-      )
     );
 
-    const microcopy = extractJson<Record<string, string>>(
-      await generateContent(
-        `החזר אובייקט JSON עם מיקרו-קופי (key:value) לשימוש באתר.
+    const microcopyPromise = gen(
+      `החזר אובייקט JSON עם מיקרו-קופי (key:value) לשימוש באתר.
 מפתחות לדוגמה: "form_name_placeholder","form_email_placeholder","form_phone_placeholder","form_message_placeholder","empty_state","loading","error_generic","retry","success_generic".
 ערכים: משפטים קצרים בעברית. החזר רק את האובייקט.`
-      )
     );
 
+    // ---------- שלב 2: מפיקים במקביל את מילת המפתח באנגלית (נדרשת לתמונות) ----------
+    const businessFieldKeywordPromise = gen(
+      `תרגם את התחום הבא למילת מפתח אחת באנגלית לחיפוש תמונות.
+החזר מילה אחת בלבד, ללא שום טקסט נוסף, ללא סימני ציטוט.
+${fieldToTranslate}`
+    )
+      .then((s) => s.trim().replace(/["'\s]/g, ""))
+      .then((kw) => kw || "business");
+
+    // ---------- שלב 3: תמונות – תלויות במילת המפתח בלבד ----------
+    const heroImagePromise = businessFieldKeywordPromise.then(async (kw) => {
+      const heroImageName = imageFileName(`${kw}_hero`);
+      const heroImagePath = path.join(__dirname, "../pexels_images", heroImageName);
+      return fetchPexelsImage(kw, heroImagePath);
+    });
+
+    const featuresImagePromise = businessFieldKeywordPromise.then(async (kw) => {
+      const featureImgName = imageFileName(kw);
+      const featureImgPath = path.join(__dirname, "../pexels_images", featureImgName);
+      return fetchPexelsImage(kw, featureImgPath);
+    });
+
+    const galleryCoverPromise = businessFieldKeywordPromise.then(async (kw) => {
+      const coverPath = path.join(
+        __dirname,
+        "../pexels_images",
+        imageFileName(`${kw}_gallery`)
+      );
+      return fetchPexelsImage(`${kw}_portfolio`, coverPath);
+    });
+
+    // ---------- שלב 4: איסוף כל התוצאות במקביל ----------
+    const [
+      businessFieldKeyword,
+      headerButtonText,
+      slogan,
+      navRaw,
+      heroTitle,
+      heroSubtitle,
+      heroBulletsRaw,
+      heroContent,
+      secondaryBtnText,
+      featuresContentRaw,
+      featuresTitle,
+      aboutTextRaw,
+      mission,
+      services,
+      howStepsRaw,
+      pricingRaw,
+      pricingSubtitle,
+      pricingDisclaimer,
+      reviewsRaw,
+      ratingAvg,
+      ratingCount,
+      statsRaw,
+      trustBadgesRaw,
+      faqRaw,
+      contactSubtitle,
+      submitText,
+      successMessage,
+      openingHoursRaw,
+      mapQuery,
+      ctasRaw,
+      socialProofRaw,
+      seoRaw,
+      colorAndFontRaw,
+      goalsRaw,
+      microcopyRaw,
+      heroImage,
+      featuresImage,
+      galleryCover,
+    ] = await Promise.all([
+      businessFieldKeywordPromise,
+      headerButtonTextPromise,
+      sloganPromise,
+      navPromise,
+      heroTitlePromise,
+      heroSubtitlePromise,
+      heroBulletsPromise,
+      heroContentPromise,
+      secondaryBtnPromise,
+      featuresContentPromise,
+      featuresTitlePromise,
+      aboutTextPromise,
+      missionPromise,
+      servicesPromise,
+      howStepsPromise,
+      pricingPromise,
+      pricingSubtitlePromise,
+      pricingDisclaimerPromise,
+      reviewsPromise,
+      ratingAvgPromise,
+      ratingCountPromise,
+      statsPromise,
+      trustBadgesPromise,
+      faqPromise,
+      contactSubtitlePromise,
+      submitTextPromise,
+      successMessagePromise,
+      openingHoursPromise,
+      mapQueryPromise,
+      ctasPromise,
+      socialProofPromise,
+      seoPromise,
+      colorAndFontPromise,
+      goalsPromise,
+      microcopyPromise,
+      heroImagePromise,
+      featuresImagePromise,
+      galleryCoverPromise,
+    ]);
+
     /* -------------------------------------------
-       Assemble Context
+       Parse + Assemble (לוגיקה ותוכן זהים להסבר המקורי)
     -------------------------------------------- */
+
+    // HEADER
+    const headerSection = {
+      sectionName: "header",
+      businessName: business.businessName,
+      slogan,
+      buttonText: headerButtonText,
+      nav: extractJson<string[]>(navRaw),
+      socialLinks: {
+        facebook: business.socialMediaAccounts?.facebook || "",
+        instagram: business.socialMediaAccounts?.instagram || "",
+        tiktok: business.socialMediaAccounts?.tiktok || "",
+        linkedin: business.socialMediaAccounts?.linkedin || "",
+        youtube: business.socialMediaAccounts?.youtube || "",
+      },
+    };
+
+    // HERO
+    const heroSection = {
+      sectionName: "hero",
+      title: heroTitle,
+      subtitle: heroSubtitle,
+      content: heroContent,
+      bullets: extractJson<string[]>(heroBulletsRaw),
+      primaryButtonText: headerButtonText,
+      secondaryButtonText: secondaryBtnText,
+      image: heroImage,
+    };
+
+    // FEATURES
+    const featuresSection = {
+      sectionName: "features",
+      title: featuresTitle,
+      content: extractJson<string[]>(featuresContentRaw),
+      image: featuresImage,
+    };
+
+    // ABOUT US
+    const aboutUsSection = {
+      sectionName: "aboutUs",
+      title: "מי אנחנו",
+      content: aboutTextRaw,
+      mission,
+    };
+
+    // SERVICES
+    const servicesSection = {
+      sectionName: "services",
+      title: "השירותים שלנו",
+      items: services,
+    };
+
+    // HOW IT WORKS
+    type StepItem = { step: number; title: string; text: string };
+    const steps = requireArrayOfObjects<StepItem>(
+      extractJson(howStepsRaw),
+      ["step", "title", "text"],
+      "howItWorks"
+    );
+    const howItWorksSection = {
+      sectionName: "howItWorks",
+      title: "איך זה עובד",
+      steps,
+    };
+
+    // PRICING
+    type Plan = {
+      name: string;
+      priceMonthly: number;
+      features: string[];
+      cta: string;
+      highlight?: boolean;
+    };
+    const pricing = requireArrayOfObjects<Plan>(
+      extractJson(pricingRaw),
+      ["name", "priceMonthly", "features", "cta"],
+      "pricing"
+    );
+    const pricingSection = {
+      sectionName: "pricing",
+      title: "חבילות ושירותים",
+      subtitle: pricingSubtitle,
+      plans: pricing.map((p, i) => ({ ...p, highlight: i === 1 ? true : !!p.highlight })),
+      disclaimer: pricingDisclaimer,
+    };
+
+    // REVIEWS
+    const reviewsArray = asStringArray(extractJson(reviewsRaw), "reviews");
+    const reviewsSection = {
+      sectionName: "reviews",
+      title: "לקוחות מספרים",
+      content: reviewsArray,
+      ratingSummary: { average: ratingAvg, count: ratingCount },
+    };
+
+    // TRUST
+    type Stat = { label: string; value: string };
+    const stats = requireArrayOfObjects<Stat>(
+      extractJson(statsRaw),
+      ["label", "value"],
+      "stats"
+    );
+    const trustSection = {
+      sectionName: "trust",
+      title: "למה לבחור בנו",
+      stats,
+      badges: extractJson<string[]>(trustBadgesRaw),
+    };
+
+    // FAQ
+    type QA = { q: string; a: string };
+    const faqItems = requireArrayOfObjects<QA>(
+      extractJson(faqRaw),
+      ["q", "a"],
+      "faq"
+    );
+    const faqSection = {
+      sectionName: "faq",
+      title: "שאלות נפוצות",
+      items: faqItems,
+    };
+
+    // GALLERY
+    const gallerySection = {
+      sectionName: "gallery",
+      title: "מהעבודות שלנו",
+      cover: galleryCover,
+    };
+
+    // CONTACT
+    const contactUsSection = {
+      sectionName: "contactUs",
+      title: "צרו קשר",
+      subtitle: contactSubtitle,
+      fields: ["name", "phone", "email", "message"],
+      submitText,
+      successMessage,
+      contactInfo: {
+        email: userInfo.email,
+        phone: business.phone || "",
+        address: business.address || "",
+        whatsapp: business.whatsapp || "",
+      },
+      openingHours: extractJson<Record<string, string>>(openingHoursRaw),
+      mapQuery,
+    };
+
+    // CTA VARIANTS
+    const ctaSection = {
+      sectionName: "ctaVariants",
+      items: extractJson<string[]>(ctasRaw),
+    };
+
+    // // SOCIAL PROOF
+    // const socialProofSection = {
+    //   sectionName: "socialProof",
+    //   title: "בין לקוחותינו",
+    //   brands: extractJson<string[]>(socialProofRaw),
+    // };
+
+    // SEO
+    const seo = extractJson<{
+      title: string;
+      description: string;
+      keywords: string[];
+    }>(seoRaw);
+    const seoSection = { sectionName: "seo", ...seo };
+
+    // COLOR & FONT
+    const colorAndFont = extractJson<{
+      primary: string;
+      secondary: string;
+      tertiary: string;
+      text: string;
+      font: string;
+      overlayAlpha: number;
+      gradients: { primary?: string; secondary?: string; tertiary?: string };
+    }>(colorAndFontRaw);
+
+    // GOALS + Microcopy
+    const goals = extractJson<string[]>(goalsRaw);
+    const microcopy = extractJson<Record<string, string>>(microcopyRaw);
+
+    // FOOTER
+    const footerSection = {
+      sectionName: "footer",
+      socialMediaIcons: business.socialMediaAccounts,
+      contactInfo: userInfo.email,
+      copyRights: "©2025 כל הזכויות שמורות לצוות Smarketing",
+      smallPrint: (
+        await gen(`כתוב הודעת זכויות/פרטיות קצרה (משפט אחד), עברית בלבד.`)
+      ).trim(),
+    };
+
     const context = {
       meta: {
         brandTone,
@@ -722,14 +723,13 @@ ${fieldToTranslate}`
       trustSection,
       faqSection,
       gallerySection,
-      socialProofSection,
       contactUsSection,
       ctaSection,
       seoSection,
-      colorAndFont: colorAndFontPrompt,
+      colorAndFont,
       goals,
       microcopy,
-      footerSection
+      footerSection,
     };
 
     res.status(200).json(context);
@@ -740,7 +740,7 @@ ${fieldToTranslate}`
 };
 
 /* -------------------------------------------
-   Controller: Text Suggestions (improved)
+   Controller: Text Suggestions (unchanged logic)
 -------------------------------------------- */
 
 export const getTextSuggestions = async (

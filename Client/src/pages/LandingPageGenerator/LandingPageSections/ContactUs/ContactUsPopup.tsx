@@ -182,7 +182,6 @@ export default function ContactPopup({
           </label>
           <label className={styles.rowCheck}>
             <input type="checkbox" checked={local.showAltContacts} onChange={e => setLocal(p => ({ ...p, showAltContacts: e.target.checked }))} />
-            <span>קישורי וואטסאפ/טלפון/אימייל</span>
           </label>
 
           <div className={styles.rowBetween}>

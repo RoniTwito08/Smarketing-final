@@ -1,3 +1,4 @@
+
 "use client";
 import React, { useMemo, useState } from "react";
 import s from "../aboutUs.module.css";
@@ -30,28 +31,28 @@ const iconFor = (k?: Stat["icon"]) => {
 
 const useRandomStats = (incoming?: Stat[]) => useMemo<Stat[]>(() => {
   if (incoming && incoming.length) return incoming;
-  const years    = Math.floor(Math.random() * (12 - 3 + 1)) + 3;
-  const clients  = Math.floor(Math.random() * (850 - 120 + 1)) + 120;
+  const years    = Math.floor(Math.random() * (14 - 4 + 1)) + 4;
+  const clients  = Math.floor(Math.random() * (1200 - 180 + 1)) + 180;
   const rating   = (Math.round((4.7 + Math.random() * 0.3) * 10) / 10).toFixed(1);
-  const projects = Math.floor(Math.random() * (600 - 80 + 1)) + 80;
+  const projects = Math.floor(Math.random() * (900 - 120 + 1)) + 120;
   return [
-    { icon: "clock", label: "שנות ניסיון בתחום", value: String(years) },
-    { icon: "users", label: "לקוחות מרוצים",     value: `+${clients}` },
-    { icon: "star",  label: "דירוג ממוצע",       value: rating },
-    { icon: "done",  label: "פרויקטים הושלמו",   value: `+${projects}` },
+    { icon: "clock", label: "ניסיון",     value: String(years) },
+    { icon: "users", label: "לקוחות",     value: `+${clients}` },
+    { icon: "star",  label: "דירוג",       value: rating },
+    { icon: "done",  label: "פרויקטים",    value: `+${projects}` },
   ];
 }, [incoming]);
 
-export default function V4({
+export default function V3({
   lines = [],
   paragraph,
   tagline,
   bullets: bulletsProp = [
-    "אחריות מלאה על העבודה",
-    "זמינות גבוהה גם לפרויקטים קטנים",
-    "יחס אישי ואנושי",
-    "ממליצים מרוצים לאורך זמן",
-    "מחירים הוגנים ושקיפות מלאה",
+    "זמינות וגמישות בשטח",
+    "תקשורת ברורה לאורך כל הדרך",
+    "ביצוע נקי ואסתטי",
+    "התחייבות לשביעות רצון",
+    "תמחור נגיש והוגן",
   ],
   stats: statsProp,
   imageUrl,
@@ -62,29 +63,23 @@ export default function V4({
   const waNum   = (whatsappNumber || phone || "").replace(/[^\d]/g, "");
   const waHref  = waNum ? `https://wa.me/${waNum}` : undefined;
 
-  const textBlockInit = useMemo(
+  const paragraphInit = useMemo(
     () => (paragraph && paragraph.trim().length ? paragraph : lines.join(" ")).trim(),
     [paragraph, lines]
   );
 
-  const [pText, setPText]       = useState(textBlockInit);
+  const [pText, setPText]       = useState(paragraphInit);
   const [tagText, setTagText]   = useState(tagline || "");
   const [whyTitle, setWhyTitle] = useState("למה לבחור בנו?");
   const [bullets, setBullets]   = useState<string[]>(bulletsProp);
   const stats                   = useRandomStats(statsProp);
-  const [badgeText, setBadgeText] = useState("מורשה ומבוטח");
-  const [callText, setCallText]   = useState("התקשר עכשיו");
-  const [waText, setWaText]       = useState("וואטסאפ");
+  const [callText, setCallText] = useState("התקשר עכשיו");
+  const [waText, setWaText]     = useState("וואטסאפ");
 
   const onDivInput =
     (setter: (v: string) => void) =>
     (e: React.FormEvent<HTMLDivElement>) =>
       setter((e.currentTarget as HTMLDivElement).innerText);
-
-  const onSpanInput =
-    (setter: (v: string) => void) =>
-    (e: React.FormEvent<HTMLSpanElement>) =>
-      setter((e.currentTarget as HTMLSpanElement).innerText);
 
   const onBulletInput =
     (i: number) =>
@@ -94,10 +89,10 @@ export default function V4({
     };
 
   return (
-    <div className={s.v4Wrap} dir="rtl">
-      <div className={s.v4Left}>
+    <div className={s.v3Wrap} dir="rtl">
+      <div className={s.v3Left}>
         <p
-          className={`${s.v4Paragraph} ${s.editableAuto}`}
+          className={`${s.v3Paragraph} ${s.editableAuto}`}
           contentEditable
           suppressContentEditableWarning
           dir="auto"
@@ -107,7 +102,7 @@ export default function V4({
         </p>
 
         <div
-          className={`${s.v4Tagline} ${s.editableAuto}`}
+          className={`${s.v3Tagline} ${s.editableAuto}`}
           contentEditable
           suppressContentEditableWarning
           dir="auto"
@@ -116,9 +111,9 @@ export default function V4({
           {tagText}
         </div>
 
-        <div className={s.v4WhyBox}>
+        <div className={s.v3WhyBox}>
           <div
-            className={`${s.v4WhyTitle} ${s.editableAuto}`}
+            className={`${s.v3WhyTitle} ${s.editableAuto}`}
             contentEditable
             suppressContentEditableWarning
             dir="auto"
@@ -126,12 +121,12 @@ export default function V4({
           >
             {whyTitle}
           </div>
-          <ul className={s.v4WhyList}>
+          <ul className={s.v3WhyList}>
             {bullets.map((b, i) => (
               <li key={i}>
                 <FaCheckCircle />
                 <span
-                  className={`${s.v4WhyItemText} ${s.editableAuto}`}
+                  className={`${s.v3WhyItemText} ${s.editableAuto}`}
                   contentEditable
                   suppressContentEditableWarning
                   dir="auto"
@@ -145,57 +140,48 @@ export default function V4({
         </div>
       </div>
 
-      <div className={s.v4Right}>
+      <div className={s.v3Right}>
         {imageUrl && (
-          <div className={s.v4AvatarWrap}>
-            <img className={s.v4Avatar} src={imageUrl} alt="" />
-            <span
-              className={`${s.v4Badge} ${s.editableAuto}`}
-              contentEditable
-              suppressContentEditableWarning
-              dir="auto"
-              onInput={onSpanInput(setBadgeText)}
-            >
-              {badgeText}
-            </span>
+          <div className={s.v3AvatarWrap}>
+            <img className={s.v3Avatar} src={imageUrl} alt="" />
           </div>
         )}
       </div>
 
-      <div className={s.v4StatsGrid}>
+      <div className={s.v3StatsGrid}>
         {stats.map((st, i) => (
-          <div key={i} className={s.v4StatCard}>
-            <div className={s.v4StatIcon}>{iconFor(st.icon)}</div>
-            <div className={s.v4StatValue} dir="auto">{st.value}</div>
-            <div className={s.v4StatLabel} dir="auto">{st.label}</div>
+          <div key={i} className={s.v3StatCard}>
+            <div className={s.v3StatIcon}>{iconFor(st.icon)}</div>
+            <div className={s.v3StatValue} dir="auto">{st.value}</div>
+            <div className={s.v3StatLabel} dir="auto">{st.label}</div>
           </div>
         ))}
       </div>
 
-      <div className={s.v4Ctas}>
+      <div className={s.v3Ctas}>
         {telHref && (
-          <a href={telHref} className={`${s.v4Btn} ${s.v4BtnPrimary}`}>
+          <a href={telHref} className={`${s.v3Btn} ${s.v3BtnPrimary}`}>
             <FaPhoneAlt />
             <span
-              className={`${s.v4CtaText} ${s.editableAuto}`}
+              className={`${s.v3CtaText} ${s.editableAuto}`}
               contentEditable
               suppressContentEditableWarning
               dir="auto"
-              onInput={onSpanInput(setCallText)}
+              onInput={(e) => setCallText((e.currentTarget as HTMLSpanElement).innerText)}
             >
               {callText}
             </span>
           </a>
         )}
         {waHref && (
-          <a href={waHref} target="_blank" rel="noreferrer" className={`${s.v4Btn} ${s.v4BtnWhatsApp}`}>
+          <a href={waHref} target="_blank" rel="noreferrer" className={`${s.v3Btn} ${s.v3BtnAlt}`}>
             <FaWhatsapp />
             <span
-              className={`${s.v4CtaText} ${s.editableAuto}`}
+              className={`${s.v3CtaText} ${s.editableAuto}`}
               contentEditable
               suppressContentEditableWarning
               dir="auto"
-              onInput={onSpanInput(setWaText)}
+              onInput={(e) => setWaText((e.currentTarget as HTMLSpanElement).innerText)}
             >
               {waText}
             </span>
