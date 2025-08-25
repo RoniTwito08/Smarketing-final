@@ -13,23 +13,13 @@ export type VProps = {
   removeAt: (i: number) => void;
 };
 
-const V1: React.FC<VProps> = ({ textValues, buttons, heroVars, bgImage, textHandlers, btnHandlers, removeAt }) => {
+const V1: React.FC<VProps> = ({ textValues, buttons, heroVars, textHandlers, btnHandlers, removeAt }) => {
   return (
-    <section className={s.hero1} style={heroVars} aria-label="Hero – Split Text & Image">
-      <div>
-        <EditableBlock id="1" className={s.title} value={textValues["1"]} handlers={textHandlers} as="h1" />
-        <EditableBlock id="2" className={s.text} value={textValues["2"]} handlers={textHandlers} />
-        <ButtonsRow items={buttons} onRemove={removeAt} handlers={btnHandlers} />
-      </div>
-
-      <img
-        src={bgImage || ""}
-        alt=""
-        className={s.hero1Img}
-        loading="lazy"
-        draggable={false}
-      />
-    </section>
+    <section className={s.hero2} style={heroVars} aria-label="Hero – Centered BG">
+    <EditableBlock id="1" className={s.hero2Title} value={textValues["1"]} handlers={textHandlers} as="h1" />
+    <EditableBlock id="2" className={s.text} value={textValues["2"]} handlers={textHandlers} />
+    <ButtonsRow items={buttons} onRemove={removeAt} handlers={btnHandlers} />
+  </section>
   );
 };
 
