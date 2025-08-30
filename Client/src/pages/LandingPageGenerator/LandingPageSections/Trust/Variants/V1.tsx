@@ -16,7 +16,7 @@ const pickIcon = (label: string) => {
   return FaThumbsUp;
 };
 
-export default function V1({
+export default function V2({
   stats,
   badges,
   options,
@@ -36,17 +36,17 @@ export default function V1({
   const [localStats, setLocalStats] = useState<Stat[]>(stats);
   const [localBadges, setLocalBadges] = useState<string[]>(badges || []);
 
-  const onVal = (i: number) => (e: React.FormEvent<HTMLDivElement>) => {
-    const v = (e.currentTarget as HTMLDivElement).innerText;
-    setLocalStats(prev => { const n=[...prev]; n[i]={...n[i], value:v}; return n; });
+  const onVal = (i:number) => (e:React.FormEvent<HTMLDivElement>) => {
+    const v=(e.currentTarget as HTMLDivElement).innerText;
+    setLocalStats(p=>{const n=[...p]; n[i]={...n[i], value:v}; return n;});
   };
-  const onLabel = (i: number) => (e: React.FormEvent<HTMLDivElement>) => {
-    const v = (e.currentTarget as HTMLDivElement).innerText;
-    setLocalStats(prev => { const n=[...prev]; n[i]={...n[i], label:v}; return n; });
+  const onLabel = (i:number) => (e:React.FormEvent<HTMLDivElement>) => {
+    const v=(e.currentTarget as HTMLDivElement).innerText;
+    setLocalStats(p=>{const n=[...p]; n[i]={...n[i], label:v}; return n;});
   };
-  const onBadge = (i: number) => (e: React.FormEvent<HTMLSpanElement>) => {
-    const v = (e.currentTarget as HTMLSpanElement).innerText;
-    setLocalBadges(prev => { const n=[...prev]; n[i]=v; return n; });
+  const onBadge = (i:number) => (e:React.FormEvent<HTMLSpanElement>) => {
+    const v=(e.currentTarget as HTMLSpanElement).innerText;
+    setLocalBadges(p=>{const n=[...p]; n[i]=v; return n;});
   };
 
   return (
@@ -55,7 +55,7 @@ export default function V1({
         {localStats.map((st, i) => {
           const Icon = options.showIcons ? pickIcon(st.label) : null;
           return (
-            <article key={i} className={`${s.card} ${s["shape-"+options.shape]} ${s["accent-"+options.accent]}`}>
+            <article key={i} className={`${s.card} ${s.glass} ${s["shape-"+options.shape]} ${s["accent-"+options.accent]}`}>
               <div className={s.row}>
                 {Icon && <div className={s.icon}><Icon/></div>}
                 <div
