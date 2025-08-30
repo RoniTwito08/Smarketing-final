@@ -416,7 +416,7 @@ const cleanForProduction = (root: HTMLElement) => {
             <meta charset="UTF-8">
             <title>Landing Page</title>
 
-            <link rel="stylesheet" href="${config.apiUrl}/dist/assets/index-Tx7PUTjJ.css">
+            <link rel="stylesheet" href="${config.apiUrl}/dist/assets/index-BFCFrXqm.css">
 
          
 
