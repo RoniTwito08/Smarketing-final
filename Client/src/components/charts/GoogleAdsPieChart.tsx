@@ -1,48 +1,59 @@
 import React from "react";
-import {
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
+import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from "recharts";
 
-interface CampaignSpendData {
-  name: string;
-  value: number;
+type Datum = { name: string; value: number };
+
+export interface GoogleAdsPieChartProps {
+  data: Datum[];
+  activeKey?: string;                  // שם הפרוסה להדגשה (אופציונלי)
+  colorsMap?: Record<string, string>;  // מיפוי פלטפורמה->צבע
+  innerRadius?: number;
+  outerRadius?: number;
 }
 
-interface Props {
-  data: CampaignSpendData[];
-}
+const DEFAULT_COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8b5cf6", "#14b8a6"];
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+const GoogleAdsPieChart: React.FC<GoogleAdsPieChartProps> = ({
+  data,
+  activeKey,
+  colorsMap,
+  innerRadius = 60,
+  outerRadius = 90,
+}) => {
+  const colorFor = (name: string, idx: number) =>
+    colorsMap?.[name] ?? DEFAULT_COLORS[idx % DEFAULT_COLORS.length];
 
-const GoogleAdsPieChart: React.FC<Props> = ({ data }) => {
   return (
-    <div style={{ width: "100%", height: 300 }}>
-      <ResponsiveContainer width="100%" height="100%">
-        <PieChart>
-          <Pie
-            data={data}
-            dataKey="value"
-            nameKey="name"
-            cx="50%"
-            cy="50%"
-            outerRadius={100}
-            label
-          >
-            {data.map((_, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-            ))}
-          </Pie>
-          <Tooltip />
-          <Legend />
-        </PieChart>
-      </ResponsiveContainer>
-    </div>
+    <ResponsiveContainer width="100%" height="100%">
+      <PieChart>
+        <Pie
+          data={data}
+          dataKey="value"
+          nameKey="name"
+          innerRadius={innerRadius}
+          outerRadius={outerRadius}
+          paddingAngle={2}
+          isAnimationActive={false}
+        >
+          {data.map((entry, idx) => {
+            const isActive = activeKey ? entry.name === activeKey : false;
+            return (
+              <Cell
+                key={`cell-${entry.name}-${idx}`}
+                fill={colorFor(entry.name, idx)}
+                stroke={isActive ? "#111827" : "#ffffff"}
+                strokeWidth={isActive ? 3 : 1}
+                opacity={activeKey && !isActive ? 0.45 : 1}
+              />
+            );
+          })}
+        </Pie>
+        <Tooltip />
+      </PieChart>
+    </ResponsiveContainer>
   );
 };
 
 export default GoogleAdsPieChart;
+
+

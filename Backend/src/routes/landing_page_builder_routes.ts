@@ -4,7 +4,7 @@ const router = express.Router();
 
 router.post('/generateLandingPageContext', generateLandingPageContext);
 
-router.post('/getTextSuggestions', getTextSuggestions);
+router.post("/getTextSuggestions", getTextSuggestions);
 
 
 export default router;

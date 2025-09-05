@@ -69,13 +69,13 @@ const defaultTheme = {
 
 const initialForm: CampaignForm = {
   creatorId: "1234567890",
-  campaignName: "קמפיין אביב 2025",
+  campaignName: "",
   campaignContent:
-    "קמפיין מיוחד לעונת האביב עם הנחות בלעדיות למוצרים נבחרים!",
-  budget: 100,
+    "",
+  budget: 250,
   marketingLevel: "גבוהה",
   campaginPurpose: "הגברת מודעות למותג",
-  actionToCall: "הצטרפו עכשיו",
+  actionToCall: "הירשמו עכשיו",
   targetAudience: "לקוחות חדשים ומתעניינים",
   targetGender: "שני המינים",
   language: "עברית",
@@ -637,7 +637,7 @@ const cleanForProduction = (root: HTMLElement) => {
               </button>
               <button className="launchBtn" onClick={handleSaveLandingPage}>
                 <IoRocketOutline className="icon" />
-                <span>שגר קמפיין</span>
+                <span>שמור קמפיין</span>
               </button>
             </div>
           </div>
@@ -876,8 +876,7 @@ const cleanForProduction = (root: HTMLElement) => {
                   onChange={handleChange}
                   className="control"
                 >
-                  <option value="">בחר קהל</option>
-                  <option value="לקוחות חדשים">לקוחות חדשים</option>
+                  <option selected value="לקוחות חדשים">לקוחות חדשים</option>
                   <option value="לקוחות קיימים">לקוחות קיימים</option>
                   <option value="עסקים">עסקים</option>
                 </select>
@@ -927,21 +926,21 @@ const cleanForProduction = (root: HTMLElement) => {
               {/* תקציב (Range) */}
               <div className="field range-field">
                 <label htmlFor="budget" className="range-label">
-                  תקציב: <b>{Math.round(form.budget)} ₪</b>
+                  תקציב שיווק יומי: <b>{Math.round(form.budget)} ₪</b>
                 </label>
                 <input
                   id="budget"
                   type="range"
                   name="budget"
                   min="1"
-                  max="100"
+                  max="1000"
                   step="10"
-                  value={Math.round(form.budget)}
+                  value={Math.round(form.budget) || 250} 
                   onChange={handleChange}
                   className="range-control"
                 />
                 <div className="range-scale" aria-hidden="true">
-                  <span>1</span><span>25</span><span>50</span><span>75</span><span>100</span>
+                  <span>1</span><span>250</span><span>500</span><span>750</span><span>1000</span>
                 </div>
               </div>
 

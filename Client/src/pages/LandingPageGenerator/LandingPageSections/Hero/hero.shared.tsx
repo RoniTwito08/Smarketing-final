@@ -211,19 +211,19 @@ export const ButtonsRow: React.FC<{
 
 export const defaults = {
   hero1:
-    "https://images.unsplash.com/photo-1587614203976-365c74645e83?q=80&w=1200&auto=format&fit=crop",
+    "https://plus.unsplash.com/premium_photo-1682430846850-b2ae7e22045a?q=80&w=2950&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   hero2:
-    "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1200&q=80",
+    "https://plus.unsplash.com/premium_photo-1682430846850-b2ae7e22045a?q=80&w=2950&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   hero3:
-    "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=1200&q=80",
+    "https://plus.unsplash.com/premium_photo-1682430846850-b2ae7e22045a?q=80&w=2950&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   hero4:
-    "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=1200&q=80",
+    "https://plus.unsplash.com/premium_photo-1682430846850-b2ae7e22045a?q=80&w=2950&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   hero5:
-    "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=1600&q=80",
+    "https://plus.unsplash.com/premium_photo-1682430846850-b2ae7e22045a?q=80&w=2950&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   hero6:
-    "https://images.unsplash.com/photo-1603484477859-abe6a73f9365?auto=format&fit=crop&w=1200&q=80",
+    "https://plus.unsplash.com/premium_photo-1682430846850-b2ae7e22045a?q=80&w=2950&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   hero7:
-    "https://images.unsplash.com/photo-1552083375-1447ce886485?auto=format&fit=crop&w=1600&q=80",
+    "https://plus.unsplash.com/premium_photo-1682430846850-b2ae7e22045a?q=80&w=2950&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 };
 
 /** נרמול קישור: אם נכתב דומיין בלי פרוטוקול – נוסיף https:// ; תומך גם mailto/tel */

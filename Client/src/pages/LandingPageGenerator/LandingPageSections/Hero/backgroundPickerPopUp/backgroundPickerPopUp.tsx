@@ -33,7 +33,7 @@ export default function BackgroundPickerPopUp({
   onClose,
   onPick,
   anchorRef,
-  initialQuery = "abstract gradient",
+  initialQuery = "sharks",
   dir = "rtl",
 }: BackgroundPickerPopUpProps) {
   const bubbleRef = useRef<HTMLDivElement>(null);
