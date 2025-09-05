@@ -371,11 +371,11 @@ export const generateLandingPageContext = async (
     const colorAndFontPromise = gen(
       `בחר פלטת צבעים וגופן ל-"${business.businessName}" (תחום: "${fieldToTranslate}") והחזר אובייקט JSON אחד:
 דרישות:
-- "primary": HEX בהיר-בינוני, מודרני ונעים (לא צהוב/כתום/אדום/שחור/לבן/אפור טהור)
-- "secondary": HEX משלים/קומפלמנטרי עבור כפתורים/כותרות, שונה מה-primary
-- "tertiary": HEX משלים נוסף (לא קרוב מדי ל-primary/secondary)
-- "text": HEX עם ניגודיות מתאימה (WCAG ≥ 4.5:1) על גבי primary
-- "font": שם משפחת גופן מ-Google Fonts (למשל "Rubik")
+- "primary": #F1F0E9
+- "secondary": transparent (לרקע שקוף)
+- "tertiary": #E9762B
+- "text": #41644A
+- "font": Assistant 
 - "overlayAlpha": מספר עשרוני בין 0.15 ל-0.5 לשכבת כהות על תמונות רקע
 - "gradients": אובייקט עם מחרוזות CSS Linear-Gradient עבור primary/secondary/tertiary (אופציונלי)
 החזר רק את האובייקט, ללא טקסט נוסף.`
@@ -747,29 +747,54 @@ export const getTextSuggestions = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const { text, tone, maxSentences = 3, variantCount = 3 } = req.body || {};
+  const { text, tone, variantCount = 3 } = req.body || {};
+
+  const countWords = (s: string) =>
+    (s || "")
+      .split(/\s+/)
+      .map(t => t.replace(/^[\p{P}\p{S}]+|[\p{P}\p{S}]+$/gu, ""))
+      .filter(Boolean).length;
+
+  const trimToCount = (s: string, n: number) => {
+    const toks = (s || "").trim().split(/\s+/).filter(Boolean);
+    if (toks.length <= n) return toks.join(" ");
+    return toks.slice(0, n).join(" ");
+  };
+
+  const targetCount = countWords(text);
+
   try {
     const raw = await generateContent(`
-שפר את הטקסט הבא כך שיהיה חד, מדויק ותואם את הטון: "${tone || "מקצועי ומזמין"}".
-טקסט מקורי:
-${text}
+שפר את הטקסט הבא תוך שמירה מלאה על המסר:
+"${text}"
 
-החזר JSON של בדיוק ${variantCount} וריאציות, כל וריאציה במשפטים קצרים עד ${maxSentences} משפטים.
-מבנה:
+טון: "${tone || "מקצועי ומזמין"}"
+
+דרישות מחייבות:
+- מספר המילים בכל וריאציה: בערך ${targetCount} מילים
+- מספר המשפטים: משפט אחד בלבד
+- עברית בלבד
+- ללא כותרות, ללא הסברים, ללא אמוג'י
+
+החזר JSON של בדיוק ${variantCount} וריאציות במבנה:
 [
-  {"variant": 1, "text": "<הטקסט המשופר בעברית>"},
+  {"variant": 1, "text": "<משפט אחד בעברית באורך ${targetCount} מילים>"},
   {"variant": 2, "text": "<...>"},
   {"variant": 3, "text": "<...>"}
 ]
-כללים:
-- עברית בלבד
-- ללא הסברים/כותרות נוספות
-- אין אמוג'י/קישוטים
-- לשמור על המסר המקורי אך לשפר ניסוח וזרימה
     `);
 
-    const suggestion = extractJson<{ variant: number; text: string }[]>(raw, []);
-    res.status(200).json({ suggestion });
+    const parsed = extractJson<{ variant: number; text: string }[]>(raw, []);
+    const suggestions = Array.isArray(parsed)
+      ? parsed.map(v => ({
+          variant: v?.variant ?? 0,
+          text: trimToCount((v?.text || "").replace(/\s+/g, " ").trim(), targetCount),
+        }))
+      : [];
+
+    const primary = suggestions[0]?.text || "";
+
+    res.status(200).json({ suggestions, suggestion: primary });
   } catch (error) {
     console.error("Error generating text suggestions:", error);
     res.status(500).json({ error: "Internal server error" });
