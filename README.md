@@ -67,5 +67,7 @@ Some parts may be private or demo-only.
 🧪 How to Run Locally
 
 Clone the repository git clone https://github.com/RoniTwito08/Smarketing-final.git
+
 Setup server : cd Backend -> npm run dev .
+
 Setup client : cd Client -> npm run dev .
