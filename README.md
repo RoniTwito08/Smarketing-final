@@ -63,3 +63,9 @@ The goal of the system is to help small and medium businesses quickly create eff
 
 This project is under active development and iteration.
 Some parts may be private or demo-only.
+
+🧪 How to Run Locally
+
+Clone the repository git clone https://github.com/RoniTwito08/Smarketing-final.git
+Setup server : cd Backend -> npm run dev .
+Setup client : cd Client -> npm run dev .
